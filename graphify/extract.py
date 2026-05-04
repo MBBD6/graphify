@@ -3436,6 +3436,111 @@ def extract_objc(path: Path) -> dict:
     return {"nodes": nodes, "edges": edges, "input_tokens": 0, "output_tokens": 0}
 
 
+def extract_vb(path: Path) -> dict:
+    """Extract basic VB6 `.frm` forms: procedures, functions, and properties.
+
+    Prefers a `tree_sitter_vb` integration if available; otherwise uses a
+    regex-based fallback to extract `Sub`/`Function`/`Property` definitions.
+    """
+    try:
+        import tree_sitter_vb as tsvb
+    except ImportError:
+        tsvb = None
+
+    # Common containers
+    stem = _file_stem(path)
+    str_path = str(path)
+    nodes: list[dict] = []
+    edges: list[dict] = []
+    seen_ids: set[str] = set()
+
+    def add_node(nid: str, label: str, line: int) -> None:
+        if nid not in seen_ids:
+            seen_ids.add(nid)
+            nodes.append({"id": nid, "label": label, "file_type": "code",
+                          "source_file": str_path, "source_location": f"L{line}"})
+
+    def add_edge(src: str, tgt: str, relation: str, line: int) -> None:
+        edges.append({"source": src, "target": tgt, "relation": relation,
+                      "confidence": "EXTRACTED", "source_file": str_path,
+                      "source_location": f"L{line}", "weight": 1.0})
+
+    file_nid = _make_id(str_path)
+    add_node(file_nid, path.name, 1)
+
+    # Try tree-sitter path first
+    if tsvb is not None:
+        try:
+            from tree_sitter import Language, Parser
+            lang_obj = tsvb.language()
+            try:
+                language = Language(lang_obj)
+            except Exception:
+                language = lang_obj
+            parser = Parser()
+            try:
+                # some bindings accept Parser(language)
+                parser = Parser()
+                parser.language = language
+            except Exception:
+                parser = Parser(language)
+            source = path.read_bytes()
+            tree = parser.parse(source)
+            root = tree.root_node
+
+            def walk(node):
+                t = node.type
+                if t in ("proc_declaration", "begin_end_block"):
+                    name = None
+                    name_node = node.child_by_field_name("name")
+                    if name_node:
+                        name = source[name_node.start_byte:name_node.end_byte].decode("utf-8", errors="replace")
+                    else:
+                        # Fallback: first identifier child
+                        for c in node.children:
+                            if c.type == "identifier":
+                                name = source[c.start_byte:c.end_byte].decode("utf-8", errors="replace")
+                                break
+                    if name:
+                        nid = _make_id(stem, name)
+                        line = node.start_point[0] + 1
+                        label = f"{name}()" if t == "proc_declaration" else name
+                        add_node(nid, label, line)
+                        add_edge(file_nid, nid, "contains", line)
+                for c in node.children:
+                    walk(c)
+
+            walk(root)
+            return {"nodes": nodes, "edges": edges, "input_tokens": 0, "output_tokens": 0}
+        except Exception as e:
+            return {"nodes": [], "edges": [], "error": str(e)}
+
+    # Fallback: regex-based extraction (safe, simple)
+    try:
+        text = path.read_text(encoding="latin-1", errors="ignore")
+    except Exception:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+
+    proc_pat = re.compile(r"^[ \t]*(?:Public|Private|Friend|Protected)?\s*(?:Sub|Function)\s+([A-Za-z_][A-Za-z0-9_]*)", re.IGNORECASE | re.MULTILINE)
+    prop_pat = re.compile(r"^[ \t]*(?:Public|Private)?\s*Property(?:\s+(?:Get|Let|Set))?\s+([A-Za-z_][A-Za-z0-9_]*)", re.IGNORECASE | re.MULTILINE)
+
+    for m in proc_pat.finditer(text):
+        name = m.group(1)
+        line = text[: m.start()].count("\n") + 1
+        nid = _make_id(stem, name)
+        add_node(nid, f"{name}()", line)
+        add_edge(file_nid, nid, "contains", line)
+
+    for m in prop_pat.finditer(text):
+        name = m.group(1)
+        line = text[: m.start()].count("\n") + 1
+        nid = _make_id(stem, name)
+        add_node(nid, name, line)
+        add_edge(file_nid, nid, "contains", line)
+
+    return {"nodes": nodes, "edges": edges, "input_tokens": 0, "output_tokens": 0}
+
+
 def extract_elixir(path: Path) -> dict:
     """Extract modules, functions, imports, and calls from a .ex/.exs file."""
     try:
@@ -3688,6 +3793,7 @@ _DISPATCH: dict[str, Any] = {
     ".v": extract_verilog,
     ".sv": extract_verilog,
     ".sql": extract_sql,
+    ".frm": extract_vb,
 }
 
 
