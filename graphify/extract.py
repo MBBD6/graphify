@@ -2031,6 +2031,146 @@ def extract_sql(path: Path) -> dict:
     return {"nodes": nodes, "edges": edges}
 
 
+def extract_tsql(path: Path) -> dict:
+    """Extract tables, views, functions, procedures, and relationships from T-SQL files.
+
+    Uses regex-based heuristics to handle T-SQL-specific constructs:
+    - Bracketed identifiers: [schema].[object]
+    - GO batch separators
+    - EXEC/EXECUTE calls
+    - INSERT INTO / UPDATE / DELETE FROM targets
+    - FROM / JOIN source references
+    - FOREIGN KEY REFERENCES
+    """
+    try:
+        source = path.read_text(encoding="utf-8-sig", errors="replace")
+    except Exception:
+        try:
+            source = path.read_text(encoding="latin-1", errors="replace")
+        except Exception as e:
+            return {"nodes": [], "edges": [], "error": str(e)}
+
+    stem = re.sub(r"[^a-z0-9]", "_", path.stem.lower())
+    str_path = str(path)
+    file_nid = _make_id(str_path)
+    nodes: list[dict] = [{"id": file_nid, "label": path.name, "file_type": "code",
+                           "source_file": str_path, "source_location": None}]
+    edges: list[dict] = []
+    seen_ids: set[str] = {file_nid}
+
+    # Regex for multi-part T-SQL identifiers: [schema].[name] or schema.name or [name]
+    _IDENT_PART = r"(?:\[[^\]]+\]|[A-Za-z_][A-Za-z0-9_@$#]*)"
+    _MULTI_IDENT = rf"({_IDENT_PART}(?:\.{_IDENT_PART}){{0,3}})"
+
+    def _clean_ident(raw: str) -> str:
+        """Strip brackets and normalize a multi-part identifier."""
+        parts = raw.split(".")
+        clean = []
+        for p in parts:
+            p = p.strip()
+            if p.startswith("[") and p.endswith("]"):
+                p = p[1:-1]
+            clean.append(p)
+        return ".".join(clean).lower()
+
+    def _add_node(nid: str, label: str, line: int | None = None) -> None:
+        if nid not in seen_ids:
+            seen_ids.add(nid)
+            nodes.append({"id": nid, "label": label, "file_type": "code",
+                           "source_file": str_path,
+                           "source_location": f"L{line}" if line else None})
+
+    def _add_edge(src: str, tgt: str, relation: str, line: int | None = None) -> None:
+        edges.append({"source": src, "target": tgt, "relation": relation,
+                       "confidence": "EXTRACTED", "source_file": str_path,
+                       "source_location": f"L{line}" if line else None, "weight": 1.0})
+
+    # Detect the object defined in this file
+    obj_nid = file_nid
+    obj_type = None
+    obj_match = re.search(
+        rf"CREATE\s+(?:OR\s+ALTER\s+)?(TABLE|VIEW|FUNCTION|PROC(?:EDURE)?|TYPE)\s+"
+        + _MULTI_IDENT, source, re.I)
+    if obj_match:
+        obj_type = obj_match.group(1).upper()
+        if obj_type.startswith("PROC"):
+            obj_type = "PROCEDURE"
+        raw_name = obj_match.group(2)
+        clean_name = _clean_ident(raw_name)
+        obj_nid = _make_id(stem, clean_name)
+        label = clean_name + ("()" if obj_type in ("FUNCTION", "PROCEDURE") else "")
+        _add_node(obj_nid, label, 1)
+        _add_edge(file_nid, obj_nid, "defines", 1)
+
+        # Schema membership
+        if "." in clean_name:
+            schema = clean_name.split(".")[0]
+            schema_nid = _make_id("schema", schema)
+            _add_node(schema_nid, schema)
+            _add_edge(schema_nid, obj_nid, "contains", 1)
+
+    # FOREIGN KEY REFERENCES
+    for m in re.finditer(
+            rf"REFERENCES\s+" + _MULTI_IDENT, source, re.I):
+        ref = _clean_ident(m.group(1))
+        ref_nid = _make_id("ref", ref)
+        _add_node(ref_nid, ref)
+        _add_edge(obj_nid, ref_nid, "references", source[:m.start()].count("\n") + 1)
+
+    # FROM / JOIN (reads_from)
+    for m in re.finditer(
+            rf"(?:FROM|JOIN)\s+" + _MULTI_IDENT, source, re.I):
+        tbl = _clean_ident(m.group(1))
+        # Skip subquery aliases, temp tables, variables
+        if tbl.startswith("#") or tbl.startswith("@") or tbl in ("select", "values"):
+            continue
+        tbl_nid = _make_id("ref", tbl)
+        _add_node(tbl_nid, tbl)
+        _add_edge(obj_nid, tbl_nid, "reads_from", source[:m.start()].count("\n") + 1)
+
+    # INSERT INTO (writes_to)
+    for m in re.finditer(
+            rf"INSERT\s+INTO\s+" + _MULTI_IDENT, source, re.I):
+        tbl = _clean_ident(m.group(1))
+        if tbl.startswith("#") or tbl.startswith("@"):
+            continue
+        tbl_nid = _make_id("ref", tbl)
+        _add_node(tbl_nid, tbl)
+        _add_edge(obj_nid, tbl_nid, "writes_to", source[:m.start()].count("\n") + 1)
+
+    # UPDATE (writes_to)
+    for m in re.finditer(
+            rf"UPDATE\s+" + _MULTI_IDENT, source, re.I):
+        tbl = _clean_ident(m.group(1))
+        if tbl.startswith("#") or tbl.startswith("@") or tbl.upper() in ("SET", "STATISTICS"):
+            continue
+        tbl_nid = _make_id("ref", tbl)
+        _add_node(tbl_nid, tbl)
+        _add_edge(obj_nid, tbl_nid, "writes_to", source[:m.start()].count("\n") + 1)
+
+    # DELETE FROM (writes_to)
+    for m in re.finditer(
+            rf"DELETE\s+(?:FROM\s+)?" + _MULTI_IDENT, source, re.I):
+        tbl = _clean_ident(m.group(1))
+        if tbl.startswith("#") or tbl.startswith("@"):
+            continue
+        tbl_nid = _make_id("ref", tbl)
+        _add_node(tbl_nid, tbl)
+        _add_edge(obj_nid, tbl_nid, "writes_to", source[:m.start()].count("\n") + 1)
+
+    # EXEC / EXECUTE (calls)
+    for m in re.finditer(
+            rf"EXEC(?:UTE)?\s+" + _MULTI_IDENT, source, re.I):
+        proc = _clean_ident(m.group(1))
+        if proc.startswith("@") or proc in ("sp_executesql",):
+            continue
+        proc_nid = _make_id("ref", proc)
+        _add_node(proc_nid, proc + "()")
+        _add_edge(obj_nid, proc_nid, "calls", source[:m.start()].count("\n") + 1)
+
+    return {"nodes": nodes, "edges": edges}
+
+
 def extract_lua(path: Path) -> dict:
     """Extract functions, methods, require() imports, and calls from a .lua file."""
     return _extract_generic(path, _LUA_CONFIG)
@@ -3792,7 +3932,7 @@ _DISPATCH: dict[str, Any] = {
     ".dart": extract_dart,
     ".v": extract_verilog,
     ".sv": extract_verilog,
-    ".sql": extract_sql,
+    ".sql": extract_tsql,
     ".frm": extract_vb,
 }
 
