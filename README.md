@@ -124,7 +124,7 @@ Uninstall with the matching command (e.g. `graphify claude uninstall`).
 
 | Type | Extensions |
 |------|-----------|
-| Code (25 languages) | `.py .ts .js .jsx .tsx .go .rs .java .c .cpp .rb .cs .kt .scala .php .swift .lua .zig .ps1 .ex .exs .m .jl .vue .svelte .sql` |
+| Code (26 languages) | `.py .ts .js .jsx .tsx .go .rs .java .c .cpp .rb .cs .kt .scala .php .swift .lua .zig .ps1 .ex .exs .m .jl .vue .svelte .sql .frm` |
 | Docs | `.md .mdx .html .txt .rst .yaml .yml` |
 | Office | `.docx .xlsx` (requires `pip install graphifyy[office]`) |
 | PDFs | `.pdf` |
@@ -133,6 +133,14 @@ Uninstall with the matching command (e.g. `graphify claude uninstall`).
 | YouTube / URLs | any video URL (requires `pip install graphifyy[video]`) |
 
 Code is extracted locally with no API calls (AST via tree-sitter). Everything else goes through your AI assistant's model API.
+
+### VB6 support
+
+`.frm` files (Visual Basic 6 forms) are supported out of the box with a regex fallback extractor. For richer AST-based extraction (Sub/Function/Property declarations and Begin/End control blocks via tree-sitter), install the bundled extension:
+
+```bash
+pip install -e ts_vb_ext/
+```
 
 ---
 
