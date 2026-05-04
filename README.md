@@ -142,6 +142,23 @@ Code is extracted locally with no API calls (AST via tree-sitter). Everything el
 pip install -e ts_vb_ext/
 ```
 
+### T-SQL support
+
+`.sql` files are extracted with a built-in regex-based T-SQL extractor that handles SQL Server / T-SQL constructs:
+
+- Bracketed identifiers (`[schema].[object]`)
+- `CREATE TABLE/VIEW/FUNCTION/PROCEDURE` definitions
+- `FOREIGN KEY REFERENCES` → `references` edges
+- `FROM/JOIN` → `reads_from` edges
+- `INSERT INTO/UPDATE/DELETE` → `writes_to` edges
+- `EXEC/EXECUTE` → `calls` edges
+
+No additional install required — works out of the box. A tree-sitter grammar binding is also bundled for future use:
+
+```bash
+pip install -e ts_tsql_ext/
+```
+
 ---
 
 ## Common commands
