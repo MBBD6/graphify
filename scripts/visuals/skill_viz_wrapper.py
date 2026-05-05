@@ -44,7 +44,19 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     before = snapshot_graphify_out()
-    cmd = [sys.executable, 'scripts/visuals/skill_viz.py'] + argv
+    # Locate `skill_viz.py` in common locations (cwd or alongside this wrapper)
+    candidates = [
+        Path.cwd() / 'scripts' / 'visuals' / 'skill_viz.py',
+        Path.cwd() / 'scripts' / 'skill_viz.py',
+        Path(__file__).parent / 'skill_viz.py',
+        Path(__file__).parent.parent / 'scripts' / 'visuals' / 'skill_viz.py',
+        Path(__file__).parent.parent / 'scripts' / 'skill_viz.py',
+    ]
+    script = next((p for p in candidates if p.exists()), None)
+    if script is None:
+        print(json.dumps({'error': f'skill_viz.py not found; checked: {[str(p) for p in candidates]}'}, indent=2))
+        return 2
+    cmd = [sys.executable, str(script)] + argv
     rc = run(cmd)
     # small delay to allow FS timestamps to settle
     time.sleep(0.1)
