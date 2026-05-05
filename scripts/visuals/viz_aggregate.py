@@ -5,6 +5,8 @@ Writes: graphify-out/graph_agg.html
 """
 from pathlib import Path
 import json
+import shutil
+import subprocess
 import sys
 import os
 
@@ -33,14 +35,31 @@ def main() -> int:
     extraction = json.loads(extraction_path.read_text(encoding="utf-8"))
     analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
 
-    G = build_from_json(extraction)
+    # Prefer to build a true community-aggregated view (one node per community).
+    # Reuse the existing viz_comm_aggregate script if present — it's faster and
+    # produces a small, responsive community-level HTML. If not present, fall
+    # back to the original full-graph aggregate (may be slow for large graphs).
+    repo_script = Path(__file__).resolve().parent / "viz_comm_aggregate.py"
+    out_path = out / "graph_agg.html"
 
-    # communities in analysis are expected as {cid: [node_ids]}
+    if repo_script.exists():
+        # Run the community-aggregate generator and copy its output to graph_agg.html
+        try:
+            subprocess.run([sys.executable, str(repo_script)], check=True)
+            src = out / "graph_communities.html"
+            if src.exists():
+                shutil.copy2(src, out_path)
+                print("Wrote", out_path)
+                return 0
+        except subprocess.CalledProcessError:
+            print("viz_comm_aggregate.py failed; falling back to full-graph aggregate")
+
+    # Fallback: original behavior (may be slow on large graphs)
+    G = build_from_json(extraction)
     communities = {int(k): v for k, v in analysis.get("communities", {}).items()}
     member_counts = {cid: len(members) for cid, members in communities.items()}
     community_labels = {int(k): v for k, v in analysis.get("community_labels", {}).items()} if analysis.get("community_labels") else None
 
-    out_path = out / "graph_agg.html"
     to_html(G, communities, str(out_path), community_labels=community_labels, member_counts=member_counts)
     print("Wrote", out_path)
     return 0
