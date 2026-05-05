@@ -22,7 +22,10 @@ COMMUNITY_COLORS = [
     "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC",
 ]
 
-MAX_NODES_FOR_VIZ = 5_000
+# Default maximum nodes allowed in the HTML visualization. Raise this
+# if you need larger interactive graphs. Can still be overridden at
+# runtime with the GRAPHIFY_VIZ_NODE_LIMIT environment variable.
+MAX_NODES_FOR_VIZ = 10_000
 
 
 def _viz_node_limit() -> int:
