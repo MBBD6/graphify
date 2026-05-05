@@ -3874,6 +3874,85 @@ def extract_elixir(path: Path) -> dict:
     return {"nodes": nodes, "edges": clean_edges, "raw_calls": raw_calls, "input_tokens": 0, "output_tokens": 0}
 
 
+def extract_rpt(path: Path) -> dict:
+    """Extract structural metadata from Crystal Reports (.rpt) OLE2 files.
+
+    Uses ``tree_sitter_rpt`` to parse the OLE2 compound document and extract
+    stored procedures, fields, parameters, subreports, and DB connections.
+    """
+    try:
+        import tree_sitter_rpt as tsrpt
+    except ImportError:
+        return {"nodes": [], "edges": [], "error": "tree_sitter_rpt not installed"}
+
+    try:
+        parser = tsrpt.language()
+        meta = parser.parse(path)
+    except Exception as e:
+        return {"nodes": [], "edges": [], "error": str(e)}
+
+    stem = _file_stem(path)
+    str_path = str(path)
+    nodes: list[dict] = []
+    edges: list[dict] = []
+    seen_ids: set[str] = set()
+
+    def add_node(nid: str, label: str, kind: str, line: int = 1) -> None:
+        if nid not in seen_ids:
+            seen_ids.add(nid)
+            nodes.append({"id": nid, "label": label, "file_type": kind,
+                          "source_file": str_path, "source_location": f"L{line}"})
+
+    def add_edge(src: str, tgt: str, relation: str) -> None:
+        edges.append({"source": src, "target": tgt, "relation": relation,
+                      "confidence": "EXTRACTED", "source_file": str_path,
+                      "source_location": "L1", "weight": 1.0})
+
+    # Report node
+    report_nid = _make_id(str_path)
+    report_label = meta.title if meta.title else path.name
+    add_node(report_nid, report_label, "report")
+
+    # Database connection
+    if meta.dsn or meta.database:
+        db_label = meta.dsn or meta.database
+        db_nid = _make_id("db", db_label)
+        add_node(db_nid, db_label, "database")
+        add_edge(report_nid, db_nid, "connects_to")
+
+    # Stored procedures
+    for sp in meta.stored_procedures:
+        sp_nid = _make_id("proc", sp)
+        add_node(sp_nid, sp, "stored_procedure")
+        add_edge(report_nid, sp_nid, "calls")
+
+    # Tables
+    for tbl in meta.tables:
+        tbl_nid = _make_id("table", tbl)
+        add_node(tbl_nid, tbl, "table")
+        add_edge(report_nid, tbl_nid, "reads")
+
+    # Parameters
+    for param in meta.parameters:
+        p_nid = _make_id(stem, param)
+        add_node(p_nid, param, "parameter")
+        add_edge(report_nid, p_nid, "has_parameter")
+
+    # Fields
+    for fld in meta.fields:
+        f_nid = _make_id(stem, fld)
+        add_node(f_nid, fld, "field")
+        add_edge(report_nid, f_nid, "uses_field")
+
+    # Subreports
+    for sub in meta.subreports:
+        sub_nid = _make_id(stem, sub)
+        add_node(sub_nid, f"{path.name}:{sub}", "subreport")
+        add_edge(report_nid, sub_nid, "contains")
+
+    return {"nodes": nodes, "edges": edges, "input_tokens": 0, "output_tokens": 0}
+
+
 # ── Main extract and collect_files ────────────────────────────────────────────
 
 
@@ -3934,6 +4013,7 @@ _DISPATCH: dict[str, Any] = {
     ".sv": extract_verilog,
     ".sql": extract_tsql,
     ".frm": extract_vb,
+    ".rpt": extract_rpt,
 }
 
 
@@ -4254,6 +4334,7 @@ def collect_files(target: Path, *, follow_symlinks: bool = False, root: Path | N
         ".rb", ".cs", ".kt", ".kts", ".scala", ".php", ".swift",
         ".lua", ".toc", ".zig", ".ps1",
         ".m", ".mm",
+        ".rpt",
     }
     from graphify_m.detect import _load_graphifyignore, _is_ignored
     ignore_root = root if root is not None else target
