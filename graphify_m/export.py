@@ -217,7 +217,8 @@ function showInfo(nodeId) {{
   document.getElementById('info-content').innerHTML = `
     <div class="field"><b>${{esc(n.label)}}</b></div>
     <div class="field">Type: ${{esc(n._file_type || 'unknown')}}</div>
-    <div class="field">Community: ${{esc(n._community_name)}}</div>
+        <div class="field">Community: ${{esc(n._community_name)}}</div>
+        <div class="field"><a href="#" onclick="window.open('graph_comm_' + n._community + '.html', '_blank'); return false;" style="color:#9ca3ff;text-decoration:none">Open community page ↗</a></div>
     <div class="field">Source: ${{esc(n._source_file || '-')}}</div>
     <div class="field">Degree: ${{n._degree}}</div>
     ${{neighborIds.length ? `<div class="field" style="margin-top:8px;color:#aaa;font-size:11px">Neighbors (${{neighborIds.length}})</div><div id="neighbors-list">${{neighborItems}}</div>` : ''}}
@@ -336,7 +337,17 @@ LEGEND.forEach(c => {{
   item.innerHTML = `<div class="legend-dot" style="background:${{c.color}}"></div>
     <span class="legend-label">${{c.label}}</span>
     <span class="legend-count">${{c.count}}</span>`;
-  item.prepend(cb);
+    // Add a drill-through anchor to per-community page (relative)
+    try {{
+        const commLink = document.createElement('a');
+        commLink.href = `graph_comm_${{c.cid}}.html`;
+        commLink.target = '_blank';
+        commLink.title = 'Open community page';
+        commLink.style = 'margin-left:8px;color:#aaa;text-decoration:none;flex-shrink:0';
+        commLink.textContent = '↗';
+        item.appendChild(commLink);
+    }} catch (e) {{ /* DOM not available in some embed contexts */ }}
+    item.prepend(cb);
   item.onclick = (e) => {{
     if (e.target === cb) return;
     cb.checked = !cb.checked;
@@ -544,10 +555,38 @@ def to_html(
         })
 
     # Build community legend data
+    # Build community legend data. Use provided `community_labels` when available;
+    # otherwise pick a representative node label (highest-degree node) and
+    # prettify it (strip common prefixes, replace underscores, title-case).
+    def _prettify_label(s: str) -> str:
+        s = re.sub(r'^(dbo_|ref_|tbl_|fn_|usp_|sp_|prc_)', '', s, flags=re.IGNORECASE)
+        s = s.replace('_', ' ').replace('.', ' ').strip()
+        s = _strip_diacritics(s)
+        return s.title()
+
     legend_data = []
-    for cid in sorted((community_labels or {}).keys()):
+    for cid in sorted(communities.keys()):
         color = COMMUNITY_COLORS[cid % len(COMMUNITY_COLORS)]
-        lbl = _html.escape(sanitize_label((community_labels or {}).get(cid, f"Community {cid}")))
+        # prefer explicit analysis label
+        raw_label = None
+        if community_labels and cid in community_labels and community_labels[cid]:
+            raw_label = community_labels[cid]
+        else:
+            # pick highest-degree node from this community as representative
+            rep = None
+            rep_deg = -1
+            for n in communities.get(cid, []):
+                deg = degree.get(n, 0)
+                if deg > rep_deg:
+                    rep = n
+                    rep_deg = deg
+            if rep and rep in G.nodes:
+                raw_label = G.nodes[rep].get('label') or rep
+            else:
+                raw_label = f"Community {cid}"
+
+        pretty = _prettify_label(str(raw_label))
+        lbl = _html.escape(sanitize_label(pretty))
         n = member_counts_local.get(cid, len(communities.get(cid, [])))
         legend_data.append({"cid": cid, "color": color, "label": lbl, "count": n})
 

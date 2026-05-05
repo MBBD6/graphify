@@ -53,7 +53,24 @@ def main() -> int:
     C = nx.Graph()
     for cid, members in communities.items():
         node_id = f"C_{cid}"
-        C.add_node(node_id, label=community_labels.get(cid, f"Community {cid}"), member_count=len(members))
+        # Prefer provided community label; otherwise pick a representative node
+        if cid in community_labels and community_labels[cid]:
+            label = community_labels[cid]
+        else:
+            # choose highest-degree node in this community as representative
+            rep = None
+            rep_deg = -1
+            for n in members:
+                try:
+                    deg = G_full.degree(n)
+                except Exception:
+                    deg = 0
+                if deg > rep_deg:
+                    rep = n
+                    rep_deg = deg
+            rep_label = (G_full.nodes[rep].get('label') if rep and 'label' in G_full.nodes[rep] else rep) if rep else f"Community {cid}"
+            label = rep_label
+        C.add_node(node_id, label=label, member_count=len(members))
 
     for (a, b), w in inter.items():
         na = f"C_{a}"
