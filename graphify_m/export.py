@@ -10,6 +10,7 @@ import networkx as nx
 from networkx.readwrite import json_graph
 from graphify_m.security import sanitize_label
 from graphify_m.analyze import _node_community_map
+import os
 
 def _strip_diacritics(text: str) -> str:
     import unicodedata
@@ -130,7 +131,37 @@ network.on('afterDrawing', function(ctx) {{
 
 
 def _html_script(nodes_json: str, edges_json: str, legend_json: str) -> str:
-    return f"""<script>
+        # Allow runtime override to produce a static, no-physics HTML for very large graphs.
+        # Set environment variable `GRAPHIFY_VIZ_MODE=static` to disable physics/stabilization.
+        mode = os.environ.get("GRAPHIFY_VIZ_MODE", "").lower()
+        if mode == "static":
+                physics_block = """
+    physics: {
+        enabled: false,
+    },
+"""
+                stabilization_callback = """// physics disabled for static mode"""
+        else:
+                physics_block = """
+    physics: {
+        enabled: true,
+        solver: 'forceAtlas2Based',
+        forceAtlas2Based: {
+            gravitationalConstant: -60,
+            centralGravity: 0.005,
+            springLength: 120,
+            springConstant: 0.08,
+            damping: 0.4,
+            avoidOverlap: 0.8,
+        },
+        stabilization: { iterations: 200, fit: true },
+    },
+"""
+                stabilization_callback = """network.once('stabilizationIterationsDone', () => {
+    network.setOptions({ physics: { enabled: false } });
+});"""
+
+        return f"""<script>
 const RAW_NODES = {nodes_json};
 const RAW_EDGES = {edges_json};
 const LEGEND = {legend_json};
@@ -160,33 +191,19 @@ const edgesDS = new vis.DataSet(RAW_EDGES.map((e, i) => ({{
 
 const container = document.getElementById('graph');
 const network = new vis.Network(container, {{ nodes: nodesDS, edges: edgesDS }}, {{
-  physics: {{
-    enabled: true,
-    solver: 'forceAtlas2Based',
-    forceAtlas2Based: {{
-      gravitationalConstant: -60,
-      centralGravity: 0.005,
-      springLength: 120,
-      springConstant: 0.08,
-      damping: 0.4,
-      avoidOverlap: 0.8,
+{physics_block}
+    interaction: {{
+        hover: true,
+        tooltipDelay: 100,
+        hideEdgesOnDrag: true,
+        navigationButtons: false,
+        keyboard: false,
     }},
-    stabilization: {{ iterations: 200, fit: true }},
-  }},
-  interaction: {{
-    hover: true,
-    tooltipDelay: 100,
-    hideEdgesOnDrag: true,
-    navigationButtons: false,
-    keyboard: false,
-  }},
-  nodes: {{ shape: 'dot', borderWidth: 1.5 }},
-  edges: {{ smooth: {{ type: 'continuous', roundness: 0.2 }}, selectionWidth: 3 }},
+    nodes: {{ shape: 'dot', borderWidth: 1.5 }},
+    edges: {{ smooth: {{ type: 'continuous', roundness: 0.2 }}, selectionWidth: 3 }},
 }});
 
-network.once('stabilizationIterationsDone', () => {{
-  network.setOptions({{ physics: {{ enabled: false }} }});
-}});
+{stabilization_callback}
 
 function showInfo(nodeId) {{
   const n = nodesDS.get(nodeId);

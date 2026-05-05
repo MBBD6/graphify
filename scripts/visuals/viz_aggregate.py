@@ -5,8 +5,6 @@ Writes: graphify-out/graph_agg.html
 """
 from pathlib import Path
 import json
-import shutil
-import subprocess
 import sys
 import os
 
@@ -17,9 +15,13 @@ if _LOCAL_GRAPHIFY.exists():
 
 # Ensure viz limit uses 10000 for these script runs (overrides installed package defaults)
 os.environ.setdefault('GRAPHIFY_VIZ_NODE_LIMIT', '10000')
+# Always produce static (no-physics) HTML for the aggregate view
+os.environ.setdefault('GRAPHIFY_VIZ_MODE', 'static')
 
 from graphify_m.build import build_from_json
 from graphify_m.export import to_html
+import subprocess
+import shutil
 
 
 def main() -> int:
@@ -35,24 +37,19 @@ def main() -> int:
     extraction = json.loads(extraction_path.read_text(encoding="utf-8"))
     analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
 
-    # Prefer to build a true community-aggregated view (one node per community).
-    # Reuse the existing viz_comm_aggregate script if present — it's faster and
-    # produces a small, responsive community-level HTML. If not present, fall
-    # back to the original full-graph aggregate (may be slow for large graphs).
-    repo_script = Path(__file__).resolve().parent / "viz_comm_aggregate.py"
+    # Use the compact supernode generator (top-N communities + Other node).
+    # This produces a tiny, instant-loading HTML (~26 nodes for top_k=25).
+    repo_script = Path(__file__).resolve().parent / "viz_comm_supernodes.py"
     out_path = out / "graph_agg.html"
 
     if repo_script.exists():
-        # Run the community-aggregate generator and copy its output to graph_agg.html
         try:
             subprocess.run([sys.executable, str(repo_script)], check=True)
-            src = out / "graph_communities.html"
-            if src.exists():
-                shutil.copy2(src, out_path)
+            if out_path.exists():
                 print("Wrote", out_path)
                 return 0
         except subprocess.CalledProcessError:
-            print("viz_comm_aggregate.py failed; falling back to full-graph aggregate")
+            print("viz_comm_supernodes.py failed; falling back to full-graph aggregate")
 
     # Fallback: original behavior (may be slow on large graphs)
     G = build_from_json(extraction)
