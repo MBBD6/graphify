@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Run all visualization generation steps (aggregate, focused, community pages)
-cd "$(dirname "$0")"/.. || exit 1
+cd "$(dirname "$0")"/../.. || exit 1
 
 echo "1/4: Aggregate community-level graph"
 python scripts/visuals/viz_comm_aggregate.py
