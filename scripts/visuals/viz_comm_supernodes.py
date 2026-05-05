@@ -165,7 +165,7 @@ if __name__ == "__main__":
     os.environ.setdefault('GRAPHIFY_VIZ_MODE', 'static')
     # Allow override via env (default: top 25 communities)
     try:
-        k = int(os.environ.get('GRAPHIFY_TOP_COMMUNITIES', '100'))
+        k = int(os.environ.get('GRAPHIFY_TOP_COMMUNITIES', '25'))
     except Exception:
-        k = 100
+        k = 25
     raise SystemExit(main(top_k=k))

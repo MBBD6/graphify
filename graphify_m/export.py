@@ -337,15 +337,17 @@ LEGEND.forEach(c => {{
   item.innerHTML = `<div class="legend-dot" style="background:${{c.color}}"></div>
     <span class="legend-label">${{c.label}}</span>
     <span class="legend-count">${{c.count}}</span>`;
-    // Add a drill-through anchor to per-community page (relative)
+    // Add a drill-through anchor to per-community page (relative) for real communities only
     try {{
-        const commLink = document.createElement('a');
-        commLink.href = `graph_comm_${{c.cid}}.html`;
-        commLink.target = '_blank';
-        commLink.title = 'Open community page';
-        commLink.style = 'margin-left:8px;color:#aaa;text-decoration:none;flex-shrink:0';
-        commLink.textContent = '↗';
-        item.appendChild(commLink);
+        if (c.cid >= 0) {{
+                const commLink = document.createElement('a');
+                commLink.href = 'graph_comm_' + c.cid + '.html';
+                commLink.target = '_blank';
+                commLink.title = 'Open community page';
+                commLink.style = 'margin-left:8px;color:#aaa;text-decoration:none;flex-shrink:0';
+                commLink.textContent = '↗';
+                item.appendChild(commLink);
+        }}
     }} catch (e) {{ /* DOM not available in some embed contexts */ }}
     item.prepend(cb);
   item.onclick = (e) => {{
