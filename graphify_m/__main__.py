@@ -25,18 +25,6 @@ def _check_skill_version(skill_dst: Path) -> None:
     version_file = skill_dst.parent / ".graphify_version"
     if not version_file.exists():
         return
-
-        # Viz helper subcommands — delegate to scripts/visuals/skill_viz_wrapper.py
-        # Usage: graphify viz <subcommand> [--flags]
-        if cmd == "viz":
-            args = sys.argv[2:]
-            wrapper = Path(__file__).parent / "scripts" / "visuals" / "skill_viz_wrapper.py"
-            if not wrapper.exists():
-                print(f"error: viz helpers not found at {wrapper} — ensure scripts/visuals is present", file=sys.stderr)
-                sys.exit(1)
-            run_cmd = [sys.executable, str(wrapper)] + args
-            rc = subprocess.run(run_cmd).returncode
-            sys.exit(rc)
     installed = version_file.read_text(encoding="utf-8").strip()
     if installed != __version__:
         print(f"  warning: skill is from graphify {installed}, package is {__version__}. Run 'graphify install' to update.")
@@ -1146,6 +1134,15 @@ def main() -> None:
         return
 
     cmd = sys.argv[1]
+    if cmd == "viz":
+        args = sys.argv[2:]
+        wrapper = Path(__file__).parent / "scripts" / "visuals" / "skill_viz_wrapper.py"
+        if not wrapper.exists():
+            print(f"error: viz helpers not found at {wrapper} — ensure scripts/visuals is present", file=sys.stderr)
+            sys.exit(1)
+        run_cmd = [sys.executable, str(wrapper)] + args
+        rc = subprocess.run(run_cmd).returncode
+        sys.exit(rc)
     if cmd == "install":
         # Default to windows platform on Windows, claude elsewhere
         default_platform = "windows" if platform.system() == "Windows" else "claude"
