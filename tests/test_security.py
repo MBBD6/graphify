@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from graphify.security import (
+from graphify_m.security import (
     sanitize_label,
     safe_fetch,
     safe_fetch_text,

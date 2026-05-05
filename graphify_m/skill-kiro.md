@@ -1,7 +1,6 @@
 ---
 name: graphify
-description: any input (code, docs, papers, images) → knowledge graph → clustered communities → HTML + JSON + audit report
-trigger: /graphify
+description: Turn any folder of files (code, docs, papers, images, video) into a queryable knowledge graph with community detection, an honest audit trail, and three outputs: interactive HTML, GraphRAG-ready JSON, and a plain-language GRAPH_REPORT.md. Use when asked to analyze a codebase, understand architecture, map dependencies, or build a knowledge graph.
 ---
 
 # /graphify
@@ -68,9 +67,9 @@ if [ -n "$GRAPHIFY_BIN" ]; then
 else
     PYTHON="python3"
 fi
-"$PYTHON" -c "import graphify" 2>/dev/null || "$PYTHON" -m pip install graphifyy -q 2>/dev/null || "$PYTHON" -m pip install graphifyy -q --break-system-packages 2>&1 | tail -3
-# Write interpreter path for all subsequent steps
+"$PYTHON" -c "import graphify_m" 2>/dev/null || "$PYTHON" -m pip install graphifyy -q 2>/dev/null || "$PYTHON" -m pip install graphifyy -q --break-system-packages 2>&1 | tail -3
 mkdir -p graphify-out
+# Write interpreter path for all subsequent steps
 "$PYTHON" -c "import sys; open('graphify-out/.graphify_python', 'w').write(sys.executable)"
 ```
 
@@ -83,7 +82,7 @@ If the import succeeds, print nothing and move straight to Step 2.
 ```bash
 $(cat .graphify_python) -c "
 import json
-from graphify.detect import detect
+from graphify_m.detect import detect
 from pathlib import Path
 result = detect(Path('INPUT_PATH'))
 print(json.dumps(result))
@@ -134,7 +133,7 @@ Set it as `GRAPHIFY_WHISPER_PROMPT` in the environment before running the transc
 $(cat graphify-out/.graphify_python) -c "
 import json, os
 from pathlib import Path
-from graphify.transcribe import transcribe_all
+from graphify_m.transcribe import transcribe_all
 
 detect = json.loads(Path('graphify-out/.graphify_detect.json').read_text())
 video_files = detect.get('files', {}).get('video', [])
@@ -170,7 +169,7 @@ For any code files detected, run AST extraction in parallel with Part B subagent
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.extract import collect_files, extract
+from graphify_m.extract import collect_files, extract
 from pathlib import Path
 import json
 
@@ -193,13 +192,9 @@ else:
 
 **Fast path:** If detection found zero docs, papers, and images (code-only corpus), skip Part B entirely and go straight to Part C. AST handles code - there is nothing for semantic subagents to do.
 
-**MANDATORY: You MUST use the Agent tool here. Reading files yourself one-by-one is forbidden - it is 5-10x slower. If you do not use the Agent tool you are doing this wrong.**
+> **OpenClaw platform:** Multi-agent support is still early on OpenClaw. Extraction runs sequentially — you read and extract each file yourself. This is slower than parallel platforms but fully reliable.
 
-Before dispatching subagents, print a timing estimate:
-- Load `total_words` and file counts from `.graphify_detect.json`
-- Estimate agents needed: `ceil(uncached_non_code_files / 22)` (chunk size is 20-25)
-- Estimate time: ~45s per agent batch (they run in parallel, so total ≈ 45s × ceil(agents/parallel_limit))
-- Print: "Semantic extraction: ~N files → X agents, estimated ~Ys"
+Print: `"Semantic extraction: N files (sequential — OpenClaw)"`
 
 **Step B0 - Check extraction cache first**
 
@@ -208,7 +203,7 @@ Before dispatching any subagents, check which files already have cached extracti
 ```bash
 $(cat .graphify_python) -c "
 import json
-from graphify.cache import check_semantic_cache
+from graphify_m.cache import check_semantic_cache
 from pathlib import Path
 
 detect = json.loads(Path('.graphify_detect.json').read_text())
@@ -229,86 +224,34 @@ Only dispatch subagents for files listed in `.graphify_uncached.txt`. If all fil
 
 Load files from `.graphify_uncached.txt`. Split into chunks of 20-25 files each. Each image gets its own chunk (vision needs separate context). When splitting, group files from the same directory together so related artifacts land in the same chunk and cross-file relationships are more likely to be extracted.
 
-**Step B2 - Dispatch ALL subagents in a single message (Factory Droid)**
+**Step B2 - Sequential extraction (OpenClaw)**
 
-> **Factory Droid platform:** Uses the `Task` tool for parallel subagent dispatch.
-> Call `Task` once per chunk — ALL in the same response so they run in parallel.
+Process each file one at a time. For each file:
 
-Call `Task` once per chunk — ALL in the same response so they run in parallel. Pass the extraction prompt as the task description:
+1. Read the file contents
+2. Extract nodes, edges, and hyperedges applying the same rules:
+   - EXTRACTED: relationship explicit in source (import, call, citation)
+   - INFERRED: reasonable inference (shared structure, implied dependency)
+   - AMBIGUOUS: uncertain — flag it, do not omit
+   - Code files: semantic edges AST cannot find. Do not re-extract imports.
+   - Doc/paper files: named concepts, entities, citations. Store rationale (WHY decisions were made) as a `rationale` attribute on the relevant node, not as a separate node. Use `file_type:"rationale"` for concept-like nodes (ideas, principles, mechanisms). Do NOT invent file_types like `concept`. When adding `calls` edges: source is caller, target is callee.
+   - Image files: use vision — understand what the image IS, not just OCR
+   - DEEP_MODE (if --mode deep): be aggressive with INFERRED edges
+   - Semantic similarity: if two concepts solve the same problem without a structural link, add `semantically_similar_to` INFERRED edge (confidence 0.6-0.95). Non-obvious cross-file links only.
+   - Hyperedges: if 3+ nodes share a concept/flow not captured by pairwise edges, add a hyperedge. Max 3 per file.
+   - confidence_score REQUIRED on every edge: EXTRACTED=1.0, INFERRED=0.6-0.9 (reason individually), AMBIGUOUS=0.1-0.3
+3. Accumulate results across all files
 
-```
-Task(description="Your task is to perform the following. Follow the instructions below exactly.\n\n<agent-instructions>\n[extraction prompt below, with FILE_LIST, CHUNK_NUM, TOTAL_CHUNKS, DEEP_MODE substituted]\n</agent-instructions>\n\nExecute this now. Output ONLY the structured JSON response.")
-```
-
-Collect results as each Task completes. Parse each result as JSON.
-
-Parse each result as JSON. Accumulate nodes/edges/hyperedges across all results and write to `.graphify_semantic_new.json`.
-
-The extraction prompt each subagent receives (substitute FILE_LIST, CHUNK_NUM, TOTAL_CHUNKS, DEEP_MODE):
-
-```
-You are a graphify extraction subagent. Read the files listed and extract a knowledge graph fragment.
-Output ONLY valid JSON matching the schema below - no explanation, no markdown fences, no preamble.
-
-Files (chunk CHUNK_NUM of TOTAL_CHUNKS):
-FILE_LIST
-
-Rules:
-- EXTRACTED: relationship explicit in source (import, call, citation, "see §3.2")
-- INFERRED: reasonable inference (shared data structure, implied dependency)
-- AMBIGUOUS: uncertain - flag for review, do not omit
-
-Code files: focus on semantic edges AST cannot find (call relationships, shared data, arch patterns).
-  Do not re-extract imports - AST already has those.
-Doc/paper files: extract named concepts, entities, citations. For rationale (WHY decisions were made, trade-offs, design intent): store as a `rationale` attribute on the relevant concept node — do NOT create a separate rationale node or fragment node. Only create a node for something that is itself a named entity or concept. Use `file_type:"rationale"` for concept-like nodes (ideas, principles, mechanisms, design patterns). Do NOT invent file_types like `concept` — valid values are only `code|document|paper|image|rationale`.
-Code files: when adding `calls` edges, source MUST be the caller (the function/class doing the calling), target MUST be the callee. Never reverse this direction.
-Image files: use vision to understand what the image IS - do not just OCR.
-  UI screenshot: layout patterns, design decisions, key elements, purpose.
-  Chart: metric, trend/insight, data source.
-  Tweet/post: claim as node, author, concepts mentioned.
-  Diagram: components and connections.
-  Research figure: what it demonstrates, method, result.
-  Handwritten/whiteboard: ideas and arrows, mark uncertain readings AMBIGUOUS.
-
-DEEP_MODE (if --mode deep was given): be aggressive with INFERRED edges - indirect deps,
-  shared assumptions, latent couplings. Mark uncertain ones AMBIGUOUS instead of omitting.
-
-Semantic similarity: if two concepts in this chunk solve the same problem or represent the same idea without any structural link (no import, no call, no citation), add a `semantically_similar_to` edge marked INFERRED with a confidence_score reflecting how similar they are (0.6-0.95). Examples:
-- Two functions that both validate user input but never call each other
-- A class in code and a concept in a paper that describe the same algorithm
-- Two error types that handle the same failure mode differently
-Only add these when the similarity is genuinely non-obvious and cross-cutting. Do not add them for trivially similar things.
-
-Hyperedges: if 3 or more nodes clearly participate together in a shared concept, flow, or pattern that is not captured by pairwise edges alone, add a hyperedge to a top-level `hyperedges` array. Examples:
-- All classes that implement a common protocol or interface
-- All functions in an authentication flow (even if they don't all call each other)
-- All concepts from a paper section that form one coherent idea
-Use sparingly — only when the group relationship adds information beyond the pairwise edges. Maximum 3 hyperedges per chunk.
-
-If a file has YAML frontmatter (--- ... ---), copy source_url, captured_at, author,
-  contributor onto every node from that file.
-
-confidence_score is REQUIRED on every edge - never omit it, never use 0.5 as a default:
-- EXTRACTED edges: confidence_score = 1.0 always
-- INFERRED edges: reason about each edge individually.
-  Direct structural evidence (shared data structure, clear dependency): 0.8-0.9.
-  Reasonable inference with some uncertainty: 0.6-0.7.
-  Weak or speculative: 0.4-0.5. Most edges should be 0.6-0.9, not 0.5.
-- AMBIGUOUS edges: 0.1-0.3
-
-Output exactly this JSON (no other text):
+Schema for each file's output:
 {"nodes":[{"id":"filestem_entityname","label":"Human Readable Name","file_type":"code|document|paper|image|rationale","source_file":"relative/path","source_location":null,"source_url":null,"captured_at":null,"author":null,"contributor":null}],"edges":[{"source":"node_id","target":"node_id","relation":"calls|implements|references|cites|conceptually_related_to|shares_data_with|semantically_similar_to|rationale_for","confidence":"EXTRACTED|INFERRED|AMBIGUOUS","confidence_score":1.0,"source_file":"relative/path","source_location":null,"weight":1.0}],"hyperedges":[{"id":"snake_case_id","label":"Human Readable Label","nodes":["node_id1","node_id2","node_id3"],"relation":"participate_in|implement|form","confidence":"EXTRACTED|INFERRED","confidence_score":0.75,"source_file":"relative/path"}],"input_tokens":0,"output_tokens":0}
-```
 
-**Step B3 - Collect, cache, and merge**
+After processing all files, write the accumulated result to `.graphify_semantic_new.json`.
 
-Wait for all subagents. For each result:
-- Check that `graphify-out/.graphify_chunk_NN.json` exists on disk — this is the success signal
-- If the file exists and contains valid JSON with `nodes` and `edges`, include it and save to cache
-- If the file is missing, the subagent was likely dispatched as read-only (Explore type) — print a warning: "chunk N missing from disk — subagent may have been read-only. Re-run with general-purpose agent." Do not silently skip.
-- If a subagent failed or returned invalid JSON, print a warning and skip that chunk - do not abort
+**Step B3 - Cache and merge**
 
-If more than half the chunks failed or are missing, stop and tell the user to re-run and ensure `subagent_type="general-purpose"` is used.
+For the accumulated result:
+
+If more than half the chunks failed, stop and tell the user.
 
 Merge all chunk files into `.graphify_semantic_new.json`. **After each Agent call completes, read the real token counts from the Agent tool result's `usage` field and write them back into the chunk JSON before merging** — the chunk JSON itself always has placeholder zeros. Then run:
 ```bash
@@ -338,7 +281,7 @@ Save new results to cache:
 ```bash
 $(cat .graphify_python) -c "
 import json
-from graphify.cache import save_semantic_cache
+from graphify_m.cache import save_semantic_cache
 from pathlib import Path
 
 new = json.loads(Path('.graphify_semantic_new.json').read_text()) if Path('.graphify_semantic_new.json').exists() else {'nodes':[],'edges':[],'hyperedges':[]}
@@ -419,11 +362,11 @@ print(f'Merged: {total} nodes, {edges} edges ({len(ast[\"nodes\"])} AST + {len(s
 mkdir -p graphify-out
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.cluster import cluster, score_all
-from graphify.analyze import god_nodes, surprising_connections, suggest_questions
-from graphify.report import generate
-from graphify.export import to_json
+from graphify_m.build import build_from_json
+from graphify_m.cluster import cluster, score_all
+from graphify_m.analyze import god_nodes, surprising_connections, suggest_questions
+from graphify_m.report import generate
+from graphify_m.export import to_json
 from pathlib import Path
 
 extraction = json.loads(Path('.graphify_extract.json').read_text())
@@ -472,10 +415,10 @@ Then regenerate the report and save the labels for the visualizer:
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.cluster import score_all
-from graphify.analyze import god_nodes, surprising_connections, suggest_questions
-from graphify.report import generate
+from graphify_m.build import build_from_json
+from graphify_m.cluster import score_all
+from graphify_m.analyze import god_nodes, surprising_connections, suggest_questions
+from graphify_m.report import generate
 from pathlib import Path
 
 extraction = json.loads(Path('.graphify_extract.json').read_text())
@@ -512,8 +455,8 @@ If `--obsidian` was given:
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.export import to_obsidian, to_canvas
+from graphify_m.build import build_from_json
+from graphify_m.export import to_obsidian, to_canvas
 from pathlib import Path
 
 extraction = json.loads(Path('.graphify_extract.json').read_text())
@@ -543,8 +486,8 @@ Generate the HTML graph (always, unless `--no-viz`):
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.export import to_html
+from graphify_m.build import build_from_json
+from graphify_m.export import to_html
 from pathlib import Path
 
 extraction = json.loads(Path('.graphify_extract.json').read_text())
@@ -570,8 +513,8 @@ else:
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.export import to_cypher
+from graphify_m.build import build_from_json
+from graphify_m.export import to_cypher
 from pathlib import Path
 
 G = build_from_json(json.loads(Path('.graphify_extract.json').read_text()))
@@ -585,9 +528,9 @@ print('cypher.txt written - import with: cypher-shell < graphify-out/cypher.txt'
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.cluster import cluster
-from graphify.export import push_to_neo4j
+from graphify_m.build import build_from_json
+from graphify_m.cluster import cluster
+from graphify_m.export import push_to_neo4j
 from pathlib import Path
 
 extraction = json.loads(Path('.graphify_extract.json').read_text())
@@ -607,8 +550,8 @@ Replace `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` with actual values. Default 
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.export import to_svg
+from graphify_m.build import build_from_json
+from graphify_m.export import to_svg
 from pathlib import Path
 
 extraction = json.loads(Path('.graphify_extract.json').read_text())
@@ -629,8 +572,8 @@ print('graph.svg written - embeds in Obsidian, Notion, GitHub READMEs')
 ```bash
 $(cat .graphify_python) -c "
 import json
-from graphify.build import build_from_json
-from graphify.export import to_graphml
+from graphify_m.build import build_from_json
+from graphify_m.export import to_graphml
 from pathlib import Path
 
 extraction = json.loads(Path('.graphify_extract.json').read_text())
@@ -671,7 +614,7 @@ If `total_words` from `.graphify_detect.json` is greater than 5,000, run:
 ```bash
 $(cat .graphify_python) -c "
 import json
-from graphify.benchmark import run_benchmark, print_benchmark
+from graphify_m.benchmark import run_benchmark, print_benchmark
 from pathlib import Path
 
 detection = json.loads(Path('.graphify_detect.json').read_text())
@@ -691,7 +634,7 @@ $(cat .graphify_python) -c "
 import json
 from pathlib import Path
 from datetime import datetime, timezone
-from graphify.detect import save_manifest
+from graphify_m.detect import save_manifest
 
 # Save manifest for --update
 detect = json.loads(Path('.graphify_detect.json').read_text())
@@ -763,7 +706,7 @@ Use when you've added or modified files since the last run. Only re-extracts cha
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.detect import detect_incremental, save_manifest
+from graphify_m.detect import detect_incremental, save_manifest
 from pathlib import Path
 
 result = detect_incremental(Path('INPUT_PATH'))
@@ -802,8 +745,8 @@ Then:
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.build import build_from_json
-from graphify.export import to_json
+from graphify_m.build import build_from_json
+from graphify_m.export import to_json
 from networkx.readwrite import json_graph
 import networkx as nx
 from pathlib import Path
@@ -829,8 +772,8 @@ After Step 4, show the graph diff:
 ```bash
 $(cat .graphify_python) -c "
 import json
-from graphify.analyze import graph_diff
-from graphify.build import build_from_json
+from graphify_m.analyze import graph_diff
+from graphify_m.build import build_from_json
 from networkx.readwrite import json_graph
 import networkx as nx
 from pathlib import Path
@@ -863,10 +806,10 @@ Skip Steps 1–3. Load the existing graph from `graphify-out/graph.json` and re-
 ```bash
 $(cat .graphify_python) -c "
 import sys, json
-from graphify.cluster import cluster, score_all
-from graphify.analyze import god_nodes, surprising_connections
-from graphify.report import generate
-from graphify.export import to_json
+from graphify_m.cluster import cluster, score_all
+from graphify_m.analyze import god_nodes, surprising_connections
+from graphify_m.report import generate
+from graphify_m.export import to_json
 from networkx.readwrite import json_graph
 import networkx as nx
 from pathlib import Path
@@ -1176,7 +1119,7 @@ Fetch a URL and add it to the corpus, then update the graph.
 ```bash
 $(cat .graphify_python) -c "
 import sys
-from graphify.ingest import ingest
+from graphify_m.ingest import ingest
 from pathlib import Path
 
 try:

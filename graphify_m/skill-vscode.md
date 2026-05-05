@@ -30,7 +30,7 @@ Follow these steps in order. Do not skip steps.
 ### Step 1 - Ensure graphify is installed
 
 ```python
-python -c "import graphify; import sys; from pathlib import Path; Path('graphify-out').mkdir(exist_ok=True); Path('graphify-out/.graphify_python').write_text(sys.executable)"
+python -c "import graphify_m; import sys; from pathlib import Path; Path('graphify-out').mkdir(exist_ok=True); Path('graphify-out/.graphify_python').write_text(sys.executable)"
 ```
 
 If the import fails, install first:
@@ -46,7 +46,7 @@ Then re-run the Step 1 command.
 ```python
 python -c "
 import json, sys
-from graphify.detect import detect
+from graphify_m.detect import detect
 from pathlib import Path
 
 result = detect(Path('INPUT_PATH'))
@@ -73,7 +73,7 @@ Replace `INPUT_PATH` with the actual path. Present a clean summary — do not du
 ```python
 python -c "
 import json
-from graphify.extract import collect_files, extract
+from graphify_m.extract import collect_files, extract
 from pathlib import Path
 
 detect = json.loads(Path('graphify-out/.graphify_detect.json').read_text())
@@ -101,7 +101,7 @@ Check cache first:
 ```python
 python -c "
 import json
-from graphify.cache import check_semantic_cache
+from graphify_m.cache import check_semantic_cache
 from pathlib import Path
 
 detect = json.loads(Path('graphify-out/.graphify_detect.json').read_text())
@@ -171,9 +171,9 @@ print(f'Merged: {len(all_nodes)} nodes, {len(all_edges)} edges')
 ```python
 python -c "
 import json
-from graphify.build import build_from_json
-from graphify.cluster import cluster
-from graphify.analyze import god_nodes, surprising_connections
+from graphify_m.build import build_from_json
+from graphify_m.cluster import cluster
+from graphify_m.analyze import god_nodes, surprising_connections
 from pathlib import Path
 
 extraction = json.loads(Path('graphify-out/.graphify_extract.json').read_text())
@@ -202,10 +202,10 @@ print(f'God nodes: {[g[\"label\"] for g in gods[:5]]}')
 ```python
 python -c "
 import json
-from graphify.build import build_from_json
-from graphify.cluster import cluster
-from graphify.analyze import god_nodes, surprising_connections
-from graphify.report import generate
+from graphify_m.build import build_from_json
+from graphify_m.cluster import cluster
+from graphify_m.analyze import god_nodes, surprising_connections
+from graphify_m.report import generate
 from pathlib import Path
 
 extraction = json.loads(Path('graphify-out/.graphify_extract.json').read_text())
@@ -225,9 +225,9 @@ print('GRAPH_REPORT.md written')
 ```python
 python -c "
 import json
-from graphify.build import build_from_json
-from graphify.cluster import cluster
-from graphify.export import to_html
+from graphify_m.build import build_from_json
+from graphify_m.cluster import cluster
+from graphify_m.export import to_html
 from pathlib import Path
 
 extraction = json.loads(Path('graphify-out/.graphify_extract.json').read_text())

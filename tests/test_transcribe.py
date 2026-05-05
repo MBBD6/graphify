@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from graphify.transcribe import (
+from graphify_m.transcribe import (
     VIDEO_EXTENSIONS,
     build_whisper_prompt,
     transcribe,

@@ -26,15 +26,15 @@ if [ -n "$GRAPHIFY_BIN" ]; then
     case "$GRAPHIFY_PYTHON" in
         *[!a-zA-Z0-9/_.@-]*) GRAPHIFY_PYTHON="" ;;
     esac
-    if [ -n "$GRAPHIFY_PYTHON" ] && ! "$GRAPHIFY_PYTHON" -c "import graphify" 2>/dev/null; then
+    if [ -n "$GRAPHIFY_PYTHON" ] && ! "$GRAPHIFY_PYTHON" -c "import graphify_m" 2>/dev/null; then
         GRAPHIFY_PYTHON=""
     fi
 fi
 # Fall back: try python3, then python (Windows has no python3 shim)
 if [ -z "$GRAPHIFY_PYTHON" ]; then
-    if command -v python3 >/dev/null 2>&1 && python3 -c "import graphify" 2>/dev/null; then
+    if command -v python3 >/dev/null 2>&1 && python3 -c "import graphify_m" 2>/dev/null; then
         GRAPHIFY_PYTHON="python3"
-    elif command -v python >/dev/null 2>&1 && python -c "import graphify" 2>/dev/null; then
+    elif command -v python >/dev/null 2>&1 && python -c "import graphify_m" 2>/dev/null; then
         GRAPHIFY_PYTHON="python"
     else
         exit 0
@@ -81,7 +81,7 @@ print(f'[graphify hook] {len(changed)} file(s) changed - rebuilding graph...')
 
 try:
     import os as _os
-    from graphify.watch import _rebuild_code
+    from graphify_m.watch import _rebuild_code
     _force = _os.environ.get('GRAPHIFY_FORCE', '').lower() in ('1', 'true', 'yes')
     _rebuild_code(Path('.'), force=_force)
 except Exception as exc:
@@ -124,7 +124,7 @@ _GRAPHIFY_LOG="${HOME}/.cache/graphify-rebuild.log"
 mkdir -p "$(dirname "$_GRAPHIFY_LOG")"
 echo "[graphify] Branch switched - launching background rebuild (log: $_GRAPHIFY_LOG)"
 nohup $GRAPHIFY_PYTHON -c "
-from graphify.watch import _rebuild_code
+from graphify_m.watch import _rebuild_code
 from pathlib import Path
 import os, sys
 try:

@@ -10,7 +10,7 @@ from pathlib import Path
 
 try:
     from importlib.metadata import version as _pkg_version
-    __version__ = _pkg_version("graphifyy")
+    __version__ = _pkg_version("graphifyy-m")
 except Exception:
     __version__ = "unknown"
 
@@ -1257,7 +1257,7 @@ def main() -> None:
             print("Usage: graphify antigravity [install|uninstall]", file=sys.stderr)
             sys.exit(1)
     elif cmd == "hook":
-        from graphify.hooks import install as hook_install, uninstall as hook_uninstall, status as hook_status
+        from graphify_m.hooks import install as hook_install, uninstall as hook_uninstall, status as hook_status
         subcmd = sys.argv[2] if len(sys.argv) > 2 else ""
         if subcmd == "install":
             print(hook_install(Path(".")))
@@ -1272,8 +1272,8 @@ def main() -> None:
         if len(sys.argv) < 3:
             print("Usage: graphify query \"<question>\" [--dfs] [--context C] [--budget N] [--graph path]", file=sys.stderr)
             sys.exit(1)
-        from graphify.serve import _query_graph_text
-        from graphify.security import sanitize_label
+        from graphify_m.serve import _query_graph_text
+        from graphify_m.security import sanitize_label
         from networkx.readwrite import json_graph
         question = sys.argv[2]
         use_dfs = "--dfs" in sys.argv
@@ -1345,7 +1345,7 @@ def main() -> None:
         p.add_argument("--nodes", nargs="*", default=[])
         p.add_argument("--memory-dir", default="graphify-out/memory")
         opts = p.parse_args(sys.argv[2:])
-        from graphify.ingest import save_query_result as _sqr
+        from graphify_m.ingest import save_query_result as _sqr
         out = _sqr(
             question=opts.question,
             answer=opts.answer,
@@ -1358,7 +1358,7 @@ def main() -> None:
         if len(sys.argv) < 4:
             print("Usage: graphify path \"<source>\" \"<target>\" [--graph path]", file=sys.stderr)
             sys.exit(1)
-        from graphify.serve import _score_nodes
+        from graphify_m.serve import _score_nodes
         from networkx.readwrite import json_graph
         import networkx as _nx
         source_label = sys.argv[2]
@@ -1408,7 +1408,7 @@ def main() -> None:
         if len(sys.argv) < 3:
             print("Usage: graphify explain \"<node>\" [--graph path]", file=sys.stderr)
             sys.exit(1)
-        from graphify.serve import _find_node
+        from graphify_m.serve import _find_node
         from networkx.readwrite import json_graph
         label = sys.argv[2]
         graph_path = "graphify-out/graph.json"
@@ -1452,7 +1452,7 @@ def main() -> None:
         if len(sys.argv) < 3:
             print("Usage: graphify add <url> [--author Name] [--contributor Name] [--dir ./raw]", file=sys.stderr)
             sys.exit(1)
-        from graphify.ingest import ingest as _ingest
+        from graphify_m.ingest import ingest as _ingest
         url = sys.argv[2]
         author: str | None = None
         contributor: str | None = None
@@ -1481,7 +1481,7 @@ def main() -> None:
         if not watch_path.exists():
             print(f"error: path not found: {watch_path}", file=sys.stderr)
             sys.exit(1)
-        from graphify.watch import watch as _watch
+        from graphify_m.watch import watch as _watch
         try:
             _watch(watch_path)
         except ImportError as exc:
@@ -1498,11 +1498,11 @@ def main() -> None:
             print(f"error: no graph found at {graph_json} — run /graphify first", file=sys.stderr)
             sys.exit(1)
         from networkx.readwrite import json_graph as _jg
-        from graphify.build import build_from_json
-        from graphify.cluster import cluster, score_all
-        from graphify.analyze import god_nodes, surprising_connections, suggest_questions
-        from graphify.report import generate
-        from graphify.export import to_json, to_html
+        from graphify_m.build import build_from_json
+        from graphify_m.cluster import cluster, score_all
+        from graphify_m.analyze import god_nodes, surprising_connections, suggest_questions
+        from graphify_m.report import generate
+        from graphify_m.export import to_json, to_html
         print("Loading existing graph...")
         _raw = json.loads(graph_json.read_text(encoding="utf-8"))
         _directed = bool(_raw.get("directed", False))
@@ -1561,7 +1561,7 @@ def main() -> None:
         if not watch_path.exists():
             print(f"error: path not found: {watch_path}", file=sys.stderr)
             sys.exit(1)
-        from graphify.watch import _rebuild_code
+        from graphify_m.watch import _rebuild_code
         print(f"Re-extracting code files in {watch_path} (no LLM needed)...")
         ok = _rebuild_code(watch_path, force=force)
         if ok:
@@ -1581,7 +1581,7 @@ def main() -> None:
         if len(sys.argv) < 3:
             print("Usage: graphify check-update <path>", file=sys.stderr)
             sys.exit(1)
-        from graphify.watch import check_update
+        from graphify_m.watch import check_update
         check_update(Path(sys.argv[2]).resolve())
         sys.exit(0)
     elif cmd == "tree":
@@ -1591,7 +1591,7 @@ def main() -> None:
         # depth-based palette, click-to-toggle subtree, hover inspector
         # showing top-K outbound edges per symbol.
         from typing import Optional as _Opt
-        from graphify.tree_html import write_tree_html, DEFAULT_MAX_CHILDREN
+        from graphify_m.tree_html import write_tree_html, DEFAULT_MAX_CHILDREN
         graph_path = Path(_GRAPHIFY_OUT) / "graph.json"
         output_path: "_Opt[Path]" = None
         root: "_Opt[str]" = None
@@ -1701,7 +1701,7 @@ def main() -> None:
         print(local_path)
 
     elif cmd == "benchmark":
-        from graphify.benchmark import run_benchmark, print_benchmark
+        from graphify_m.benchmark import run_benchmark, print_benchmark
         graph_path = sys.argv[2] if len(sys.argv) > 2 else "graphify-out/graph.json"
         # Try to load corpus_words from detect output
         corpus_words = None

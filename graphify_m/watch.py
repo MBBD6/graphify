@@ -9,7 +9,7 @@ from pathlib import Path
 _GRAPHIFY_OUT = os.environ.get("GRAPHIFY_OUT", "graphify-out")
 
 
-from graphify.detect import CODE_EXTENSIONS, DOC_EXTENSIONS, PAPER_EXTENSIONS, IMAGE_EXTENSIONS
+from graphify_m.detect import CODE_EXTENSIONS, DOC_EXTENSIONS, PAPER_EXTENSIONS, IMAGE_EXTENSIONS
 
 _WATCHED_EXTENSIONS = CODE_EXTENSIONS | DOC_EXTENSIONS | PAPER_EXTENSIONS | IMAGE_EXTENSIONS
 _CODE_EXTENSIONS = CODE_EXTENSIONS
@@ -49,13 +49,13 @@ def _rebuild_code(watch_path: Path, *, follow_symlinks: bool = False, force: boo
     project_root = Path.cwd().resolve() if not watch_path.is_absolute() else watch_root
     report_root = _report_root_label(watch_path)
     try:
-        from graphify.extract import extract
-        from graphify.detect import detect
-        from graphify.build import build_from_json
-        from graphify.cluster import cluster, score_all
-        from graphify.analyze import god_nodes, surprising_connections, suggest_questions
-        from graphify.report import generate
-        from graphify.export import to_json, to_html
+        from graphify_m.extract import extract
+        from graphify_m.detect import detect
+        from graphify_m.build import build_from_json
+        from graphify_m.cluster import cluster, score_all
+        from graphify_m.analyze import god_nodes, surprising_connections, suggest_questions
+        from graphify_m.report import generate
+        from graphify_m.export import to_json, to_html
 
         detected = detect(watch_path, follow_symlinks=follow_symlinks)
         code_files = [Path(f) for f in detected['files']['code']]
@@ -117,7 +117,7 @@ def _rebuild_code(watch_path: Path, *, follow_symlinks: bool = False, force: boo
             return False
 
         try:
-            from graphify.detect import save_manifest
+            from graphify_m.detect import save_manifest
             save_manifest(detected["files"])
         except Exception:
             pass

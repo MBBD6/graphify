@@ -51,7 +51,7 @@ def download_audio(url: str, output_dir: Path) -> Path:
     Returns the path to the downloaded audio file (.m4a or .opus).
     Uses cached file if already downloaded.
     """
-    from graphify.security import validate_url
+    from graphify_m.security import validate_url
     validate_url(url)  # blocks private IPs, bad schemes before yt-dlp runs
     yt_dlp = _get_yt_dlp()
     output_dir.mkdir(parents=True, exist_ok=True)

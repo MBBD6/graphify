@@ -7,9 +7,9 @@ from pathlib import Path
 import networkx as nx
 import pytest
 
-from graphify.build import build_from_json
-from graphify.export import attach_hyperedges, to_json
-from graphify.report import generate
+from graphify_m.build import build_from_json
+from graphify_m.export import attach_hyperedges, to_json
+from graphify_m.report import generate
 
 
 # ---------------------------------------------------------------------------
