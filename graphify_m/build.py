@@ -55,6 +55,25 @@ def build_from_json(extraction: dict, *, directed: bool = False) -> nx.Graph:
     if "edges" not in extraction and "links" in extraction:
         extraction = dict(extraction, edges=extraction["links"])
 
+    # Normalize nodes: fix common issues from LLM/subagent extraction
+    import hashlib
+    for node in extraction.get("nodes", []):
+        if not isinstance(node, dict):
+            continue
+        # Fix file_type: "markdown" is not a valid type, map to "document"
+        if node.get("file_type") == "markdown":
+            node["file_type"] = "document"
+        # Auto-generate label from text if missing
+        if not node.get("label") and node.get("text"):
+            node["label"] = node["text"][:140]
+        # Auto-generate deterministic ID if missing
+        if not node.get("id") and node.get("label"):
+            sf = node.get("source_file", "")
+            lbl = node.get("label", "")
+            txt = node.get("text", "")[:200]
+            h = hashlib.sha1(f"{sf}|{lbl}|{txt}".encode("utf-8")).hexdigest()
+            node["id"] = h[:24] + "_" + re.sub(r"[^a-zA-Z0-9]+", "_", lbl[:50]).strip("_")
+
     # Canonicalize legacy node/edge schema before validation.
     for node in extraction.get("nodes", []):
         if isinstance(node, dict) and "source" in node and "source_file" not in node:

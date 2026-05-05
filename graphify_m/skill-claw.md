@@ -181,10 +181,10 @@ for f in detect.get('files', {}).get('code', []):
 
 if code_files:
     result = extract(code_files)
-    Path('.graphify_ast.json').write_text(json.dumps(result, indent=2))
+    Path('.graphify_ast.json').write_text(json.dumps(result, indent=2, encoding="utf-8"))
     print(f'AST: {len(result[\"nodes\"])} nodes, {len(result[\"edges\"])} edges')
 else:
-    Path('.graphify_ast.json').write_text(json.dumps({'nodes':[],'edges':[],'input_tokens':0,'output_tokens':0}))
+    Path('.graphify_ast.json').write_text(json.dumps({'nodes':[],'edges':[],'input_tokens':0,'output_tokens':0}, encoding="utf-8"))
     print('No code files - skipping AST extraction')
 "
 ```
@@ -213,8 +213,8 @@ all_files = [f for files in detect['files'].values() for f in files]
 cached_nodes, cached_edges, cached_hyperedges, uncached = check_semantic_cache(all_files)
 
 if cached_nodes or cached_edges or cached_hyperedges:
-    Path('.graphify_cached.json').write_text(json.dumps({'nodes': cached_nodes, 'edges': cached_edges, 'hyperedges': cached_hyperedges}))
-Path('.graphify_uncached.txt').write_text('\n'.join(uncached))
+    Path('.graphify_cached.json').write_text(json.dumps({'nodes': cached_nodes, 'edges': cached_edges, 'hyperedges': cached_hyperedges}, encoding="utf-8"))
+Path('.graphify_uncached.txt').write_text('\n'.join(uncached, encoding="utf-8"))
 print(f'Cache: {len(all_files)-len(uncached)} files hit, {len(uncached)} files need extraction')
 "
 ```
@@ -273,7 +273,7 @@ for c in chunks:
 Path('graphify-out/.graphify_semantic_new.json').write_text(json.dumps({
     'nodes': all_nodes, 'edges': all_edges, 'hyperedges': all_hyperedges,
     'input_tokens': total_in, 'output_tokens': total_out,
-}, indent=2))
+}, indent=2, encoding="utf-8"))
 print(f'Merged {len(chunks)} chunks: {total_in:,} in / {total_out:,} out tokens')
 "
 ```
@@ -317,7 +317,7 @@ merged = {
     'input_tokens': new.get('input_tokens', 0),
     'output_tokens': new.get('output_tokens', 0),
 }
-Path('.graphify_semantic.json').write_text(json.dumps(merged, indent=2))
+Path('.graphify_semantic.json').write_text(json.dumps(merged, indent=2, encoding="utf-8"))
 print(f'Extraction complete - {len(deduped)} nodes, {len(all_edges)} edges ({len(cached[\"nodes\"])} from cache, {len(new.get(\"nodes\",[]))} new)')
 "
 ```
@@ -350,7 +350,7 @@ merged = {
     'input_tokens': sem.get('input_tokens', 0),
     'output_tokens': sem.get('output_tokens', 0),
 }
-Path('.graphify_extract.json').write_text(json.dumps(merged, indent=2))
+Path('.graphify_extract.json').write_text(json.dumps(merged, indent=2, encoding="utf-8"))
 total = len(merged_nodes)
 edges = len(merged_edges)
 print(f'Merged: {total} nodes, {edges} edges ({len(ast[\"nodes\"])} AST + {len(sem[\"nodes\"])} semantic)')
@@ -384,7 +384,7 @@ labels = {cid: 'Community ' + str(cid) for cid in communities}
 questions = suggest_questions(G, communities, labels)
 
 report = generate(G, communities, cohesion, labels, gods, surprises, detection, tokens, 'INPUT_PATH', suggested_questions=questions)
-Path('graphify-out/GRAPH_REPORT.md').write_text(report)
+Path('graphify-out/GRAPH_REPORT.md').write_text(report, encoding="utf-8")
 to_json(G, communities, 'graphify-out/graph.json')
 
 analysis = {
@@ -394,7 +394,7 @@ analysis = {
     'surprises': surprises,
     'questions': questions,
 }
-Path('.graphify_analysis.json').write_text(json.dumps(analysis, indent=2))
+Path('.graphify_analysis.json').write_text(json.dumps(analysis, indent=2, encoding="utf-8"))
 if G.number_of_nodes() == 0:
     print('ERROR: Graph is empty - extraction produced no nodes.')
     print('Possible causes: all files were skipped, binary-only corpus, or extraction failed.')
@@ -438,8 +438,8 @@ labels = LABELS_DICT
 questions = suggest_questions(G, communities, labels)
 
 report = generate(G, communities, cohesion, labels, analysis['gods'], analysis['surprises'], detection, tokens, 'INPUT_PATH', suggested_questions=questions)
-Path('graphify-out/GRAPH_REPORT.md').write_text(report)
-Path('.graphify_labels.json').write_text(json.dumps({str(k): v for k, v in labels.items()}))
+Path('graphify-out/GRAPH_REPORT.md').write_text(report, encoding="utf-8")
+Path('.graphify_labels.json').write_text(json.dumps({str(k, encoding="utf-8"): v for k, v in labels.items()}))
 print('Report updated with community labels')
 "
 ```
@@ -660,7 +660,7 @@ cost['runs'].append({
 })
 cost['total_input_tokens'] += input_tok
 cost['total_output_tokens'] += output_tok
-cost_path.write_text(json.dumps(cost, indent=2))
+cost_path.write_text(json.dumps(cost, indent=2, encoding="utf-8"))
 
 print(f'This run: {input_tok:,} input tokens, {output_tok:,} output tokens')
 print(f'All time: {cost[\"total_input_tokens\"]:,} input, {cost[\"total_output_tokens\"]:,} output ({len(cost[\"runs\"])} runs)')
@@ -713,7 +713,7 @@ from pathlib import Path
 result = detect_incremental(Path('INPUT_PATH'))
 new_total = result.get('new_total', 0)
 print(json.dumps(result, indent=2))
-Path('.graphify_incremental.json').write_text(json.dumps(result))
+Path('.graphify_incremental.json').write_text(json.dumps(result, encoding="utf-8"))
 if new_total == 0:
     print('No files changed since last run. Nothing to update.')
     raise SystemExit(0)
@@ -829,7 +829,7 @@ surprises = surprising_connections(G, communities)
 labels = {cid: 'Community ' + str(cid) for cid in communities}
 
 report = generate(G, communities, cohesion, labels, gods, surprises, detection, tokens, '.')
-Path('graphify-out/GRAPH_REPORT.md').write_text(report)
+Path('graphify-out/GRAPH_REPORT.md').write_text(report, encoding="utf-8")
 to_json(G, communities, 'graphify-out/graph.json')
 
 analysis = {
@@ -838,7 +838,7 @@ analysis = {
     'gods': gods,
     'surprises': surprises,
 }
-Path('.graphify_analysis.json').write_text(json.dumps(analysis, indent=2))
+Path('.graphify_analysis.json').write_text(json.dumps(analysis, indent=2, encoding="utf-8"))
 print(f'Re-clustered: {len(communities)} communities')
 "
 ```

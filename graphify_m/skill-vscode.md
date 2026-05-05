@@ -30,7 +30,7 @@ Follow these steps in order. Do not skip steps.
 ### Step 1 - Ensure graphify is installed
 
 ```python
-python -c "import graphify_m; import sys; from pathlib import Path; Path('graphify-out').mkdir(exist_ok=True); Path('graphify-out/.graphify_python').write_text(sys.executable)"
+python -c "import graphify_m; import sys; from pathlib import Path; Path('graphify-out').mkdir(exist_ok=True); Path('graphify-out/.graphify_python').write_text(sys.executable, encoding="utf-8")"
 ```
 
 If the import fails, install first:
@@ -50,7 +50,7 @@ from graphify_m.detect import detect
 from pathlib import Path
 
 result = detect(Path('INPUT_PATH'))
-Path('graphify-out/.graphify_detect.json').write_text(json.dumps(result, indent=2))
+Path('graphify-out/.graphify_detect.json').write_text(json.dumps(result, indent=2, encoding="utf-8"))
 total = result.get('total_files', 0)
 words = result.get('total_words', 0)
 print(f'Corpus: {total} files, ~{words} words')
@@ -84,10 +84,10 @@ for f in detect.get('files', {}).get('code', []):
 
 if code_files:
     result = extract(code_files)
-    Path('graphify-out/.graphify_ast.json').write_text(json.dumps(result, indent=2))
+    Path('graphify-out/.graphify_ast.json').write_text(json.dumps(result, indent=2, encoding="utf-8"))
     print(f'AST: {len(result[\"nodes\"])} nodes, {len(result[\"edges\"])} edges')
 else:
-    Path('graphify-out/.graphify_ast.json').write_text(json.dumps({'nodes':[],'edges':[],'input_tokens':0,'output_tokens':0}))
+    Path('graphify-out/.graphify_ast.json').write_text(json.dumps({'nodes':[],'edges':[],'input_tokens':0,'output_tokens':0}, encoding="utf-8"))
     print('No code files - skipping AST extraction')
 "
 ```
@@ -109,8 +109,8 @@ all_files = [f for files in detect['files'].values() for f in files]
 cached_nodes, cached_edges, cached_hyperedges, uncached = check_semantic_cache(all_files)
 
 if cached_nodes or cached_edges:
-    Path('graphify-out/.graphify_cached.json').write_text(json.dumps({'nodes': cached_nodes, 'edges': cached_edges, 'hyperedges': cached_hyperedges}))
-Path('graphify-out/.graphify_uncached.txt').write_text('\n'.join(uncached))
+    Path('graphify-out/.graphify_cached.json').write_text(json.dumps({'nodes': cached_nodes, 'edges': cached_edges, 'hyperedges': cached_hyperedges}, encoding="utf-8"))
+Path('graphify-out/.graphify_uncached.txt').write_text('\n'.join(uncached, encoding="utf-8"))
 print(f'Cache: {len(all_files)-len(uncached)} hit, {len(uncached)} need extraction')
 "
 ```
@@ -161,7 +161,7 @@ for chunk_json in []:  # replace [] with your chunk results
     total_out += chunk.get('output_tokens', 0)
 
 merged = {'nodes': all_nodes, 'edges': all_edges, 'hyperedges': all_hyperedges, 'input_tokens': total_in, 'output_tokens': total_out}
-Path('graphify-out/.graphify_extract.json').write_text(json.dumps(merged, indent=2))
+Path('graphify-out/.graphify_extract.json').write_text(json.dumps(merged, indent=2, encoding="utf-8"))
 print(f'Merged: {len(all_nodes)} nodes, {len(all_edges)} edges')
 "
 ```
@@ -185,9 +185,9 @@ surprises = surprising_connections(G, communities)
 import networkx as nx
 from networkx.readwrite import json_graph
 graph_data = json_graph.node_link_data(G)
-Path('graphify-out/graph.json').write_text(json.dumps(graph_data, indent=2))
+Path('graphify-out/graph.json').write_text(json.dumps(graph_data, indent=2, encoding="utf-8"))
 Path('graphify-out/.graphify_analysis.json').write_text(json.dumps({
-    'communities': {str(k): v for k, v in communities.items()},
+    'communities': {str(k, encoding="utf-8"): v for k, v in communities.items()},
     'cohesion': {},
     'god_nodes': gods,
     'surprises': surprises,
@@ -217,7 +217,7 @@ gods = god_nodes(G)
 surprises = surprising_connections(G, communities)
 
 report = generate(G, communities, {}, {}, gods, surprises, extraction)
-Path('graphify-out/GRAPH_REPORT.md').write_text(report)
+Path('graphify-out/GRAPH_REPORT.md').write_text(report, encoding="utf-8")
 print('GRAPH_REPORT.md written')
 "
 ```

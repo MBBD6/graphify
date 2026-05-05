@@ -27,6 +27,15 @@ def generate(
 ) -> str:
     today = date.today().isoformat()
 
+    # Auto-generate community labels from top-degree nodes when not provided
+    if not community_labels:
+        degree = dict(G.degree())
+        community_labels = {}
+        for cid, members in communities.items():
+            ranked = sorted(members, key=lambda n: degree.get(n, 0), reverse=True)
+            top = [G.nodes[n].get("label", n) for n in ranked[:2] if n in G.nodes]
+            community_labels[cid] = " & ".join(top) if top else f"Community {cid}"
+
     confidences = [d.get("confidence", "EXTRACTED") for _, _, d in G.edges(data=True)]
     total = len(confidences) or 1
     ext_pct = round(confidences.count("EXTRACTED") / total * 100)
@@ -45,8 +54,10 @@ def generate(
     if detection_result.get("warning"):
         lines.append(f"- {detection_result['warning']}")
     else:
+        total_files = detection_result.get('total_files', sum(len(v) for v in detection_result.get('files', {}).values()))
+        total_words = detection_result.get('total_words', 0)
         lines += [
-            f"- {detection_result['total_files']} files · ~{detection_result['total_words']:,} words",
+            f"- {total_files} files · ~{total_words:,} words",
             "- Verdict: corpus is large enough that graph structure adds value.",
         ]
 
