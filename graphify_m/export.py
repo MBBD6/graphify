@@ -25,7 +25,8 @@ COMMUNITY_COLORS = [
 # Default maximum nodes allowed in the HTML visualization. Raise this
 # if you need larger interactive graphs. Can still be overridden at
 # runtime with the GRAPHIFY_VIZ_NODE_LIMIT environment variable.
-MAX_NODES_FOR_VIZ = 10_000
+# Keep default conservative to avoid client OOM/slowdowns.
+MAX_NODES_FOR_VIZ = 5_000
 
 
 def _viz_node_limit() -> int:
@@ -451,16 +452,29 @@ def to_html(
     """
     limit = _viz_node_limit()
     if G.number_of_nodes() > limit:
+        report = {
+            "total_nodes": G.number_of_nodes(),
+            "limit": limit,
+            "message": "viz node limit reached",
+        }
+        try:
+            Path(str(output_path) + ".limit.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        except Exception:
+            pass
         raise ValueError(
-            f"Graph has {G.number_of_nodes()} nodes - too large for HTML viz "
-            f"(limit: {limit}). Use --no-viz, raise GRAPHIFY_VIZ_NODE_LIMIT, "
-            f"or reduce input size."
+            f"Graph has {G.number_of_nodes()} nodes - too large for HTML viz (limit: {limit})."
+            f" A report was written to {output_path}.limit.json."
         )
 
     node_community = _node_community_map(communities)
     degree = dict(G.degree())
     max_deg = max(degree.values(), default=1) or 1
-    max_mc = (max(member_counts.values(), default=1) or 1) if member_counts else 1
+    # Member counts for the *view* (respect trimmed subgraph). If the caller
+    # supplied explicit member_counts use it; otherwise compute counts from
+    # the provided `communities` but only counting nodes present in the
+    # possibly-trimmed graph `G`.
+    member_counts_local = (member_counts if member_counts else {cid: sum(1 for n in members if n in G.nodes()) for cid, members in communities.items()})
+    max_mc = (max(member_counts_local.values(), default=1) or 1)
 
     # Build nodes list for vis.js
     vis_nodes = []
@@ -469,8 +483,8 @@ def to_html(
         color = COMMUNITY_COLORS[cid % len(COMMUNITY_COLORS)]
         label = sanitize_label(data.get("label", node_id))
         deg = degree.get(node_id, 1)
-        if member_counts:
-            mc = member_counts.get(cid, 1)
+        if member_counts is not None:
+            mc = member_counts_local.get(cid, 1)
             size = 10 + 30 * (mc / max_mc)
             font_size = 12
         else:
@@ -517,7 +531,7 @@ def to_html(
     for cid in sorted((community_labels or {}).keys()):
         color = COMMUNITY_COLORS[cid % len(COMMUNITY_COLORS)]
         lbl = _html.escape(sanitize_label((community_labels or {}).get(cid, f"Community {cid}")))
-        n = member_counts.get(cid, len(communities.get(cid, []))) if member_counts else len(communities.get(cid, []))
+        n = member_counts_local.get(cid, len(communities.get(cid, [])))
         legend_data.append({"cid": cid, "color": color, "label": lbl, "count": n})
 
     # Escape </script> sequences so embedded JSON cannot break out of the script tag
