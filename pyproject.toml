@@ -34,6 +34,7 @@ dependencies = [
     "tree-sitter-objc",
     "tree-sitter-julia",
     "tree-sitter-verilog",
+    "olefile",
 ]
 
 [project.urls]
@@ -63,7 +64,7 @@ graphify-m = "graphify_m.__main__:main"
 package = true
 
 [tool.setuptools]
-packages = ["graphify_m"]
+packages = ["graphify_m", "tree_sitter_rpt"]
 include-package-data = false
 
 [tool.setuptools.package-data]
