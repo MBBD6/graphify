@@ -1136,9 +1136,17 @@ def main() -> None:
     cmd = sys.argv[1]
     if cmd == "viz":
         args = sys.argv[2:]
-        wrapper = Path(__file__).parent / "scripts" / "visuals" / "skill_viz_wrapper.py"
-        if not wrapper.exists():
-            print(f"error: viz helpers not found at {wrapper} — ensure scripts/visuals is present", file=sys.stderr)
+        # Try package-local scripts first, then repo root scripts/visuals
+        wrapper_candidates = [
+            Path(__file__).parent / "scripts" / "visuals" / "skill_viz_wrapper.py",
+            Path(__file__).parent.parent / "scripts" / "visuals" / "skill_viz_wrapper.py",
+        ]
+        wrapper = next((p for p in wrapper_candidates if p.exists()), None)
+        if wrapper is None:
+            print(
+                f"error: viz helpers not found; looked for {wrapper_candidates[0]} and {wrapper_candidates[1]} — ensure scripts/visuals is present",
+                file=sys.stderr,
+            )
             sys.exit(1)
         run_cmd = [sys.executable, str(wrapper)] + args
         rc = subprocess.run(run_cmd).returncode
