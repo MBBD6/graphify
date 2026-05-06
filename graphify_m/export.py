@@ -218,7 +218,7 @@ function showInfo(nodeId) {{
     <div class="field"><b>${{esc(n.label)}}</b></div>
     <div class="field">Type: ${{esc(n._file_type || 'unknown')}}</div>
         <div class="field">Community: ${{esc(n._community_name)}}</div>
-        <div class="field"><a href="#" onclick="window.open('graph_comm_' + n._community + '.html', '_blank'); return false;" style="color:#9ca3ff;text-decoration:none">Open community page ↗</a></div>
+        ${{RAW_NODES.filter(x => x.community === n._community).length > 1 ? `<div class="field"><a href="#" onclick="showCommunityView(n._community); return false;" style="color:#9ca3ff;text-decoration:none">View community ↗</a></div>` : ''}}
     <div class="field">Source: ${{esc(n._source_file || '-')}}</div>
     <div class="field">Degree: ${{n._degree}}</div>
     ${{neighborIds.length ? `<div class="field" style="margin-top:8px;color:#aaa;font-size:11px">Neighbors (${{neighborIds.length}})</div><div id="neighbors-list">${{neighborItems}}</div>` : ''}}
@@ -287,6 +287,54 @@ document.addEventListener('click', e => {{
 
 const hiddenCommunities = new Set();
 
+// Dynamic community view generator
+function showCommunityView(communityId) {{
+  const communityNodes = RAW_NODES.filter(n => n.community === communityId);
+  const communityNodeIds = new Set(communityNodes.map(n => n.id));
+  const communityEdges = RAW_EDGES.filter(e => communityNodeIds.has(e.from) && communityNodeIds.has(e.to));
+  const communityLabel = LEGEND.find(l => l.cid === communityId);
+  
+  // Build modal overlay
+  const modal = document.createElement('div');
+  modal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center';
+  modal.onclick = (e) => {{ if (e.target === modal) modal.remove(); }};
+  
+  const content = document.createElement('div');
+  content.style = 'background:#1a1a2e;color:#e0e0e0;width:90vw;height:90vh;border-radius:8px;display:flex;flex-direction:column;border:2px solid #3a3a5e;overflow:hidden';
+  
+  const header = document.createElement('div');
+  header.style = 'padding:16px;border-bottom:1px solid #3a3a5e;display:flex;justify-content:space-between;align-items:center;flex-shrink:0';
+  const title = communityLabel ? communityLabel.label + ' (' + communityNodes.length + ' nodes)' : 'Community ' + communityId;
+  header.innerHTML = `<h2 style="margin:0;font-size:18px">${{esc(title)}}</h2><button style="background:#333;color:#aaa;border:1px solid #555;padding:6px 12px;border-radius:4px;cursor:pointer">Close</button>`;
+  header.querySelector('button').onclick = () => modal.remove();
+  
+  const graphDiv = document.createElement('div');
+  graphDiv.style = 'width:100%;height:100%;flex:1 1 auto';
+  
+  content.appendChild(header);
+  content.appendChild(graphDiv);
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+  
+  // Force layout reflow so graphDiv has computed dimensions before vis.Network init
+  graphDiv.offsetHeight;
+  
+  // Render community subgraph using vis.js
+  const subNodes = new vis.DataSet(communityNodes);
+  const subEdges = new vis.DataSet(communityEdges.map((e, i) => ({{ id: i, from: e.from, to: e.to, label: e.label || '', title: e.title, dashes: e.dashes, width: e.width, color: e.color, arrows: {{ to: {{ enabled: true, scaleFactor: 0.5 }} }} }})));
+  
+  const net = new vis.Network(graphDiv, {{ nodes: subNodes, edges: subEdges }}, {{
+    physics: {{ enabled: true, solver: 'forceAtlas2Based', forceAtlas2Based: {{ gravitationalConstant: -80, centralGravity: 0.01, springLength: 140, springConstant: 0.08, damping: 0.4 }}, stabilization: {{ iterations: 200, fit: true }} }},
+    interaction: {{ hover: true, tooltipDelay: 100 }},
+    nodes: {{ shape: 'dot', borderWidth: 1.5, font: {{ size: 12, color: '#ffffff' }} }},
+    edges: {{ smooth: {{ type: 'continuous', roundness: 0.2 }} }}
+  }});
+  net.once('stabilizationIterationsDone', () => {{
+    net.setOptions({{ physics: {{ enabled: false }} }});
+    net.fit();
+  }});
+}}
+
 const selectAllCb = document.getElementById('select-all-cb');
 
 function updateSelectAllState() {{
@@ -337,14 +385,14 @@ LEGEND.forEach(c => {{
   item.innerHTML = `<div class="legend-dot" style="background:${{c.color}}"></div>
     <span class="legend-label">${{c.label}}</span>
     <span class="legend-count">${{c.count}}</span>`;
-    // Add a drill-through anchor to per-community page (relative) for real communities only
+    // Add a drill-through anchor to dynamically render per-community view (only if meaningful subgraph)
     try {{
-        if (c.cid >= 0) {{
+        if (c.cid >= 0 && c.count > 1) {{
                 const commLink = document.createElement('a');
-                commLink.href = 'graph_comm_' + c.cid + '.html';
-                commLink.target = '_blank';
-                commLink.title = 'Open community page';
-                commLink.style = 'margin-left:8px;color:#aaa;text-decoration:none;flex-shrink:0';
+                commLink.href = '#';
+                commLink.onclick = (e) => {{ e.preventDefault(); showCommunityView(c.cid); }};
+                commLink.title = 'Show community subgraph';
+                commLink.style = 'margin-left:8px;color:#aaa;text-decoration:none;flex-shrink:0;cursor:pointer';
                 commLink.textContent = '↗';
                 item.appendChild(commLink);
         }}
