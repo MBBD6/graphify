@@ -1,7 +1,7 @@
 ---
-name: graphify
+name: graphify-m
 description: "any input (code, docs, papers, images, videos) to knowledge graph. Use when user asks any question about a codebase, documents, or project content - especially if graphify-out/ exists, treat the question as a /graphify query."
-trigger: /graphify
+trigger: /graphify-m
 ---
 
 # /graphify
