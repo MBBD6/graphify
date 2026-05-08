@@ -9,8 +9,8 @@
 <p align="center">
   <a href="https://safishamsi.gumroad.com/l/qetvlo"><img src="https://img.shields.io/badge/Book-The%20Memory%20Layer-2ea44f?style=flat&logo=gitbook&logoColor=white" alt="The Memory Layer"/></a>
   <a href="https://github.com/safishamsi/graphify/actions/workflows/ci.yml"><img src="https://github.com/safishamsi/graphify/actions/workflows/ci.yml/badge.svg?branch=v4" alt="CI"/></a>
-  <a href="https://pypi.org/project/graphifyy/"><img src="https://img.shields.io/pypi/v/graphifyy" alt="PyPI"/></a>
-  <a href="https://pepy.tech/project/graphifyy"><img src="https://static.pepy.tech/badge/graphifyy" alt="Downloads"/></a>
+  <a href="https://pypi.org/project/graphifyy-m/"><img src="https://img.shields.io/pypi/v/graphifyy-m" alt="PyPI"/></a>
+  <a href="https://pepy.tech/project/graphifyy-m"><img src="https://static.pepy.tech/badge/graphifyy-m" alt="Downloads"/></a>
   <a href="https://github.com/sponsors/safishamsi"><img src="https://img.shields.io/badge/sponsor-safishamsi-ea4aaa?logo=github-sponsors" alt="Sponsor"/></a>
   <a href="https://www.linkedin.com/in/safi-shamsi"><img src="https://img.shields.io/badge/LinkedIn-Safi%20Shamsi-0077B5?logo=linkedin" alt="LinkedIn"/></a>
 </p>
@@ -26,13 +26,13 @@ Type `/graphify` in your AI coding assistant and it maps your entire project —
 Works in Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro, Pi, and Google Antigravity.
 
 ```
-/graphify .
+/graphify-b .
 ```
 
 That's it. You get three files:
 
 ```
-graphify-out/
+graphify-b-out/
 ├── graph.html       open in any browser — click nodes, filter, search
 ├── GRAPH_REPORT.md  the highlights: key concepts, surprising connections, suggested questions
 └── graph.json       the full graph — query it anytime without re-reading your files
@@ -45,36 +45,36 @@ graphify-out/
 **Requires Python 3.10+**
 
 ```bash
-uv tool install graphifyy && graphify install
-# or: pipx install graphifyy && graphify install
-# or: pip install graphifyy && graphify install
+uv tool install graphifyy-m && graphify-b install
+# or: pipx install graphifyy-m && graphify-b install
+# or: pip install graphifyy-m && graphify-b install
 ```
 
-> **Official package:** The PyPI package is `graphifyy` (double-y). Other `graphify*` packages on PyPI are not affiliated. The CLI command is still `graphify`.
+> **Official package:** The PyPI package is `graphifyy-m` (double-y). Other `graphify*` packages on PyPI are not affiliated. The CLI command is still `graphify`.
 
-> **`graphify: command not found`?** Use `uv tool install graphifyy` or `pipx install graphifyy` — both put the CLI on PATH automatically. With plain `pip`, add `~/.local/bin` (Linux) or `~/Library/Python/3.x/bin` (Mac) to your PATH, or run `python -m graphify`.
+> **`graphify: command not found`?** Use `uv tool install graphifyy-m` or `pipx install graphifyy-m` — both put the CLI on PATH automatically. With plain `pip`, add `~/.local/bin` (Linux) or `~/Library/Python/3.x/bin` (Mac) to your PATH, or run `python -m graphify`.
 
 ### Pick your platform
 
 | Platform | Install command |
 |----------|----------------|
-| Claude Code (Linux/Mac) | `graphify install` |
-| Claude Code (Windows) | `graphify install --platform windows` |
-| Codex | `graphify install --platform codex` |
-| OpenCode | `graphify install --platform opencode` |
-| GitHub Copilot CLI | `graphify install --platform copilot` |
-| VS Code Copilot Chat | `graphify vscode install` |
-| Aider | `graphify install --platform aider` |
-| OpenClaw | `graphify install --platform claw` |
-| Factory Droid | `graphify install --platform droid` |
-| Trae | `graphify install --platform trae` |
-| Trae CN | `graphify install --platform trae-cn` |
-| Gemini CLI | `graphify install --platform gemini` |
-| Hermes | `graphify install --platform hermes` |
-| Kiro IDE/CLI | `graphify kiro install` |
-| Pi coding agent | `graphify install --platform pi` |
-| Cursor | `graphify cursor install` |
-| Google Antigravity | `graphify antigravity install` |
+| Claude Code (Linux/Mac) | `graphify-b install` |
+| Claude Code (Windows) | `graphify-b install --platform windows` |
+| Codex | `graphify-b install --platform codex` |
+| OpenCode | `graphify-b install --platform opencode` |
+| GitHub Copilot CLI | `graphify-b install --platform copilot` |
+| VS Code Copilot Chat | `graphify-b vscode install` |
+| Aider | `graphify-b install --platform aider` |
+| OpenClaw | `graphify-b install --platform claw` |
+| Factory Droid | `graphify-b install --platform droid` |
+| Trae | `graphify-b install --platform trae` |
+| Trae CN | `graphify-b install --platform trae-cn` |
+| Gemini CLI | `graphify-b install --platform gemini` |
+| Hermes | `graphify-b install --platform hermes` |
+| Kiro IDE/CLI | `graphify-b kiro install` |
+| Pi coding agent | `graphify-b install --platform pi` |
+| Cursor | `graphify-b cursor install` |
+| Google Antigravity | `graphify-b antigravity install` |
 
 > Codex users: also add `multi_agent = true` under `[features]` in `~/.codex/config.toml`.
 > Codex uses `$graphify` instead of `/graphify`.
@@ -87,26 +87,26 @@ Run this once in your project after building a graph:
 
 | Platform | Command |
 |----------|---------|
-| Claude Code | `graphify claude install` |
-| Codex | `graphify codex install` |
-| OpenCode | `graphify opencode install` |
-| GitHub Copilot CLI | `graphify copilot install` |
-| VS Code Copilot Chat | `graphify vscode install` |
-| Aider | `graphify aider install` |
-| OpenClaw | `graphify claw install` |
-| Factory Droid | `graphify droid install` |
-| Trae | `graphify trae install` |
-| Trae CN | `graphify trae-cn install` |
-| Cursor | `graphify cursor install` |
-| Gemini CLI | `graphify gemini install` |
-| Hermes | `graphify hermes install` |
-| Kiro IDE/CLI | `graphify kiro install` |
-| Pi coding agent | `graphify pi install` |
-| Google Antigravity | `graphify antigravity install` |
+| Claude Code | `graphify-b claude install` |
+| Codex | `graphify-b codex install` |
+| OpenCode | `graphify-b opencode install` |
+| GitHub Copilot CLI | `graphify-b copilot install` |
+| VS Code Copilot Chat | `graphify-b vscode install` |
+| Aider | `graphify-b aider install` |
+| OpenClaw | `graphify-b claw install` |
+| Factory Droid | `graphify-b droid install` |
+| Trae | `graphify-b trae install` |
+| Trae CN | `graphify-b trae-cn install` |
+| Cursor | `graphify-b cursor install` |
+| Gemini CLI | `graphify-b gemini install` |
+| Hermes | `graphify-b hermes install` |
+| Kiro IDE/CLI | `graphify-b kiro install` |
+| Pi coding agent | `graphify-b pi install` |
+| Google Antigravity | `graphify-b antigravity install` |
 
 This writes a small config file that tells your assistant to read `GRAPH_REPORT.md` before answering questions about your codebase. On platforms that support hooks (Claude Code, Codex, Gemini CLI), a hook fires automatically before every file-read call — your assistant navigates by the graph instead of grepping through everything.
 
-Uninstall with the matching command (e.g. `graphify claude uninstall`).
+Uninstall with the matching command (e.g. `graphify-b claude uninstall`).
 
 ---
 
@@ -126,11 +126,11 @@ Uninstall with the matching command (e.g. `graphify claude uninstall`).
 |------|-----------|
 | Code (26 languages) | `.py .ts .js .jsx .tsx .go .rs .java .c .cpp .rb .cs .kt .scala .php .swift .lua .zig .ps1 .ex .exs .m .jl .vue .svelte .sql .frm` |
 | Docs | `.md .mdx .html .txt .rst .yaml .yml` |
-| Office | `.docx .xlsx` (requires `pip install graphifyy[office]`) |
+| Office | `.docx .xlsx` (requires `pip install graphifyy-m[office]`) |
 | PDFs | `.pdf` |
 | Images | `.png .jpg .webp .gif` |
-| Video / Audio | `.mp4 .mov .mp3 .wav` and more (requires `pip install graphifyy[video]`) |
-| YouTube / URLs | any video URL (requires `pip install graphifyy[video]`) |
+| Video / Audio | `.mp4 .mov .mp3 .wav` and more (requires `pip install graphifyy-m[video]`) |
+| YouTube / URLs | any video URL (requires `pip install graphifyy-m[video]`) |
 
 Code is extracted locally with no API calls (AST via tree-sitter). Everything else goes through your AI assistant's model API.
 
@@ -164,21 +164,21 @@ pip install -e ts_tsql_ext/
 ## Common commands
 
 ```bash
-/graphify .                        # build graph for current folder
-/graphify ./docs --update          # re-extract only changed files
-/graphify . --cluster-only         # rerun clustering without re-extracting
-/graphify . --no-viz               # skip the HTML, just the report + JSON
-/graphify . --wiki                 # build a markdown wiki from the graph
+/graphify-b .                        # build graph for current folder
+/graphify-b ./docs --update          # re-extract only changed files
+/graphify-b . --cluster-only         # rerun clustering without re-extracting
+/graphify-b . --no-viz               # skip the HTML, just the report + JSON
+/graphify-b . --wiki                 # build a markdown wiki from the graph
 
-/graphify query "what connects auth to the database?"
-/graphify path "UserService" "DatabasePool"
-/graphify explain "RateLimiter"
+/graphify-b query "what connects auth to the database?"
+/graphify-b path "UserService" "DatabasePool"
+/graphify-b explain "RateLimiter"
 
-/graphify add https://arxiv.org/abs/1706.03762   # fetch a paper and add it
-/graphify add <youtube-url>                       # transcribe and add a video
+/graphify-b add https://arxiv.org/abs/1706.03762   # fetch a paper and add it
+/graphify-b add <youtube-url>                       # transcribe and add a video
 
-graphify hook install              # auto-rebuild on git commit
-graphify merge-graphs a.json b.json              # combine two graphs
+graphify-b hook install              # auto-rebuild on git commit
+graphify-b merge-graphs a.json b.json              # combine two graphs
 ```
 
 See the [full command reference](#full-command-reference) below.
@@ -205,20 +205,20 @@ dist/
 
 ## Team setup
 
-`graphify-out/` is meant to be committed to git so everyone on the team starts with a map.
+`graphify-b-out/` is meant to be committed to git so everyone on the team starts with a map.
 
 **Recommended `.gitignore` additions:**
 ```
-graphify-out/manifest.json    # mtime-based, breaks after git clone
-graphify-out/cost.json        # local only
-# graphify-out/cache/         # optional: commit for speed, skip to keep repo small
+graphify-b-out/manifest.json    # mtime-based, breaks after git clone
+graphify-b-out/cost.json        # local only
+# graphify-b-out/cache/         # optional: commit for speed, skip to keep repo small
 ```
 
 **Workflow:**
-1. One person runs `/graphify .` and commits `graphify-out/`.
+1. One person runs `/graphify-b .` and commits `graphify-b-out/`.
 2. Everyone pulls — their assistant reads the graph immediately.
-3. Run `graphify hook install` to auto-rebuild after each commit (AST only, no API cost).
-4. When docs or papers change, run `/graphify --update` to refresh those nodes.
+3. Run `graphify-b hook install` to auto-rebuild after each commit (AST only, no API cost).
+4. When docs or papers change, run `/graphify-b --update` to refresh those nodes.
 
 ---
 
@@ -226,18 +226,18 @@ graphify-out/cost.json        # local only
 
 ```bash
 # query the graph from the terminal
-graphify query "show the auth flow"
-graphify query "what connects DigestAuth to Response?" --graph graphify-out/graph.json
+graphify-b query "show the auth flow"
+graphify-b query "what connects DigestAuth to Response?" --graph graphify-b-out/graph.json
 
 # expose the graph as an MCP server (for repeated tool-call access)
-python -m graphify.serve graphify-out/graph.json
+python -m graphify.serve graphify-b-out/graph.json
 ```
 
 The MCP server gives your assistant structured access: `query_graph`, `get_node`, `get_neighbors`, `shortest_path`.
 
 > **WSL / Linux note:** Ubuntu ships `python3`, not `python`. Use a venv to avoid conflicts:
 > ```bash
-> python3 -m venv .venv && .venv/bin/pip install "graphifyy[mcp]"
+> python3 -m venv .venv && .venv/bin/pip install "graphifyy-m[mcp]"
 > ```
 
 ---
@@ -254,56 +254,56 @@ The MCP server gives your assistant structured access: `query_graph`, `get_node`
 ## Full command reference
 
 ```
-/graphify                          # run on current directory
-/graphify ./raw                    # run on a specific folder
-/graphify ./raw --mode deep        # more aggressive relationship extraction
-/graphify ./raw --update           # re-extract only changed files
-/graphify ./raw --directed         # preserve edge direction
-/graphify ./raw --cluster-only     # rerun clustering on existing graph
-/graphify ./raw --no-viz           # skip HTML visualization
-/graphify ./raw --obsidian         # generate Obsidian vault
-/graphify ./raw --wiki             # build agent-crawlable markdown wiki
-/graphify ./raw --svg              # export graph.svg
-/graphify ./raw --graphml          # export for Gephi / yEd
-/graphify ./raw --neo4j            # generate cypher.txt for Neo4j
-/graphify ./raw --neo4j-push bolt://localhost:7687
-/graphify ./raw --watch            # auto-sync as files change
-/graphify ./raw --mcp              # start MCP stdio server
+/graphify-b                          # run on current directory
+/graphify-b ./raw                    # run on a specific folder
+/graphify-b ./raw --mode deep        # more aggressive relationship extraction
+/graphify-b ./raw --update           # re-extract only changed files
+/graphify-b ./raw --directed         # preserve edge direction
+/graphify-b ./raw --cluster-only     # rerun clustering on existing graph
+/graphify-b ./raw --no-viz           # skip HTML visualization
+/graphify-b ./raw --obsidian         # generate Obsidian vault
+/graphify-b ./raw --wiki             # build agent-crawlable markdown wiki
+/graphify-b ./raw --svg              # export graph.svg
+/graphify-b ./raw --graphml          # export for Gephi / yEd
+/graphify-b ./raw --neo4j            # generate cypher.txt for Neo4j
+/graphify-b ./raw --neo4j-push bolt://localhost:7687
+/graphify-b ./raw --watch            # auto-sync as files change
+/graphify-b ./raw --mcp              # start MCP stdio server
 
-/graphify add https://arxiv.org/abs/1706.03762
-/graphify add <video-url>
-/graphify add https://... --author "Name" --contributor "Name"
+/graphify-b add https://arxiv.org/abs/1706.03762
+/graphify-b add <video-url>
+/graphify-b add https://... --author "Name" --contributor "Name"
 
-/graphify query "what connects attention to the optimizer?"
-/graphify query "..." --dfs --budget 1500
-/graphify path "DigestAuth" "Response"
-/graphify explain "SwinTransformer"
+/graphify-b query "what connects attention to the optimizer?"
+/graphify-b query "..." --dfs --budget 1500
+/graphify-b path "DigestAuth" "Response"
+/graphify-b explain "SwinTransformer"
 
-graphify hook install              # post-commit + post-checkout hooks
-graphify hook uninstall
-graphify hook status
+graphify-b hook install              # post-commit + post-checkout hooks
+graphify-b hook uninstall
+graphify-b hook status
 
-graphify claude install / uninstall
-graphify codex install / uninstall
-graphify opencode install
-graphify cursor install / uninstall
-graphify gemini install / uninstall
-graphify copilot install / uninstall
-graphify aider install / uninstall
-graphify claw install / uninstall
-graphify droid install / uninstall
-graphify trae install / uninstall
-graphify trae-cn install / uninstall
-graphify hermes install / uninstall
-graphify kiro install / uninstall
-graphify antigravity install / uninstall
+graphify-b claude install / uninstall
+graphify-b codex install / uninstall
+graphify-b opencode install
+graphify-b cursor install / uninstall
+graphify-b gemini install / uninstall
+graphify-b copilot install / uninstall
+graphify-b aider install / uninstall
+graphify-b claw install / uninstall
+graphify-b droid install / uninstall
+graphify-b trae install / uninstall
+graphify-b trae-cn install / uninstall
+graphify-b hermes install / uninstall
+graphify-b kiro install / uninstall
+graphify-b antigravity install / uninstall
 
-graphify clone https://github.com/karpathy/nanoGPT
-graphify merge-graphs a.json b.json --out merged.json
-graphify watch ./src
-graphify check-update ./src
-graphify update ./src
-graphify cluster-only ./my-project
+graphify-b clone https://github.com/karpathy/nanoGPT
+graphify-b merge-graphs a.json b.json --out merged.json
+graphify-b watch ./src
+graphify-b check-update ./src
+graphify-b update ./src
+graphify-b cluster-only ./my-project
 ```
 
 ---
@@ -316,9 +316,9 @@ graphify cluster-only ./my-project
 
 ---
 
-## Built on graphify — Penpax
+## Built on graphify-b — Penpax
 
-[**Penpax**](https://graphifylabs.ai) is the always-on layer built on top of graphify — it applies the same graph approach to your entire working life: meetings, browser history, emails, files, and code, updating continuously in the background.
+[**Penpax**](https://graphifylabs.ai) is the always-on layer built on top of graphify-b — it applies the same graph approach to your entire working life: meetings, browser history, emails, files, and code, updating continuously in the background.
 
 Built for people whose work lives across hundreds of conversations and documents they can never fully reconstruct. No cloud, fully on-device.
 
@@ -331,7 +331,7 @@ Built for people whose work lives across hundreds of conversations and documents
 
 **Worked examples** are the most useful contribution. Run `/graphify` on a real corpus, save the output to `worked/{slug}/`, write an honest `review.md` covering what the graph got right and wrong, and open a PR.
 
-**Extraction bugs** — open an issue with the input file, the cache entry (`graphify-out/cache/`), and what was missed or wrong.
+**Extraction bugs** — open an issue with the input file, the cache entry (`graphify-b-out/cache/`), and what was missed or wrong.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for module responsibilities and how to add a language.
 

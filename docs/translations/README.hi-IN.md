@@ -8,24 +8,24 @@
 
 <p align="center">
   <a href="https://github.com/safishamsi/graphify/actions/workflows/ci.yml"><img src="https://github.com/safishamsi/graphify/actions/workflows/ci.yml/badge.svg?branch=v4" alt="CI"/></a>
-  <a href="https://pypi.org/project/graphifyy/"><img src="https://img.shields.io/pypi/v/graphifyy" alt="PyPI"/></a>
-  <a href="https://pepy.tech/project/graphifyy"><img src="https://static.pepy.tech/badge/graphifyy" alt="Downloads"/></a>
+  <a href="https://pypi.org/project/graphifyy-m/"><img src="https://img.shields.io/pypi/v/graphifyy-m" alt="PyPI"/></a>
+  <a href="https://pepy.tech/project/graphifyy-m"><img src="https://static.pepy.tech/badge/graphifyy-m" alt="Downloads"/></a>
   <a href="https://github.com/sponsors/safishamsi"><img src="https://img.shields.io/badge/sponsor-safishamsi-ea4aaa?logo=github-sponsors" alt="Sponsor"/></a>
   <a href="https://www.linkedin.com/in/safi-shamsi"><img src="https://img.shields.io/badge/LinkedIn-Safi%20Shamsi-0077B5?logo=linkedin" alt="LinkedIn"/></a>
 </p>
 
 **एक AI कोडिंग असिस्टेंट स्किल।** Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro या Google Antigravity में `/graphify` टाइप करें — यह आपकी फ़ाइलें पढ़ता है, एक नॉलेज ग्राफ बनाता है, और आपको वह संरचना वापस देता है जो आप नहीं जानते थे कि मौजूद है। कोडबेस को तेज़ी से समझें। आर्किटेक्चरल निर्णयों के पीछे का "क्यों" खोजें।
 
-पूरी तरह मल्टीमोडल। कोड, PDFs, मार्कडाउन, स्क्रीनशॉट, डायग्राम, व्हाइटबोर्ड फोटो, अन्य भाषाओं में छवियां, या वीडियो और ऑडियो फ़ाइलें डालें — graphify इन सभी से अवधारणाएं और संबंध निकालता है और उन्हें एक ग्राफ में जोड़ता है। वीडियो को Whisper से स्थानीय रूप से ट्रांसक्राइब किया जाता है। 25 प्रोग्रामिंग भाषाएं tree-sitter AST के माध्यम से समर्थित हैं (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart)।
+पूरी तरह मल्टीमोडल। कोड, PDFs, मार्कडाउन, स्क्रीनशॉट, डायग्राम, व्हाइटबोर्ड फोटो, अन्य भाषाओं में छवियां, या वीडियो और ऑडियो फ़ाइलें डालें — graphify-b इन सभी से अवधारणाएं और संबंध निकालता है और उन्हें एक ग्राफ में जोड़ता है। वीडियो को Whisper से स्थानीय रूप से ट्रांसक्राइब किया जाता है। 25 प्रोग्रामिंग भाषाएं tree-sitter AST के माध्यम से समर्थित हैं (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart)।
 
-> Andrej Karpathy एक `/raw` फोल्डर रखते हैं जहां वह papers, tweets, स्क्रीनशॉट और नोट्स डालते हैं। graphify उस समस्या का जवाब है — रॉ फ़ाइलें पढ़ने की तुलना में प्रति क्वेरी **71.5x** कम tokens, सत्रों में स्थायी, ईमानदार कि क्या पाया गया बनाम अनुमान लगाया गया।
-
-```
-/graphify .                        # किसी भी फोल्डर पर काम करता है — कोडबेस, नोट्स, papers, सब कुछ
-```
+> Andrej Karpathy एक `/raw` फोल्डर रखते हैं जहां वह papers, tweets, स्क्रीनशॉट और नोट्स डालते हैं। graphify-b उस समस्या का जवाब है — रॉ फ़ाइलें पढ़ने की तुलना में प्रति क्वेरी **71.5x** कम tokens, सत्रों में स्थायी, ईमानदार कि क्या पाया गया बनाम अनुमान लगाया गया।
 
 ```
-graphify-out/
+/graphify-b .                        # किसी भी फोल्डर पर काम करता है — कोडबेस, नोट्स, papers, सब कुछ
+```
+
+```
+graphify-b-out/
 ├── graph.html       इंटरेक्टिव ग्राफ — किसी भी ब्राउज़र में खोलें, नोड्स क्लिक करें, खोजें
 ├── GRAPH_REPORT.md  गॉड नोड्स, आश्चर्यजनक कनेक्शन, सुझाए गए प्रश्न
 ├── graph.json       स्थायी ग्राफ — हफ्तों बाद भी क्वेरी करें
@@ -46,7 +46,7 @@ dist/
 
 ## यह कैसे काम करता है
 
-graphify तीन चरणों में चलता है। पहले, एक निर्धारक AST पास कोड फ़ाइलों से संरचना निकालता है — बिना किसी LLM के। दूसरे, वीडियो और ऑडियो फ़ाइलों को faster-whisper से स्थानीय रूप से ट्रांसक्राइब किया जाता है। तीसरे, Claude सबएजेंट दस्तावेज़ों, papers, छवियों और ट्रांसक्रिप्ट पर समानांतर में चलते हैं। परिणामों को NetworkX ग्राफ में मर्ज किया जाता है, Leiden कम्युनिटी डिटेक्शन से क्लस्टर किया जाता है, और इंटरेक्टिव HTML, क्वेरी करने योग्य JSON और एक ऑडिट रिपोर्ट के रूप में निर्यात किया जाता है।
+graphify-b तीन चरणों में चलता है। पहले, एक निर्धारक AST पास कोड फ़ाइलों से संरचना निकालता है — बिना किसी LLM के। दूसरे, वीडियो और ऑडियो फ़ाइलों को faster-whisper से स्थानीय रूप से ट्रांसक्राइब किया जाता है। तीसरे, Claude सबएजेंट दस्तावेज़ों, papers, छवियों और ट्रांसक्रिप्ट पर समानांतर में चलते हैं। परिणामों को NetworkX ग्राफ में मर्ज किया जाता है, Leiden कम्युनिटी डिटेक्शन से क्लस्टर किया जाता है, और इंटरेक्टिव HTML, क्वेरी करने योग्य JSON और एक ऑडिट रिपोर्ट के रूप में निर्यात किया जाता है।
 
 **क्लस्टरिंग ग्राफ-टोपोलॉजी आधारित है — कोई embeddings नहीं।** Claude द्वारा निकाले गए सिमेंटिक समानता किनारे पहले से ग्राफ में हैं, इसलिए वे कम्युनिटी डिटेक्शन को सीधे प्रभावित करते हैं।
 
@@ -58,60 +58,60 @@ graphify तीन चरणों में चलता है। पहले
 
 ```bash
 # अनुशंसित — Mac और Linux पर PATH सेटअप के बिना काम करता है
-uv tool install graphifyy && graphify install
+uv tool install graphifyy-m && graphify-b install
 # या pipx के साथ
-pipx install graphifyy && graphify install
+pipx install graphifyy-m && graphify-b install
 # या सामान्य pip
-pip install graphifyy && graphify install
+pip install graphifyy-m && graphify-b install
 ```
 
-> **आधिकारिक पैकेज:** PyPI पैकेज का नाम `graphifyy` है (`pip install graphifyy` से इंस्टॉल करें)। PyPI पर `graphify*` नाम वाले अन्य पैकेज इस प्रोजेक्ट से संबद्ध नहीं हैं। एकमात्र आधिकारिक रिपॉजिटरी [safishamsi/graphify](https://github.com/safishamsi/graphify) है।
+> **आधिकारिक पैकेज:** PyPI पैकेज का नाम `graphifyy-m` है (`pip install graphifyy-m` से इंस्टॉल करें)। PyPI पर `graphify*` नाम वाले अन्य पैकेज इस प्रोजेक्ट से संबद्ध नहीं हैं। एकमात्र आधिकारिक रिपॉजिटरी [safishamsi/graphify](https://github.com/safishamsi/graphify) है।
 
 ### प्लेटफॉर्म समर्थन
 
 | प्लेटफॉर्म | इंस्टॉल कमांड |
 |------------|---------------|
-| Claude Code (Linux/Mac) | `graphify install` |
-| Claude Code (Windows) | `graphify install` (स्वतः-पहचान) या `graphify install --platform windows` |
-| Codex | `graphify install --platform codex` |
-| OpenCode | `graphify install --platform opencode` |
-| GitHub Copilot CLI | `graphify install --platform copilot` |
-| VS Code Copilot Chat | `graphify vscode install` |
-| Aider | `graphify install --platform aider` |
-| OpenClaw | `graphify install --platform claw` |
-| Factory Droid | `graphify install --platform droid` |
-| Trae | `graphify install --platform trae` |
-| Gemini CLI | `graphify install --platform gemini` |
-| Hermes | `graphify install --platform hermes` |
-| Kiro IDE/CLI | `graphify kiro install` |
-| Cursor | `graphify cursor install` |
-| Google Antigravity | `graphify antigravity install` |
+| Claude Code (Linux/Mac) | `graphify-b install` |
+| Claude Code (Windows) | `graphify-b install` (स्वतः-पहचान) या `graphify-b install --platform windows` |
+| Codex | `graphify-b install --platform codex` |
+| OpenCode | `graphify-b install --platform opencode` |
+| GitHub Copilot CLI | `graphify-b install --platform copilot` |
+| VS Code Copilot Chat | `graphify-b vscode install` |
+| Aider | `graphify-b install --platform aider` |
+| OpenClaw | `graphify-b install --platform claw` |
+| Factory Droid | `graphify-b install --platform droid` |
+| Trae | `graphify-b install --platform trae` |
+| Gemini CLI | `graphify-b install --platform gemini` |
+| Hermes | `graphify-b install --platform hermes` |
+| Kiro IDE/CLI | `graphify-b kiro install` |
+| Cursor | `graphify-b cursor install` |
+| Google Antigravity | `graphify-b antigravity install` |
 
 फिर अपना AI कोडिंग असिस्टेंट खोलें और टाइप करें:
 
 ```
-/graphify .
+/graphify-b .
 ```
 
 ## उपयोग
 
 ```
-/graphify                          # वर्तमान डायरेक्टरी
-/graphify ./raw                    # विशिष्ट फोल्डर
-/graphify ./raw --update           # केवल बदली हुई फ़ाइलें फिर से निकालें
-/graphify ./raw --directed         # निर्देशित ग्राफ
-/graphify ./raw --no-viz           # केवल रिपोर्ट + JSON
-/graphify ./raw --obsidian         # Obsidian vault बनाएं
+/graphify-b                          # वर्तमान डायरेक्टरी
+/graphify-b ./raw                    # विशिष्ट फोल्डर
+/graphify-b ./raw --update           # केवल बदली हुई फ़ाइलें फिर से निकालें
+/graphify-b ./raw --directed         # निर्देशित ग्राफ
+/graphify-b ./raw --no-viz           # केवल रिपोर्ट + JSON
+/graphify-b ./raw --obsidian         # Obsidian vault बनाएं
 
-/graphify add https://arxiv.org/abs/1706.03762   # paper प्राप्त करें
-/graphify add <video-url>                         # वीडियो ट्रांसक्राइब करें
-/graphify query "attention और optimizer को क्या जोड़ता है?"
-/graphify path "DigestAuth" "Response"
-/graphify explain "SwinTransformer"
+/graphify-b add https://arxiv.org/abs/1706.03762   # paper प्राप्त करें
+/graphify-b add <video-url>                         # वीडियो ट्रांसक्राइब करें
+/graphify-b query "attention और optimizer को क्या जोड़ता है?"
+/graphify-b path "DigestAuth" "Response"
+/graphify-b explain "SwinTransformer"
 
-graphify hook install              # Git hooks इंस्टॉल करें
-graphify update ./src              # कोड फ़ाइलें पुनः निकालें, LLM की जरूरत नहीं
-graphify watch ./src               # स्वचालित ग्राफ अपडेट
+graphify-b hook install              # Git hooks इंस्टॉल करें
+graphify-b update ./src              # कोड फ़ाइलें पुनः निकालें, LLM की जरूरत नहीं
+graphify-b watch ./src               # स्वचालित ग्राफ अपडेट
 ```
 
 ## आपको क्या मिलता है
@@ -130,11 +130,11 @@ graphify watch ./src               # स्वचालित ग्राफ �
 
 ## गोपनीयता
 
-graphify दस्तावेज़ों, papers और छवियों के सिमेंटिक निष्कर्षण के लिए आपके AI असिस्टेंट की मॉडल API को फ़ाइल सामग्री भेजता है। कोड फ़ाइलें tree-sitter AST के माध्यम से स्थानीय रूप से प्रोसेस होती हैं। वीडियो और ऑडियो फ़ाइलें faster-whisper से स्थानीय रूप से ट्रांसक्राइब होती हैं। कोई टेलीमेट्री नहीं, कोई ट्रैकिंग नहीं।
+graphify-b दस्तावेज़ों, papers और छवियों के सिमेंटिक निष्कर्षण के लिए आपके AI असिस्टेंट की मॉडल API को फ़ाइल सामग्री भेजता है। कोड फ़ाइलें tree-sitter AST के माध्यम से स्थानीय रूप से प्रोसेस होती हैं। वीडियो और ऑडियो फ़ाइलें faster-whisper से स्थानीय रूप से ट्रांसक्राइब होती हैं। कोई टेलीमेट्री नहीं, कोई ट्रैकिंग नहीं।
 
-## graphify पर बनाया — Penpax
+## graphify-b पर बनाया — Penpax
 
-[**Penpax**](https://safishamsi.github.io/penpax.ai) graphify के ऊपर एंटरप्राइज़ लेयर है। जहां graphify फ़ाइलों के एक फोल्डर को नॉलेज ग्राफ में बदलता है, Penpax वही ग्राफ आपके पूरे कार्य जीवन पर लागू करता है — निरंतर।
+[**Penpax**](https://safishamsi.github.io/penpax.ai) graphify-b के ऊपर एंटरप्राइज़ लेयर है। जहां graphify-b फ़ाइलों के एक फोल्डर को नॉलेज ग्राफ में बदलता है, Penpax वही ग्राफ आपके पूरे कार्य जीवन पर लागू करता है — निरंतर।
 
 **फ्री ट्रायल जल्द लॉन्च होगा।** [वेटलिस्ट में शामिल हों →](https://safishamsi.github.io/penpax.ai)
 

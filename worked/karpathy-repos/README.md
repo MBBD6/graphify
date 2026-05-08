@@ -49,18 +49,18 @@ raw/
 Install and set up the skill for your platform:
 
 ```bash
-pip install graphifyy
+pip install graphifyy-m
 
-graphify install                        # Claude Code
-graphify install --platform codex       # Codex
-graphify install --platform opencode    # OpenCode
-graphify install --platform claw        # OpenClaw
+graphify-b install                        # Claude Code
+graphify-b install --platform codex       # Codex
+graphify-b install --platform opencode    # OpenCode
+graphify-b install --platform claw        # OpenClaw
 ```
 
 Then open your AI coding assistant in this directory and type:
 
 ```
-/graphify ./raw
+/graphify-b ./raw
 ```
 
 ## What to expect

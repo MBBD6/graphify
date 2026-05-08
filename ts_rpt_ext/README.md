@@ -1,6 +1,6 @@
 # ts_rpt_ext
 
-Tiny helper extension providing Crystal Reports (.rpt) OLE2 parsing for graphify-m.
+Tiny helper extension providing Crystal Reports (.rpt) OLE2 parsing for graphify-b.
 
 Usage
 -----

@@ -1,4 +1,4 @@
-"""Crystal Reports (.rpt) OLE2 parser for graphify-m.
+"""Crystal Reports (.rpt) OLE2 parser for graphify-b.
 
 Provides a ``language()`` entry point consistent with the tree-sitter
 extension pattern used by ``ts_tsql_ext`` and ``ts_vb_ext``.  Since

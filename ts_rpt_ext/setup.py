@@ -16,7 +16,7 @@ if os.path.isdir(REPORTS_SRC) and not os.path.isdir(local_src):
 setup(
     name='tree_sitter_rpt',
     version='0.1.0',
-    description='Crystal Reports (.rpt) OLE2 parser binding for graphify-m',
+    description='Crystal Reports (.rpt) OLE2 parser binding for graphify-b',
     packages=find_packages(),
     install_requires=['olefile>=0.46'],
     python_requires='>=3.9',

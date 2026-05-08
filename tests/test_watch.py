@@ -10,20 +10,20 @@ from graphify_m.watch import _notify_only, _WATCHED_EXTENSIONS
 
 def test_notify_only_creates_flag(tmp_path):
     _notify_only(tmp_path)
-    flag = tmp_path / "graphify-out" / "needs_update"
+    flag = tmp_path / "graphify-b-out" / "needs_update"
     assert flag.exists()
     assert flag.read_text() == "1"
 
 def test_notify_only_creates_flag_dir(tmp_path):
-    # graphify-out dir does not exist yet
-    assert not (tmp_path / "graphify-out").exists()
+    # graphify-b-out dir does not exist yet
+    assert not (tmp_path / "graphify-b-out").exists()
     _notify_only(tmp_path)
-    assert (tmp_path / "graphify-out").is_dir()
+    assert (tmp_path / "graphify-b-out").is_dir()
 
 def test_notify_only_idempotent(tmp_path):
     _notify_only(tmp_path)
     _notify_only(tmp_path)
-    flag = tmp_path / "graphify-out" / "needs_update"
+    flag = tmp_path / "graphify-b-out" / "needs_update"
     assert flag.read_text() == "1"
 
 
@@ -61,19 +61,19 @@ def test_check_update_no_flag_returns_true(tmp_path):
 def test_check_update_with_flag_returns_true_and_prints(tmp_path, capsys):
     """check_update returns True and prints notification when flag exists."""
     from graphify_m.watch import check_update
-    flag = tmp_path / "graphify-out" / "needs_update"
+    flag = tmp_path / "graphify-b-out" / "needs_update"
     flag.parent.mkdir(parents=True, exist_ok=True)
     flag.write_text("1")
     result = check_update(tmp_path)
     assert result is True
     out = capsys.readouterr().out
-    assert "graphify --update" in out
+    assert "graphify-b --update" in out
 
 
 def test_check_update_does_not_clear_flag(tmp_path):
     """check_update never removes the needs_update flag (clearing is LLM's job)."""
     from graphify_m.watch import check_update
-    flag = tmp_path / "graphify-out" / "needs_update"
+    flag = tmp_path / "graphify-b-out" / "needs_update"
     flag.parent.mkdir(parents=True, exist_ok=True)
     flag.write_text("1")
     check_update(tmp_path)

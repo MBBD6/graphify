@@ -8,23 +8,23 @@
 
 <p align="center">
   <a href="https://github.com/safishamsi/graphify/actions/workflows/ci.yml"><img src="https://github.com/safishamsi/graphify/actions/workflows/ci.yml/badge.svg?branch=v4" alt="CI"/></a>
-  <a href="https://pypi.org/project/graphifyy/"><img src="https://img.shields.io/pypi/v/graphifyy" alt="PyPI"/></a>
-  <a href="https://pepy.tech/project/graphifyy"><img src="https://static.pepy.tech/badge/graphifyy" alt="Downloads"/></a>
+  <a href="https://pypi.org/project/graphifyy-m/"><img src="https://img.shields.io/pypi/v/graphifyy-m" alt="PyPI"/></a>
+  <a href="https://pepy.tech/project/graphifyy-m"><img src="https://static.pepy.tech/badge/graphifyy-m" alt="Downloads"/></a>
   <a href="https://github.com/sponsors/safishamsi"><img src="https://img.shields.io/badge/sponsor-safishamsi-ea4aaa?logo=github-sponsors" alt="Sponsor"/></a>
 </p>
 
 **Навичка для ШІ-асистентів кодування.** Введіть `/graphify` у Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro або Google Antigravity — він читає ваші файли, будує граф знань і повертає вам структуру, про яку ви не знали. Розумійте кодову базу швидше. Знайдіть «чому» за архітектурними рішеннями.
 
-Повністю мультимодальний. Додавайте код, PDF, markdown, знімки екрана, діаграми, фотографії дошок, зображення іншими мовами або відео- та аудіофайли — graphify витягує концепції та зв'язки з усього і з'єднує їх в один граф. Відео транскрибуються локально за допомогою Whisper. Підтримує 25 мов програмування через tree-sitter AST.
+Повністю мультимодальний. Додавайте код, PDF, markdown, знімки екрана, діаграми, фотографії дошок, зображення іншими мовами або відео- та аудіофайли — graphify-b витягує концепції та зв'язки з усього і з'єднує їх в один граф. Відео транскрибуються локально за допомогою Whisper. Підтримує 25 мов програмування через tree-sitter AST.
 
-> Андрій Карпатій веде папку `/raw`, куди кладе статті, твіти, знімки екрана та нотатки. graphify — відповідь на цю проблему — **71,5x** менше токенів на запит порівняно з читанням сирих файлів, зберігається між сесіями.
-
-```
-/graphify .
-```
+> Андрій Карпатій веде папку `/raw`, куди кладе статті, твіти, знімки екрана та нотатки. graphify-b — відповідь на цю проблему — **71,5x** менше токенів на запит порівняно з читанням сирих файлів, зберігається між сесіями.
 
 ```
-graphify-out/
+/graphify-b .
+```
+
+```
+graphify-b-out/
 ├── graph.html       інтерактивний граф — відкрийте в будь-якому браузері
 ├── GRAPH_REPORT.md  вузли-боги, несподівані зв'язки, запропоновані питання
 ├── graph.json       постійний граф — можна запитувати через тижні
@@ -33,7 +33,7 @@ graphify-out/
 
 ## Як це працює
 
-graphify працює в три проходи. Спочатку детерміністичний прохід AST витягує структуру з файлів коду без LLM. Потім відео та аудіофайли транскрибуються локально за допомогою faster-whisper. Нарешті субагенти Claude працюють паралельно над документами, статтями, зображеннями та транскрипціями. Результати об'єднуються в граф NetworkX, кластеризуються з Leiden і експортуються як інтерактивний HTML, JSON для запитів і звіт аудиту.
+graphify-b працює в три проходи. Спочатку детерміністичний прохід AST витягує структуру з файлів коду без LLM. Потім відео та аудіофайли транскрибуються локально за допомогою faster-whisper. Нарешті субагенти Claude працюють паралельно над документами, статтями, зображеннями та транскрипціями. Результати об'єднуються в граф NetworkX, кластеризуються з Leiden і експортуються як інтерактивний HTML, JSON для запитів і звіт аудиту.
 
 Кожен зв'язок позначений як `EXTRACTED`, `INFERRED` (з оцінкою впевненості) або `AMBIGUOUS`.
 
@@ -42,24 +42,24 @@ graphify працює в три проходи. Спочатку детермі�
 **Вимоги:** Python 3.10+ та одне з: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) та інші.
 
 ```bash
-uv tool install graphifyy && graphify install
+uv tool install graphifyy-m && graphify-b install
 # або з pipx
-pipx install graphifyy && graphify install
+pipx install graphifyy-m && graphify-b install
 # або pip
-pip install graphifyy && graphify install
+pip install graphifyy-m && graphify-b install
 ```
 
-> **Офіційний пакет:** Пакет PyPI називається `graphifyy`. Єдиний офіційний репозиторій — [safishamsi/graphify](https://github.com/safishamsi/graphify).
+> **Офіційний пакет:** Пакет PyPI називається `graphifyy-m`. Єдиний офіційний репозиторій — [safishamsi/graphify](https://github.com/safishamsi/graphify).
 
 ## Використання
 
 ```
-/graphify .
-/graphify ./raw --update
-/graphify query "що пов'язує Attention з оптимізатором?"
-/graphify path "DigestAuth" "Response"
-graphify hook install
-graphify update ./src
+/graphify-b .
+/graphify-b ./raw --update
+/graphify-b query "що пов'язує Attention з оптимізатором?"
+/graphify-b path "DigestAuth" "Response"
+graphify-b hook install
+graphify-b update ./src
 ```
 
 ## Що ви отримуєте
@@ -70,7 +70,7 @@ graphify update ./src
 
 Файли коду обробляються локально через tree-sitter AST. Відео транскрибуються локально за допомогою faster-whisper. Без телеметрії.
 
-## Побудовано на graphify — Penpax
+## Побудовано на graphify-b — Penpax
 
 [**Penpax**](https://safishamsi.github.io/penpax.ai) — корпоративний рівень над graphify. **Безкоштовна пробна версія незабаром.** [Приєднайтесь до списку очікування →](https://safishamsi.github.io/penpax.ai)
 

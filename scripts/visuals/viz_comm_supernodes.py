@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Create a compact community-supernode graph (top-N communities + Other).
 
-Writes: graphify-out/graph_agg.html (compact)
+Writes: graphify-b-out/graph_agg.html (compact)
 """
 from pathlib import Path
 import json
@@ -16,12 +16,12 @@ import networkx as nx
 
 def main(top_k: int = 100) -> int:
     cwd = Path.cwd()
-    out = cwd / "graphify-out"
+    out = cwd / "graphify-b-out"
     extraction_path = out / ".graphify_extract.json"
     analysis_path = out / ".graphify_analysis.json"
 
     if not extraction_path.exists() or not analysis_path.exists():
-        print("Missing graphify output files in", out)
+        print("Missing graphify-b output files in", out)
         return 2
 
     extraction = json.loads(extraction_path.read_text(encoding="utf-8"))
@@ -157,7 +157,7 @@ def main(top_k: int = 100) -> int:
 
 
 if __name__ == "__main__":
-    _LOCAL = Path('/mnt/e/source/repos/bizdata_github/graphify-m')
+    _LOCAL = Path('/mnt/e/source/repos/bizdata_github/graphify-b')
     if _LOCAL.exists():
         sys.path.insert(0, str(_LOCAL))
     os.environ.setdefault('GRAPHIFY_VIZ_NODE_LIMIT', '10000')

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Skill handler for /graphify-m viz subcommands.
+"""Skill handler for /graphify-b viz subcommands.
 
 Usage:
   python scripts/visuals/skill_viz.py aggregate
@@ -7,7 +7,7 @@ Usage:
   python scripts/visuals/skill_viz.py communities --top 60
   python scripts/visuals/skill_viz.py all
 
-This wrapper prefers the local `graphify-m` checkout and sets a sensible
+This wrapper prefers the local `graphify-b` checkout and sets a sensible
 `GRAPHIFY_VIZ_NODE_LIMIT` if not already set.
 """
 from __future__ import annotations
@@ -19,7 +19,7 @@ import argparse
 
 
 def ensure_local_graphify_on_path():
-    local = Path('/mnt/e/source/repos/bizdata_github/graphify-m')
+    local = Path('/mnt/e/source/repos/bizdata_github/graphify-b')
     if local.exists():
         sys.path.insert(0, str(local))
         os.environ.setdefault('GRAPHIFY_VIZ_NODE_LIMIT', '10000')
@@ -57,7 +57,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == 'aggregate':
         return run_cmd([py, str(base / 'scripts' / 'visuals' / 'viz_aggregate.py')])
     if args.cmd == 'focus':
-        return run_cmd([py, str(base / 'scripts' / 'visuals' / 'viz_focus.py'), '--top', str(args.top), '--out', 'graphify-out/graph_top{0}.html'.format(args.top)])
+        return run_cmd([py, str(base / 'scripts' / 'visuals' / 'viz_focus.py'), '--top', str(args.top), '--out', 'graphify-b-out/graph_top{0}.html'.format(args.top)])
     if args.cmd == 'communities':
         return run_cmd([py, str(base / 'scripts' / 'visuals' / 'viz_community_pages.py'), '--top', str(args.top)])
     if args.cmd == 'all':

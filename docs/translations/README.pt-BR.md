@@ -8,24 +8,24 @@
 
 <p align="center">
   <a href="https://github.com/safishamsi/graphify/actions/workflows/ci.yml"><img src="https://github.com/safishamsi/graphify/actions/workflows/ci.yml/badge.svg?branch=v4" alt="CI"/></a>
-  <a href="https://pypi.org/project/graphifyy/"><img src="https://img.shields.io/pypi/v/graphifyy" alt="PyPI"/></a>
-  <a href="https://pepy.tech/project/graphifyy"><img src="https://static.pepy.tech/badge/graphifyy" alt="Downloads"/></a>
+  <a href="https://pypi.org/project/graphifyy-m/"><img src="https://img.shields.io/pypi/v/graphifyy-m" alt="PyPI"/></a>
+  <a href="https://pepy.tech/project/graphifyy-m"><img src="https://static.pepy.tech/badge/graphifyy-m" alt="Downloads"/></a>
   <a href="https://github.com/sponsors/safishamsi"><img src="https://img.shields.io/badge/sponsor-safishamsi-ea4aaa?logo=github-sponsors" alt="Sponsor"/></a>
   <a href="https://www.linkedin.com/in/safi-shamsi"><img src="https://img.shields.io/badge/LinkedIn-Safi%20Shamsi-0077B5?logo=linkedin" alt="LinkedIn"/></a>
 </p>
 
 **Uma habilidade para assistentes de código IA.** Digite `/graphify` no Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro ou Google Antigravity — ele lê seus arquivos, constrói um grafo de conhecimento e devolve a você estrutura que você não sabia que existia. Entenda uma base de código mais rapidamente. Encontre o "porquê" por trás das decisões arquiteturais.
 
-Totalmente multimodal. Adicione código, PDFs, markdown, capturas de tela, diagramas, fotos de quadros brancos, imagens em outros idiomas, ou arquivos de vídeo e áudio — graphify extrai conceitos e relações de tudo isso e os conecta em um único grafo. Vídeos são transcritos localmente com Whisper usando um prompt adaptado ao domínio derivado do seu corpus. 25 linguagens de programação suportadas via tree-sitter AST (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
+Totalmente multimodal. Adicione código, PDFs, markdown, capturas de tela, diagramas, fotos de quadros brancos, imagens em outros idiomas, ou arquivos de vídeo e áudio — graphify-b extrai conceitos e relações de tudo isso e os conecta em um único grafo. Vídeos são transcritos localmente com Whisper usando um prompt adaptado ao domínio derivado do seu corpus. 25 linguagens de programação suportadas via tree-sitter AST (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
 
-> Andrej Karpathy mantém uma pasta `/raw` onde deposita papers, tweets, capturas de tela e notas. graphify é a resposta para esse problema — 71,5x menos tokens por consulta versus ler os arquivos brutos, persistente entre sessões, honesto sobre o que foi encontrado versus inferido.
-
-```
-/graphify .                        # funciona em qualquer pasta — seu código, notas, papers, tudo
-```
+> Andrej Karpathy mantém uma pasta `/raw` onde deposita papers, tweets, capturas de tela e notas. graphify-b é a resposta para esse problema — 71,5x menos tokens por consulta versus ler os arquivos brutos, persistente entre sessões, honesto sobre o que foi encontrado versus inferido.
 
 ```
-graphify-out/
+/graphify-b .                        # funciona em qualquer pasta — seu código, notas, papers, tudo
+```
+
+```
+graphify-b-out/
 ├── graph.html       grafo interativo — abrir em qualquer navegador, clicar em nós, pesquisar
 ├── GRAPH_REPORT.md  nós deus, conexões surpreendentes, perguntas sugeridas
 ├── graph.json       grafo persistente — consultar semanas depois sem reler
@@ -46,7 +46,7 @@ Mesma sintaxe do `.gitignore`.
 
 ## Como funciona
 
-graphify executa em três passes. Primeiro, uma passagem AST determinística extrai estrutura de arquivos de código (classes, funções, importações, grafos de chamadas, docstrings, comentários de justificativa) sem LLM. Segundo, arquivos de vídeo e áudio são transcritos localmente com faster-whisper. Terceiro, subagentes Claude executam em paralelo sobre documentos, papers, imagens e transcrições para extrair conceitos, relações e justificativas de design. Os resultados são mesclados em um grafo NetworkX, agrupados com detecção de comunidades Leiden, e exportados como HTML interativo, JSON consultável e um relatório de auditoria em linguagem natural.
+graphify-b executa em três passes. Primeiro, uma passagem AST determinística extrai estrutura de arquivos de código (classes, funções, importações, grafos de chamadas, docstrings, comentários de justificativa) sem LLM. Segundo, arquivos de vídeo e áudio são transcritos localmente com faster-whisper. Terceiro, subagentes Claude executam em paralelo sobre documentos, papers, imagens e transcrições para extrair conceitos, relações e justificativas de design. Os resultados são mesclados em um grafo NetworkX, agrupados com detecção de comunidades Leiden, e exportados como HTML interativo, JSON consultável e um relatório de auditoria em linguagem natural.
 
 **O clustering é baseado em topologia de grafo — sem embeddings.** Leiden encontra comunidades por densidade de arestas. As arestas de similaridade semântica que Claude extrai (`semantically_similar_to`, marcadas INFERRED) já estão no grafo. A estrutura do grafo é o sinal de similaridade — nenhum passo de embedding separado ou banco de dados vetorial é necessário.
 
@@ -58,43 +58,43 @@ Cada relação é marcada como `EXTRACTED` (encontrada diretamente na fonte), `I
 
 ```bash
 # Recomendado — funciona no Mac e Linux sem configurar o PATH
-uv tool install graphifyy && graphify install
+uv tool install graphifyy-m && graphify-b install
 # ou com pipx
-pipx install graphifyy && graphify install
+pipx install graphifyy-m && graphify-b install
 # ou pip simples
-pip install graphifyy && graphify install
+pip install graphifyy-m && graphify-b install
 ```
 
-> **Pacote oficial:** O pacote PyPI chama-se `graphifyy` (instalar com `pip install graphifyy`). Outros pacotes chamados `graphify*` no PyPI não são afiliados a este projeto. O único repositório oficial é [safishamsi/graphify](https://github.com/safishamsi/graphify).
+> **Pacote oficial:** O pacote PyPI chama-se `graphifyy-m` (instalar com `pip install graphifyy-m`). Outros pacotes chamados `graphify*` no PyPI não são afiliados a este projeto. O único repositório oficial é [safishamsi/graphify](https://github.com/safishamsi/graphify).
 
 ### Suporte a plataformas
 
 | Plataforma | Comando de instalação |
 |------------|-----------------------|
-| Claude Code (Linux/Mac) | `graphify install` |
-| Claude Code (Windows) | `graphify install` (detecção automática) ou `graphify install --platform windows` |
-| Codex | `graphify install --platform codex` |
-| OpenCode | `graphify install --platform opencode` |
-| GitHub Copilot CLI | `graphify install --platform copilot` |
-| VS Code Copilot Chat | `graphify vscode install` |
-| Aider | `graphify install --platform aider` |
-| OpenClaw | `graphify install --platform claw` |
-| Factory Droid | `graphify install --platform droid` |
-| Trae | `graphify install --platform trae` |
-| Trae CN | `graphify install --platform trae-cn` |
-| Gemini CLI | `graphify install --platform gemini` |
-| Hermes | `graphify install --platform hermes` |
-| Kiro IDE/CLI | `graphify kiro install` |
-| Cursor | `graphify cursor install` |
-| Google Antigravity | `graphify antigravity install` |
+| Claude Code (Linux/Mac) | `graphify-b install` |
+| Claude Code (Windows) | `graphify-b install` (detecção automática) ou `graphify-b install --platform windows` |
+| Codex | `graphify-b install --platform codex` |
+| OpenCode | `graphify-b install --platform opencode` |
+| GitHub Copilot CLI | `graphify-b install --platform copilot` |
+| VS Code Copilot Chat | `graphify-b vscode install` |
+| Aider | `graphify-b install --platform aider` |
+| OpenClaw | `graphify-b install --platform claw` |
+| Factory Droid | `graphify-b install --platform droid` |
+| Trae | `graphify-b install --platform trae` |
+| Trae CN | `graphify-b install --platform trae-cn` |
+| Gemini CLI | `graphify-b install --platform gemini` |
+| Hermes | `graphify-b install --platform hermes` |
+| Kiro IDE/CLI | `graphify-b kiro install` |
+| Cursor | `graphify-b cursor install` |
+| Google Antigravity | `graphify-b antigravity install` |
 
 Depois abra seu assistente de código IA e digite:
 
 ```
-/graphify .
+/graphify-b .
 ```
 
-Nota: Codex usa `$` em vez de `/` para habilidades, então digite `$graphify .`.
+Nota: Codex usa `$` em vez de `/` para habilidades, então digite `$graphify-b .`.
 
 ### Fazer o assistente sempre usar o grafo (recomendado)
 
@@ -102,35 +102,35 @@ Após construir um grafo, execute isso uma vez no seu projeto:
 
 | Plataforma | Comando |
 |------------|---------|
-| Claude Code | `graphify claude install` |
-| Codex | `graphify codex install` |
-| OpenCode | `graphify opencode install` |
-| Cursor | `graphify cursor install` |
-| Gemini CLI | `graphify gemini install` |
-| Kiro IDE/CLI | `graphify kiro install` |
-| Google Antigravity | `graphify antigravity install` |
+| Claude Code | `graphify-b claude install` |
+| Codex | `graphify-b codex install` |
+| OpenCode | `graphify-b opencode install` |
+| Cursor | `graphify-b cursor install` |
+| Gemini CLI | `graphify-b gemini install` |
+| Kiro IDE/CLI | `graphify-b kiro install` |
+| Google Antigravity | `graphify-b antigravity install` |
 
 ## Uso
 
 ```
-/graphify                          # diretório atual
-/graphify ./raw                    # pasta específica
-/graphify ./raw --mode deep        # extração de arestas INFERRED mais agressiva
-/graphify ./raw --update           # re-extrair apenas arquivos modificados
-/graphify ./raw --directed         # grafo dirigido
-/graphify ./raw --cluster-only     # re-executar clustering no grafo existente
-/graphify ./raw --no-viz           # sem HTML, apenas relatório + JSON
-/graphify ./raw --obsidian         # gerar vault do Obsidian (opt-in)
+/graphify-b                          # diretório atual
+/graphify-b ./raw                    # pasta específica
+/graphify-b ./raw --mode deep        # extração de arestas INFERRED mais agressiva
+/graphify-b ./raw --update           # re-extrair apenas arquivos modificados
+/graphify-b ./raw --directed         # grafo dirigido
+/graphify-b ./raw --cluster-only     # re-executar clustering no grafo existente
+/graphify-b ./raw --no-viz           # sem HTML, apenas relatório + JSON
+/graphify-b ./raw --obsidian         # gerar vault do Obsidian (opt-in)
 
-/graphify add https://arxiv.org/abs/1706.03762   # buscar um paper
-/graphify add <video-url>                         # baixar áudio, transcrever, adicionar
-/graphify query "o que conecta Attention ao otimizador?"
-/graphify path "DigestAuth" "Response"
-/graphify explain "SwinTransformer"
+/graphify-b add https://arxiv.org/abs/1706.03762   # buscar um paper
+/graphify-b add <video-url>                         # baixar áudio, transcrever, adicionar
+/graphify-b query "o que conecta Attention ao otimizador?"
+/graphify-b path "DigestAuth" "Response"
+/graphify-b explain "SwinTransformer"
 
-graphify hook install              # instalar hooks do Git
-graphify update ./src              # re-extrair arquivos de código, sem LLM
-graphify watch ./src               # atualização automática do grafo
+graphify-b hook install              # instalar hooks do Git
+graphify-b update ./src              # re-extrair arquivos de código, sem LLM
+graphify-b watch ./src               # atualização automática do grafo
 ```
 
 ## O que você obtém
@@ -149,19 +149,19 @@ graphify watch ./src               # atualização automática do grafo
 
 **Sincronização automática** (`--watch`) — atualiza o grafo automaticamente quando o código muda.
 
-**Hooks do Git** (`graphify hook install`) — instala hooks post-commit e post-checkout.
+**Hooks do Git** (`graphify-b hook install`) — instala hooks post-commit e post-checkout.
 
 ## Privacidade
 
-graphify envia conteúdo de arquivos para a API do modelo do seu assistente IA para extração semântica de documentos, papers e imagens. Arquivos de código são processados localmente via tree-sitter AST. Arquivos de vídeo e áudio são transcritos localmente com faster-whisper. Sem telemetria, sem rastreamento de uso.
+graphify-b envia conteúdo de arquivos para a API do modelo do seu assistente IA para extração semântica de documentos, papers e imagens. Arquivos de código são processados localmente via tree-sitter AST. Arquivos de vídeo e áudio são transcritos localmente com faster-whisper. Sem telemetria, sem rastreamento de uso.
 
 ## Stack técnico
 
 NetworkX + Leiden (graspologic) + tree-sitter + vis.js. Extração semântica via Claude, GPT-4 ou o modelo da sua plataforma. Transcrição de vídeo via faster-whisper + yt-dlp (opcional).
 
-## Construído sobre graphify — Penpax
+## Construído sobre graphify-b — Penpax
 
-[**Penpax**](https://safishamsi.github.io/penpax.ai) é a camada enterprise sobre o graphify. Onde o graphify transforma uma pasta de arquivos em um grafo de conhecimento, o Penpax aplica o mesmo grafo a toda a sua vida profissional — continuamente.
+[**Penpax**](https://safishamsi.github.io/penpax.ai) é a camada enterprise sobre o graphify. Onde o graphify-b transforma uma pasta de arquivos em um grafo de conhecimento, o Penpax aplica o mesmo grafo a toda a sua vida profissional — continuamente.
 
 **Teste gratuito em breve.** [Entrar na lista de espera →](https://safishamsi.github.io/penpax.ai)
 

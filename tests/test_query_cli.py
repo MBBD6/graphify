@@ -1,4 +1,4 @@
-"""Tests for graphify query CLI context filtering."""
+"""Tests for graphify-b query CLI context filtering."""
 from __future__ import annotations
 
 import json

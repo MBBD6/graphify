@@ -126,9 +126,9 @@ def test_hook_skips_head_on_exe():
 
 
 def test_hook_check_no_additionalContext(tmp_path):
-    """graphify hook-check must not emit additionalContext — Codex Desktop rejects it."""
+    """graphify-b hook-check must not emit additionalContext — Codex Desktop rejects it."""
     import sys
-    out = tmp_path / "graphify-out"
+    out = tmp_path / "graphify-b-out"
     out.mkdir()
     (out / "graph.json").write_text("{}", encoding="utf-8")
 
