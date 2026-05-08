@@ -385,7 +385,7 @@ After reading the report (and `graphify-out/wiki/index.md` for deep questions), 
 graph. Only read source files when (a) modifying/debugging specific code, (b) the graph lacks
 the needed detail, or (c) the graph is missing or stale.
 
-Type `/graphify` in Copilot Chat to build or update the graph.
+Type `/graphify-m` in Copilot Chat to build or update the graph.
 """
 
 
