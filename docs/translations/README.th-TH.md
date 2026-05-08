@@ -15,16 +15,16 @@
 
 **ทักษะสำหรับผู้ช่วยเขียนโค้ด AI** พิมพ์ `/graphify` ใน Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro หรือ Google Antigravity — มันจะอ่านไฟล์ของคุณ สร้างกราฟความรู้ และส่งคืนโครงสร้างที่คุณไม่รู้ว่ามีอยู่ ทำความเข้าใจ codebase ได้เร็วขึ้น ค้นหา "ทำไม" เบื้องหลังการตัดสินใจด้านสถาปัตยกรรม
 
-มัลติโมดัลอย่างสมบูรณ์ เพิ่มโค้ด, PDF, markdown, ภาพหน้าจอ, ไดอะแกรม, ภาพถ่ายกระดานไวท์บอร์ด, รูปภาพในภาษาอื่น หรือไฟล์วิดีโอและเสียง — graphify-b ดึงแนวคิดและความสัมพันธ์จากทุกอย่างและเชื่อมต่อกันในกราฟเดียว วิดีโอถูกถอดเสียงในเครื่องด้วย Whisper รองรับ 25 ภาษาการเขียนโปรแกรมผ่าน tree-sitter AST
+มัลติโมดัลอย่างสมบูรณ์ เพิ่มโค้ด, PDF, markdown, ภาพหน้าจอ, ไดอะแกรม, ภาพถ่ายกระดานไวท์บอร์ด, รูปภาพในภาษาอื่น หรือไฟล์วิดีโอและเสียง — graphify_b ดึงแนวคิดและความสัมพันธ์จากทุกอย่างและเชื่อมต่อกันในกราฟเดียว วิดีโอถูกถอดเสียงในเครื่องด้วย Whisper รองรับ 25 ภาษาการเขียนโปรแกรมผ่าน tree-sitter AST
 
-> Andrej Karpathy รักษาโฟลเดอร์ `/raw` ที่เขาวางงานวิจัย, ทวีต, ภาพหน้าจอ และบันทึก graphify-b คือคำตอบสำหรับปัญหานั้น — **71.5 เท่า** โทเค็นน้อยลงต่อการสืบค้นเมื่อเทียบกับการอ่านไฟล์ดิบ, ยั่งยืนระหว่างเซสชัน
-
-```
-/graphify-b .
-```
+> Andrej Karpathy รักษาโฟลเดอร์ `/raw` ที่เขาวางงานวิจัย, ทวีต, ภาพหน้าจอ และบันทึก graphify_b คือคำตอบสำหรับปัญหานั้น — **71.5 เท่า** โทเค็นน้อยลงต่อการสืบค้นเมื่อเทียบกับการอ่านไฟล์ดิบ, ยั่งยืนระหว่างเซสชัน
 
 ```
-graphify-b-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       กราฟแบบโต้ตอบ — เปิดในเบราว์เซอร์ใดก็ได้
 ├── GRAPH_REPORT.md  โหนดพระเจ้า, การเชื่อมต่อที่น่าประหลาดใจ, คำถามที่แนะนำ
 ├── graph.json       กราฟถาวร — สามารถสืบค้นได้หลายสัปดาห์ต่อมา
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## วิธีการทำงาน
 
-graphify-b ทำงานใน 3 รอบ ก่อนอื่น AST pass แบบ deterministic ดึงโครงสร้างจากไฟล์โค้ดโดยไม่ต้องใช้ LLM จากนั้นไฟล์วิดีโอและเสียงถูกถอดเสียงในเครื่องด้วย faster-whisper สุดท้าย Claude sub-agent ทำงานแบบขนานกันบนเอกสาร, งานวิจัย, รูปภาพ และบทถอดเสียง ผลลัพธ์ถูกรวมเข้ากับกราฟ NetworkX, จัดกลุ่มด้วย Leiden และส่งออกเป็น HTML แบบโต้ตอบ, JSON ที่สืบค้นได้ และรายงานการตรวจสอบ
+graphify_b ทำงานใน 3 รอบ ก่อนอื่น AST pass แบบ deterministic ดึงโครงสร้างจากไฟล์โค้ดโดยไม่ต้องใช้ LLM จากนั้นไฟล์วิดีโอและเสียงถูกถอดเสียงในเครื่องด้วย faster-whisper สุดท้าย Claude sub-agent ทำงานแบบขนานกันบนเอกสาร, งานวิจัย, รูปภาพ และบทถอดเสียง ผลลัพธ์ถูกรวมเข้ากับกราฟ NetworkX, จัดกลุ่มด้วย Leiden และส่งออกเป็น HTML แบบโต้ตอบ, JSON ที่สืบค้นได้ และรายงานการตรวจสอบ
 
 ความสัมพันธ์แต่ละอย่างถูกติดป้าย `EXTRACTED`, `INFERRED` (พร้อมคะแนนความเชื่อมั่น) หรือ `AMBIGUOUS`
 
@@ -42,11 +42,11 @@ graphify-b ทำงานใน 3 รอบ ก่อนอื่น AST pass �
 **ข้อกำหนด:** Python 3.10+ และหนึ่งใน: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) และอื่นๆ
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # หรือกับ pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # หรือ pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **แพ็กเกจอย่างเป็นทางการ:** แพ็กเกจ PyPI ชื่อ `graphifyy-m` repository อย่างเป็นทางการเดียวคือ [safishamsi/graphify](https://github.com/safishamsi/graphify)
@@ -54,12 +54,12 @@ pip install graphifyy-m && graphify-b install
 ## การใช้งาน
 
 ```
-/graphify-b .
-/graphify-b ./raw --update
-/graphify-b query "อะไรเชื่อม Attention กับ optimizer?"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "อะไรเชื่อม Attention กับ optimizer?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## สิ่งที่คุณได้รับ
@@ -70,8 +70,8 @@ graphify-b update ./src
 
 ไฟล์โค้ดถูกประมวลผลในเครื่องผ่าน tree-sitter AST วิดีโอถูกถอดเสียงในเครื่องด้วย faster-whisper ไม่มีการส่งข้อมูลวัดผล
 
-## สร้างบน graphify-b — Penpax
+## สร้างบน graphify_b — Penpax
 
-[**Penpax**](https://safishamsi.github.io/penpax.ai) คือชั้น enterprise เหนือ graphify-b **ทดลองใช้ฟรีเร็วๆ นี้** [เข้าร่วมรายชื่อรอ →](https://safishamsi.github.io/penpax.ai)
+[**Penpax**](https://safishamsi.github.io/penpax.ai) คือชั้น enterprise เหนือ graphify_b **ทดลองใช้ฟรีเร็วๆ นี้** [เข้าร่วมรายชื่อรอ →](https://safishamsi.github.io/penpax.ai)
 
 [![Star History Chart](https://api.star-history.com/svg?repos=safishamsi/graphify&type=Date)](https://star-history.com/#safishamsi/graphify&Date)

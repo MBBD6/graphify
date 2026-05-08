@@ -3,7 +3,7 @@
 
 Usage examples:
   python scripts/visuals/viz_focus.py --top 500
-  python scripts/visuals/viz_focus.py --communities 1,2,5 --out graphify-b-out/graph_comm_1_2_5.html
+  python scripts/visuals/viz_focus.py --communities 1,2,5 --out graphify_b-out/graph_comm_1_2_5.html
 """
 from pathlib import Path
 import json
@@ -12,8 +12,8 @@ from typing import Optional
 import os
 import sys
 
-# Prefer local graphify-b checkout so edits to export.py are honored.
-_LOCAL_GRAPHIFY = Path('/mnt/e/source/repos/bizdata_github/graphify-b')
+# Prefer local graphify_b checkout so edits to export.py are honored.
+_LOCAL_GRAPHIFY = Path('/mnt/e/source/repos/bizdata_github/graphify_b')
 if _LOCAL_GRAPHIFY.exists():
     sys.path.insert(0, str(_LOCAL_GRAPHIFY))
 
@@ -28,19 +28,19 @@ def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--top", type=int, default=500, help="Top-N nodes by degree to include")
     p.add_argument("--communities", type=str, help="Comma-separated community ids to include instead of --top")
-    p.add_argument("--out", type=str, help="Output HTML path", default="graphify-b-out/graph_top.html")
+    p.add_argument("--out", type=str, help="Output HTML path", default="graphify_b-out/graph_top.html")
     return p.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     cwd = Path.cwd()
-    out = cwd / "graphify-b-out"
+    out = cwd / "graphify_b-out"
     extraction_path = out / ".graphify_extract.json"
     analysis_path = out / ".graphify_analysis.json"
 
     if not extraction_path.exists() or not analysis_path.exists():
-        print("Missing graphify-b output files in", out)
+        print("Missing graphify_b output files in", out)
         return 2
 
     extraction = json.loads(extraction_path.read_text(encoding="utf-8"))

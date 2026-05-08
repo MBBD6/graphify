@@ -8,16 +8,16 @@
 
 **AIコーディングアシスタント向けのスキル。** Claude Code、Codex、OpenCode、OpenClaw、Factory Droid で `/graphify` と入力するだけで、ファイルを読み込んでナレッジグラフを構築し、あなたが気づいていなかった構造を返します。コードベースをより速く理解し、アーキテクチャ上の意思決定の「なぜ」を見つけ出します。
 
-完全にマルチモーダル対応。コード、PDF、Markdown、スクリーンショット、図、ホワイトボード写真、他言語の画像まで――graphify-b は Claude Vision を使ってそれらすべてから概念と関係性を抽出し、1 つのグラフに接続します。tree-sitter AST により 19 言語をサポート（Python、JS、TS、Go、Rust、Java、C、C++、Ruby、C#、Kotlin、Scala、PHP、Swift、Lua、Zig、PowerShell、Elixir、Objective-C）。
+完全にマルチモーダル対応。コード、PDF、Markdown、スクリーンショット、図、ホワイトボード写真、他言語の画像まで――graphify_b は Claude Vision を使ってそれらすべてから概念と関係性を抽出し、1 つのグラフに接続します。tree-sitter AST により 19 言語をサポート（Python、JS、TS、Go、Rust、Java、C、C++、Ruby、C#、Kotlin、Scala、PHP、Swift、Lua、Zig、PowerShell、Elixir、Objective-C）。
 
-> Andrej Karpathy は論文、ツイート、スクリーンショット、メモを放り込む `/raw` フォルダを持っています。graphify-b はまさにその問題への答えです――生ファイルを読むのに比べて1クエリあたりのトークン数が 71.5 倍少なく、セッションをまたいで永続化され、見つけたものと推測したものを正直に区別します。
-
-```
-/graphify-b .                        # どのフォルダでも動作 - コードベース、メモ、論文、なんでも
-```
+> Andrej Karpathy は論文、ツイート、スクリーンショット、メモを放り込む `/raw` フォルダを持っています。graphify_b はまさにその問題への答えです――生ファイルを読むのに比べて1クエリあたりのトークン数が 71.5 倍少なく、セッションをまたいで永続化され、見つけたものと推測したものを正直に区別します。
 
 ```
-graphify-b-out/
+/graphify_b .                        # どのフォルダでも動作 - コードベース、メモ、論文、なんでも
+```
+
+```
+graphify_b-out/
 ├── graph.html       インタラクティブなグラフ - ノードをクリック、検索、コミュニティでフィルタ
 ├── GRAPH_REPORT.md  ゴッドノード、意外なつながり、推奨される質問
 ├── graph.json       永続化されたグラフ - 数週間後でも再読み込みなしでクエリ可能
@@ -34,11 +34,11 @@ dist/
 *.generated.py
 ```
 
-構文は `.gitignore` と同じです。パターンは graphify-b を実行したフォルダからの相対パスに対してマッチします。
+構文は `.gitignore` と同じです。パターンは graphify_b を実行したフォルダからの相対パスに対してマッチします。
 
 ## 仕組み
 
-graphify-b は 2 パスで動作します。まず、決定論的な AST パスがコードファイルから構造（クラス、関数、インポート、コールグラフ、docstring、根拠コメント）を LLM なしで抽出します。次に、Claude サブエージェントがドキュメント、論文、画像に対して並列に実行され、概念、関係性、設計の根拠を抽出します。結果は NetworkX グラフにマージされ、Leiden コミュニティ検出でクラスタリングされ、インタラクティブ HTML、クエリ可能な JSON、平易な言葉の監査レポートとしてエクスポートされます。
+graphify_b は 2 パスで動作します。まず、決定論的な AST パスがコードファイルから構造（クラス、関数、インポート、コールグラフ、docstring、根拠コメント）を LLM なしで抽出します。次に、Claude サブエージェントがドキュメント、論文、画像に対して並列に実行され、概念、関係性、設計の根拠を抽出します。結果は NetworkX グラフにマージされ、Leiden コミュニティ検出でクラスタリングされ、インタラクティブ HTML、クエリ可能な JSON、平易な言葉の監査レポートとしてエクスポートされます。
 
 **クラスタリングはグラフトポロジベース――埋め込みは使いません。** Leiden はエッジ密度によってコミュニティを見つけます。Claude が抽出する意味的類似性エッジ（`semantically_similar_to`、INFERRED とマーク）は既にグラフに含まれているため、コミュニティ検出に直接影響します。グラフ構造そのものが類似性シグナルであり――別途の埋め込みステップやベクターデータベースは不要です。
 
@@ -49,7 +49,7 @@ graphify-b は 2 パスで動作します。まず、決定論的な AST パス�
 **必要なもの:** Python 3.10+ および以下のいずれか： [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [OpenClaw](https://openclaw.ai), または [Factory Droid](https://factory.ai)
 
 ```bash
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > PyPI パッケージは `graphify` の名前が再取得されるまでの間、一時的に `graphifyy-m` となっています。CLI とスキルコマンドは依然として `graphify` です。
@@ -58,22 +58,22 @@ pip install graphifyy-m && graphify-b install
 
 | プラットフォーム | インストールコマンド |
 |----------|----------------|
-| Claude Code (Linux/Mac) | `graphify-b install` |
-| Claude Code (Windows) | `graphify-b install`（自動検出）または `graphify-b install --platform windows` |
-| Codex | `graphify-b install --platform codex` |
-| OpenCode | `graphify-b install --platform opencode` |
-| OpenClaw | `graphify-b install --platform claw` |
-| Factory Droid | `graphify-b install --platform droid` |
+| Claude Code (Linux/Mac) | `graphify_b install` |
+| Claude Code (Windows) | `graphify_b install`（自動検出）または `graphify_b install --platform windows` |
+| Codex | `graphify_b install --platform codex` |
+| OpenCode | `graphify_b install --platform opencode` |
+| OpenClaw | `graphify_b install --platform claw` |
+| Factory Droid | `graphify_b install --platform droid` |
 
 Codex ユーザーは並列抽出のために `~/.codex/config.toml` の `[features]` の下に `multi_agent = true` も必要です。Factory Droid は並列サブエージェントディスパッチに `Task` ツールを使用します。OpenClaw は逐次抽出を使用します（並列エージェントサポートはこのプラットフォームではまだ初期段階です）。
 
 次に、AI コーディングアシスタントを開いて入力します：
 
 ```
-/graphify-b .
+/graphify_b .
 ```
 
-注意：Codex はスキル呼び出しに `/` ではなく `$` を使用するため、代わりに `$graphify-b .` と入力してください。
+注意：Codex はスキル呼び出しに `/` ではなく `$` を使用するため、代わりに `$graphify_b .` と入力してください。
 
 ### アシスタントに常にグラフを使わせる（推奨）
 
@@ -81,23 +81,23 @@ Codex ユーザーは並列抽出のために `~/.codex/config.toml` の `[featu
 
 | プラットフォーム | コマンド |
 |----------|---------|
-| Claude Code | `graphify-b claude install` |
-| Codex | `graphify-b codex install` |
-| OpenCode | `graphify-b opencode install` |
-| OpenClaw | `graphify-b claw install` |
-| Factory Droid | `graphify-b droid install` |
+| Claude Code | `graphify_b claude install` |
+| Codex | `graphify_b codex install` |
+| OpenCode | `graphify_b opencode install` |
+| OpenClaw | `graphify_b claw install` |
+| Factory Droid | `graphify_b droid install` |
 
-**Claude Code** は 2 つのことを行います：Claude にアーキテクチャの質問に答える前に `graphify-b-out/GRAPH_REPORT.md` を読むように指示する `CLAUDE.md` セクションを書き込み、すべての Glob と Grep 呼び出しの前に発火する **PreToolUse フック**（`settings.json`）をインストールします。ナレッジグラフが存在する場合、Claude は次のメッセージを見ます：_"graphify: Knowledge graph exists. Read GRAPH_REPORT.md for god nodes and community structure before searching raw files."_ ――これにより Claude はすべてのファイルを grep するのではなく、グラフを介してナビゲートします。
+**Claude Code** は 2 つのことを行います：Claude にアーキテクチャの質問に答える前に `graphify_b-out/GRAPH_REPORT.md` を読むように指示する `CLAUDE.md` セクションを書き込み、すべての Glob と Grep 呼び出しの前に発火する **PreToolUse フック**（`settings.json`）をインストールします。ナレッジグラフが存在する場合、Claude は次のメッセージを見ます：_"graphify: Knowledge graph exists. Read GRAPH_REPORT.md for god nodes and community structure before searching raw files."_ ――これにより Claude はすべてのファイルを grep するのではなく、グラフを介してナビゲートします。
 
 **Codex、OpenCode、OpenClaw、Factory Droid** は同じルールをプロジェクトルートの `AGENTS.md` に書き込みます。これらのプラットフォームは PreToolUse フックをサポートしていないため、AGENTS.md が常時有効のメカニズムとなります。
 
-アンインストールは対応するアンインストールコマンドで行います（例：`graphify-b claude uninstall`）。
+アンインストールは対応するアンインストールコマンドで行います（例：`graphify_b claude uninstall`）。
 
 **常時有効 vs 明示的トリガー――何が違うのか？**
 
 常時有効のフックは `GRAPH_REPORT.md` を表面化します――これはゴッドノード、コミュニティ、意外なつながりを 1 ページにまとめた要約です。アシスタントはファイル検索の前にこれを読み、キーワードマッチではなく構造に基づいてナビゲートします。これで日常的な質問のほとんどをカバーできます。
 
-`/graphify-b query`、`/graphify-b path`、`/graphify-b explain` はさらに深く踏み込みます：生の `graph.json` をホップごとに辿り、ノード間の正確なパスをトレースし、エッジレベルの詳細（関係タイプ、信頼度スコア、ソース位置）を表面化します。一般的なオリエンテーションではなく、特定の質問をグラフから答えさせたいときに使います。
+`/graphify_b query`、`/graphify_b path`、`/graphify_b explain` はさらに深く踏み込みます：生の `graph.json` をホップごとに辿り、ノード間の正確なパスをトレースし、エッジレベルの詳細（関係タイプ、信頼度スコア、ソース位置）を表面化します。一般的なオリエンテーションではなく、特定の質問をグラフから答えさせたいときに使います。
 
 こう考えてください：常時有効のフックはアシスタントに地図を与え、`/graphify` コマンドはその地図を正確にナビゲートさせます。
 
@@ -122,52 +122,52 @@ When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` 
 ## 使い方
 
 ```
-/graphify-b                          # カレントディレクトリで実行
-/graphify-b ./raw                    # 特定のフォルダで実行
-/graphify-b ./raw --mode deep        # より積極的な INFERRED エッジ抽出
-/graphify-b ./raw --update           # 変更されたファイルのみ再抽出し、既存グラフにマージ
-/graphify-b ./raw --cluster-only     # 既存グラフのクラスタリングを再実行（再抽出なし）
-/graphify-b ./raw --no-viz           # HTML をスキップ、レポート + JSON のみ生成
-/graphify-b ./raw --obsidian                          # Obsidian ボールトも生成（オプトイン）
-/graphify-b ./raw --obsidian --obsidian-dir ~/vaults/myproject  # ボールトを特定のディレクトリに書き込み
+/graphify_b                          # カレントディレクトリで実行
+/graphify_b ./raw                    # 特定のフォルダで実行
+/graphify_b ./raw --mode deep        # より積極的な INFERRED エッジ抽出
+/graphify_b ./raw --update           # 変更されたファイルのみ再抽出し、既存グラフにマージ
+/graphify_b ./raw --cluster-only     # 既存グラフのクラスタリングを再実行（再抽出なし）
+/graphify_b ./raw --no-viz           # HTML をスキップ、レポート + JSON のみ生成
+/graphify_b ./raw --obsidian                          # Obsidian ボールトも生成（オプトイン）
+/graphify_b ./raw --obsidian --obsidian-dir ~/vaults/myproject  # ボールトを特定のディレクトリに書き込み
 
-/graphify-b add https://arxiv.org/abs/1706.03762        # 論文を取得、保存、グラフを更新
-/graphify-b add https://x.com/karpathy/status/...       # ツイートを取得
-/graphify-b add https://... --author "Name"             # 元の著者をタグ付け
-/graphify-b add https://... --contributor "Name"        # コーパスに追加した人をタグ付け
+/graphify_b add https://arxiv.org/abs/1706.03762        # 論文を取得、保存、グラフを更新
+/graphify_b add https://x.com/karpathy/status/...       # ツイートを取得
+/graphify_b add https://... --author "Name"             # 元の著者をタグ付け
+/graphify_b add https://... --contributor "Name"        # コーパスに追加した人をタグ付け
 
-/graphify-b query "アテンションとオプティマイザを結ぶものは？"
-/graphify-b query "アテンションとオプティマイザを結ぶものは？" --dfs   # 特定のパスをトレース
-/graphify-b query "アテンションとオプティマイザを結ぶものは？" --budget 1500  # N トークンで上限設定
-/graphify-b path "DigestAuth" "Response"
-/graphify-b explain "SwinTransformer"
+/graphify_b query "アテンションとオプティマイザを結ぶものは？"
+/graphify_b query "アテンションとオプティマイザを結ぶものは？" --dfs   # 特定のパスをトレース
+/graphify_b query "アテンションとオプティマイザを結ぶものは？" --budget 1500  # N トークンで上限設定
+/graphify_b path "DigestAuth" "Response"
+/graphify_b explain "SwinTransformer"
 
-/graphify-b ./raw --watch            # ファイル変更時にグラフを自動同期（コード：即時、ドキュメント：通知）
-/graphify-b ./raw --wiki             # エージェントがクロール可能な wiki を構築（index.md + コミュニティごとの記事）
-/graphify-b ./raw --svg              # graph.svg をエクスポート
-/graphify-b ./raw --graphml          # graph.graphml をエクスポート（Gephi、yEd）
-/graphify-b ./raw --neo4j            # Neo4j 用の cypher.txt を生成
-/graphify-b ./raw --neo4j-push bolt://localhost:7687    # 実行中の Neo4j インスタンスに直接プッシュ
-/graphify-b ./raw --mcp              # MCP stdio サーバーを起動
+/graphify_b ./raw --watch            # ファイル変更時にグラフを自動同期（コード：即時、ドキュメント：通知）
+/graphify_b ./raw --wiki             # エージェントがクロール可能な wiki を構築（index.md + コミュニティごとの記事）
+/graphify_b ./raw --svg              # graph.svg をエクスポート
+/graphify_b ./raw --graphml          # graph.graphml をエクスポート（Gephi、yEd）
+/graphify_b ./raw --neo4j            # Neo4j 用の cypher.txt を生成
+/graphify_b ./raw --neo4j-push bolt://localhost:7687    # 実行中の Neo4j インスタンスに直接プッシュ
+/graphify_b ./raw --mcp              # MCP stdio サーバーを起動
 
 # git フック - プラットフォーム非依存、コミット時とブランチ切り替え時にグラフを再構築
-graphify-b hook install
-graphify-b hook uninstall
-graphify-b hook status
+graphify_b hook install
+graphify_b hook uninstall
+graphify_b hook status
 
 # 常時有効のアシスタント指示 - プラットフォーム固有
-graphify-b claude install            # CLAUDE.md + PreToolUse フック（Claude Code）
-graphify-b claude uninstall
-graphify-b codex install             # AGENTS.md（Codex）
-graphify-b opencode install          # AGENTS.md（OpenCode）
-graphify-b claw install              # AGENTS.md（OpenClaw）
-graphify-b droid install             # AGENTS.md（Factory Droid）
+graphify_b claude install            # CLAUDE.md + PreToolUse フック（Claude Code）
+graphify_b claude uninstall
+graphify_b codex install             # AGENTS.md（Codex）
+graphify_b opencode install          # AGENTS.md（OpenCode）
+graphify_b claw install              # AGENTS.md（OpenClaw）
+graphify_b droid install             # AGENTS.md（Factory Droid）
 
 # ターミナルから直接グラフをクエリ（AI アシスタント不要）
-graphify-b query "アテンションとオプティマイザを結ぶものは？"
-graphify-b query "認証フローを表示" --dfs
-graphify-b query "CfgNode とは？" --budget 500
-graphify-b query "..." --graph path/to/graph.json
+graphify_b query "アテンションとオプティマイザを結ぶものは？"
+graphify_b query "認証フローを表示" --dfs
+graphify_b query "CfgNode とは？" --budget 500
+graphify_b query "..." --graph path/to/graph.json
 ```
 
 あらゆるファイルタイプの組み合わせで動作します：
@@ -200,7 +200,7 @@ graphify-b query "..." --graph path/to/graph.json
 
 **自動同期** (`--watch`) - バックグラウンドターミナルで実行し、コードベースが変更されるとグラフが自動的に更新されます。コードファイルの保存は即座の再構築をトリガーします（AST のみ、LLM なし）。ドキュメント/画像の変更は、LLM の再パスのために `--update` を実行するよう通知します。
 
-**Git フック** (`graphify-b hook install`) - post-commit と post-checkout フックをインストールします。コミットごと、ブランチ切り替えごとにグラフが自動的に再構築されます。再構築が失敗した場合、フックは非ゼロコードで終了するため、git がエラーを表面化し、静かに続行することはありません。バックグラウンドプロセスは不要です。
+**Git フック** (`graphify_b hook install`) - post-commit と post-checkout フックをインストールします。コミットごと、ブランチ切り替えごとにグラフが自動的に再構築されます。再構築が失敗した場合、フックは非ゼロコードで終了するため、git がエラーを表面化し、静かに続行することはありません。バックグラウンドプロセスは不要です。
 
 **Wiki** (`--wiki`) - コミュニティごとおよびゴッドノードごとの Wikipedia スタイルの Markdown 記事と、`index.md` エントリポイント。任意のエージェントを `index.md` に向ければ、JSON をパースする代わりにファイルを読むことでナレッジベースをナビゲートできます。
 
@@ -209,14 +209,14 @@ graphify-b query "..." --graph path/to/graph.json
 | コーパス | ファイル数 | 削減率 | 出力 |
 |--------|-------|-----------|--------|
 | Karpathy リポジトリ + 論文5本 + 画像4枚 | 52 | **71.5x** | [`worked/karpathy-repos/`](worked/karpathy-repos/) |
-| graphify-b ソース + Transformer 論文 | 4 | **5.4x** | [`worked/mixed-corpus/`](worked/mixed-corpus/) |
+| graphify_b ソース + Transformer 論文 | 4 | **5.4x** | [`worked/mixed-corpus/`](worked/mixed-corpus/) |
 | httpx（合成 Python ライブラリ） | 6 | ~1x | [`worked/httpx/`](worked/httpx/) |
 
 トークン削減はコーパスサイズに応じてスケールします。6 ファイルはいずれにせよコンテキストウィンドウに収まるため、そこでのグラフの価値は圧縮ではなく構造的明瞭さです。52 ファイル（コード + 論文 + 画像）では 71 倍以上が得られます。各 `worked/` フォルダには生の入力ファイルと実際の出力（`GRAPH_REPORT.md`、`graph.json`）があり、自分で実行して数字を検証できます。
 
 ## プライバシー
 
-graphify-b はドキュメント、論文、画像の意味的抽出のために、ファイル内容を AI コーディングアシスタントの基盤モデル API に送信します――Anthropic（Claude Code）、OpenAI（Codex）、またはプラットフォームが使用するプロバイダーです。コードファイルは tree-sitter AST を介してローカルで処理されます――コードに関してはファイル内容がマシンから出ることはありません。テレメトリ、利用追跡、分析は一切ありません。ネットワーク呼び出しは抽出中のプラットフォームのモデル API への呼び出しのみで、あなた自身の API キーを使用します。
+graphify_b はドキュメント、論文、画像の意味的抽出のために、ファイル内容を AI コーディングアシスタントの基盤モデル API に送信します――Anthropic（Claude Code）、OpenAI（Codex）、またはプラットフォームが使用するプロバイダーです。コードファイルは tree-sitter AST を介してローカルで処理されます――コードに関してはファイル内容がマシンから出ることはありません。テレメトリ、利用追跡、分析は一切ありません。ネットワーク呼び出しは抽出中のプラットフォームのモデル API への呼び出しのみで、あなた自身の API キーを使用します。
 
 ## 技術スタック
 
@@ -231,7 +231,7 @@ NetworkX + Leiden（graspologic） + tree-sitter + vis.js。意味的抽出は C
 
 **実例** は最も信頼を築くコントリビューションです。実際のコーパスで `/graphify` を実行し、出力を `worked/{slug}/` に保存し、グラフが正しく捉えたもの・間違えたものを評価する正直な `review.md` を書き、PR を提出してください。
 
-**抽出バグ** - 入力ファイル、キャッシュエントリ（`graphify-b-out/cache/`）、何が見逃された/捏造されたかを添えて issue を開いてください。
+**抽出バグ** - 入力ファイル、キャッシュエントリ（`graphify_b-out/cache/`）、何が見逃された/捏造されたかを添えて issue を開いてください。
 
 モジュールの責任と言語の追加方法については [ARCHITECTURE.md](ARCHITECTURE.md) を参照してください。
 

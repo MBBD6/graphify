@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Create a community-level aggregated graph (one node per community).
 
-Writes: graphify-b-out/graph_communities.html
+Writes: graphify_b-out/graph_communities.html
 """
 from pathlib import Path
 import json
@@ -16,12 +16,12 @@ import networkx as nx
 
 def main() -> int:
     cwd = Path.cwd()
-    out = cwd / "graphify-b-out"
+    out = cwd / "graphify_b-out"
     extraction_path = out / ".graphify_extract.json"
     analysis_path = out / ".graphify_analysis.json"
 
     if not extraction_path.exists() or not analysis_path.exists():
-        print("Missing graphify-b output files in", out)
+        print("Missing graphify_b output files in", out)
         return 2
 
     extraction = json.loads(extraction_path.read_text(encoding="utf-8"))
@@ -87,8 +87,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    # Prefer local graphify-b
-    _LOCAL = Path('/mnt/e/source/repos/bizdata_github/graphify-b')
+    # Prefer local graphify_b
+    _LOCAL = Path('/mnt/e/source/repos/bizdata_github/graphify_b')
     if _LOCAL.exists():
         sys.path.insert(0, str(_LOCAL))
         os.environ.setdefault('GRAPHIFY_VIZ_NODE_LIMIT', '10000')

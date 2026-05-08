@@ -1,9 +1,9 @@
-# graphify-b Evaluation - httpx Corpus (2026-04-03)
+# graphify_b Evaluation - httpx Corpus (2026-04-03)
 
 **Evaluator:** Claude Sonnet 4.6 (analytical simulation - Bash execution unavailable)
 **Corpus:** 6-file synthetic httpx-like Python codebase (~2,800 words)
-**Pipeline:** graphify-b AST extractor + graph_builder + Leiden clusterer + analyzer + reporter
-**Method:** Full deterministic code tracing of every graphify-b source module against
+**Pipeline:** graphify_b AST extractor + graph_builder + Leiden clusterer + analyzer + reporter
+**Method:** Full deterministic code tracing of every graphify_b source module against
 the corpus. Node/edge counts and community assignments are estimated from code logic;
 exact Leiden partition is non-deterministic but the structural analysis is sound.
 
@@ -379,7 +379,7 @@ with ~45 methods across all classes, this saves approximately 35-40 edges that w
 otherwise be dropped. The fix is confirmed working.
 
 ### The AST-only pipeline has a fundamental ceiling
-The graphify-b AST extractor is deterministic, fast, and accurate for what it extracts.
+The graphify_b AST extractor is deterministic, fast, and accurate for what it extracts.
 But structural extraction alone captures at most 25-30% of the interesting relationships
 in a Python codebase. The skill.md design correctly envisions the Claude LLM doing a
 richer extraction pass (Step 3) for document/paper corpora - but for code, the pipeline

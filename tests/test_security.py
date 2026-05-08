@@ -138,7 +138,7 @@ def test_safe_fetch_text_replaces_bad_bytes():
 # ---------------------------------------------------------------------------
 
 def test_validate_graph_path_allows_inside_base(tmp_path):
-    base = tmp_path / "graphify-b-out"
+    base = tmp_path / "graphify_b-out"
     base.mkdir()
     graph = base / "graph.json"
     graph.write_text("{}")
@@ -146,19 +146,19 @@ def test_validate_graph_path_allows_inside_base(tmp_path):
     assert result == graph.resolve()
 
 def test_validate_graph_path_blocks_traversal(tmp_path):
-    base = tmp_path / "graphify-b-out"
+    base = tmp_path / "graphify_b-out"
     base.mkdir()
-    evil = tmp_path / "graphify-b-out" / ".." / "etc_passwd"
+    evil = tmp_path / "graphify_b-out" / ".." / "etc_passwd"
     with pytest.raises(ValueError, match="escapes"):
         validate_graph_path(str(evil), base=base)
 
 def test_validate_graph_path_requires_base_exists(tmp_path):
-    base = tmp_path / "graphify-b-out"  # not created
+    base = tmp_path / "graphify_b-out"  # not created
     with pytest.raises(ValueError, match="does not exist"):
         validate_graph_path(str(base / "graph.json"), base=base)
 
 def test_validate_graph_path_raises_if_file_missing(tmp_path):
-    base = tmp_path / "graphify-b-out"
+    base = tmp_path / "graphify_b-out"
     base.mkdir()
     with pytest.raises(FileNotFoundError):
         validate_graph_path(str(base / "missing.json"), base=base)

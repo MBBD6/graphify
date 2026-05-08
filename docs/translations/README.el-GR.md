@@ -15,16 +15,16 @@
 
 **Μια δεξιότητα για βοηθούς κώδικα AI.** Πληκτρολογήστε `/graphify` στο Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro ή Google Antigravity — διαβάζει τα αρχεία σας, δημιουργεί ένα γράφο γνώσης και σας επιστρέφει δομή που δεν ξέρατε ότι υπήρχε. Κατανοήστε μια βάση κώδικα γρηγορότερα. Βρείτε το «γιατί» πίσω από αρχιτεκτονικές αποφάσεις.
 
-Πλήρως πολυτροπικό. Προσθέστε κώδικα, PDF, markdown, στιγμιότυπα οθόνης, διαγράμματα, φωτογραφίες πίνακα, εικόνες σε άλλες γλώσσες ή αρχεία βίντεο και ήχου — το graphify-b εξάγει έννοιες και σχέσεις από όλα και τα συνδέει σε ένα ενιαίο γράφο. Τα βίντεο μεταγράφονται τοπικά με το Whisper. Υποστηρίζει 25 γλώσσες προγραμματισμού μέσω tree-sitter AST.
+Πλήρως πολυτροπικό. Προσθέστε κώδικα, PDF, markdown, στιγμιότυπα οθόνης, διαγράμματα, φωτογραφίες πίνακα, εικόνες σε άλλες γλώσσες ή αρχεία βίντεο και ήχου — το graphify_b εξάγει έννοιες και σχέσεις από όλα και τα συνδέει σε ένα ενιαίο γράφο. Τα βίντεο μεταγράφονται τοπικά με το Whisper. Υποστηρίζει 25 γλώσσες προγραμματισμού μέσω tree-sitter AST.
 
-> Ο Andrej Karpathy διατηρεί ένα φάκελο `/raw` όπου αποθηκεύει εργασίες, tweets, στιγμιότυπα και σημειώσεις. Το graphify-b είναι η απάντηση σε αυτό το πρόβλημα — **71,5x** λιγότερα token ανά ερώτημα σε σύγκριση με την ανάγνωση αρχείων, επίμονο μεταξύ συνεδριών.
-
-```
-/graphify-b .
-```
+> Ο Andrej Karpathy διατηρεί ένα φάκελο `/raw` όπου αποθηκεύει εργασίες, tweets, στιγμιότυπα και σημειώσεις. Το graphify_b είναι η απάντηση σε αυτό το πρόβλημα — **71,5x** λιγότερα token ανά ερώτημα σε σύγκριση με την ανάγνωση αρχείων, επίμονο μεταξύ συνεδριών.
 
 ```
-graphify-b-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       διαδραστικός γράφος — ανοίξτε σε οποιοδήποτε πρόγραμμα περιήγησης
 ├── GRAPH_REPORT.md  κόμβοι-θεοί, εκπληκτικές συνδέσεις, προτεινόμενες ερωτήσεις
 ├── graph.json       επίμονος γράφος — μπορεί να υποβληθεί σε ερωτήματα εβδομάδες αργότερα
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## Πώς λειτουργεί
 
-Το graphify-b λειτουργεί σε τρεις διελεύσεις. Πρώτα, μια ντετερμινιστική διέλευση AST εξάγει δομή από αρχεία κώδικα χωρίς LLM. Στη συνέχεια, τα αρχεία βίντεο και ήχου μεταγράφονται τοπικά με faster-whisper. Τέλος, οι υπο-πράκτορες Claude εκτελούνται παράλληλα σε έγγραφα, εργασίες, εικόνες και μεταγραφές. Τα αποτελέσματα συγχωνεύονται σε ένα γράφο NetworkX, ομαδοποιούνται με Leiden και εξάγονται ως διαδραστική HTML, JSON για ερωτήματα και αναφορά ελέγχου.
+Το graphify_b λειτουργεί σε τρεις διελεύσεις. Πρώτα, μια ντετερμινιστική διέλευση AST εξάγει δομή από αρχεία κώδικα χωρίς LLM. Στη συνέχεια, τα αρχεία βίντεο και ήχου μεταγράφονται τοπικά με faster-whisper. Τέλος, οι υπο-πράκτορες Claude εκτελούνται παράλληλα σε έγγραφα, εργασίες, εικόνες και μεταγραφές. Τα αποτελέσματα συγχωνεύονται σε ένα γράφο NetworkX, ομαδοποιούνται με Leiden και εξάγονται ως διαδραστική HTML, JSON για ερωτήματα και αναφορά ελέγχου.
 
 Κάθε σχέση επισημαίνεται ως `EXTRACTED`, `INFERRED` (με βαθμολογία εμπιστοσύνης) ή `AMBIGUOUS`.
 
@@ -42,11 +42,11 @@ graphify-b-out/
 **Απαιτήσεις:** Python 3.10+ και ένα από: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) και άλλα.
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # ή με pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # ή pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Επίσημο πακέτο:** Το πακέτο PyPI ονομάζεται `graphifyy-m`. Το μοναδικό επίσημο αποθετήριο είναι το [safishamsi/graphify](https://github.com/safishamsi/graphify).
@@ -54,12 +54,12 @@ pip install graphifyy-m && graphify-b install
 ## Χρήση
 
 ```
-/graphify-b .
-/graphify-b ./raw --update
-/graphify-b query "τι συνδέει το Attention με τον optimizer;"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "τι συνδέει το Attention με τον optimizer;"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Τι λαμβάνετε
@@ -70,7 +70,7 @@ graphify-b update ./src
 
 Τα αρχεία κώδικα επεξεργάζονται τοπικά μέσω tree-sitter AST. Τα βίντεο μεταγράφονται τοπικά με faster-whisper. Χωρίς τηλεμετρία.
 
-## Δημιουργήθηκε στο graphify-b — Penpax
+## Δημιουργήθηκε στο graphify_b — Penpax
 
 Το [**Penpax**](https://safishamsi.github.io/penpax.ai) είναι το εταιρικό επίπεδο πάνω από το graphify. **Δωρεάν δοκιμή σύντομα.** [Εγγραφείτε στη λίστα αναμονής →](https://safishamsi.github.io/penpax.ai)
 

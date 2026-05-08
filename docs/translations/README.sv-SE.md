@@ -15,16 +15,16 @@
 
 **En färdighet för AI-kodassistenter.** Skriv `/graphify` i Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro eller Google Antigravity — den läser dina filer, bygger ett kunskapsgrafer och ger tillbaka strukturen du inte visste fanns. Förstå en kodbas snabbare. Hitta "varför" bakom arkitekturella beslut.
 
-Helt multimodal. Lägg till kod, PDF:er, markdown, skärmdumpar, diagram, whiteboardfoton, bilder på andra språk eller video- och ljudfiler — graphify-b extraherar begrepp och relationer från allt och kopplar samman dem i ett enda graf. Videor transkriberas lokalt med Whisper. Stödjer 25 programmeringsspråk via tree-sitter AST.
+Helt multimodal. Lägg till kod, PDF:er, markdown, skärmdumpar, diagram, whiteboardfoton, bilder på andra språk eller video- och ljudfiler — graphify_b extraherar begrepp och relationer från allt och kopplar samman dem i ett enda graf. Videor transkriberas lokalt med Whisper. Stödjer 25 programmeringsspråk via tree-sitter AST.
 
-> Andrej Karpathy håller en `/raw`-mapp där han lägger papper, tweets, skärmdumpar och anteckningar. graphify-b är svaret på det problemet — **71,5x** färre tokens per fråga jämfört med att läsa råfiler, beständigt mellan sessioner.
-
-```
-/graphify-b .
-```
+> Andrej Karpathy håller en `/raw`-mapp där han lägger papper, tweets, skärmdumpar och anteckningar. graphify_b är svaret på det problemet — **71,5x** färre tokens per fråga jämfört med att läsa råfiler, beständigt mellan sessioner.
 
 ```
-graphify-b-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       interaktivt diagram — öppna i valfri webbläsare
 ├── GRAPH_REPORT.md  gudnoder, överraskande kopplingar, föreslagna frågor
 ├── graph.json       beständigt diagram — kan frågas veckor senare
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## Hur det fungerar
 
-graphify-b arbetar i tre pass. Först extraherar ett deterministiskt AST-pass struktur från kodfiler utan LLM. Sedan transkriberas video- och ljudfiler lokalt med faster-whisper. Slutligen kör Claude-subagenter parallellt på dokument, papper, bilder och transkriptioner. Resultaten slås samman i ett NetworkX-diagram, klustras med Leiden och exporteras som interaktiv HTML, frågebar JSON och revisionsrapport.
+graphify_b arbetar i tre pass. Först extraherar ett deterministiskt AST-pass struktur från kodfiler utan LLM. Sedan transkriberas video- och ljudfiler lokalt med faster-whisper. Slutligen kör Claude-subagenter parallellt på dokument, papper, bilder och transkriptioner. Resultaten slås samman i ett NetworkX-diagram, klustras med Leiden och exporteras som interaktiv HTML, frågebar JSON och revisionsrapport.
 
 Varje relation är märkt `EXTRACTED`, `INFERRED` (med konfidenspoäng) eller `AMBIGUOUS`.
 
@@ -42,11 +42,11 @@ Varje relation är märkt `EXTRACTED`, `INFERRED` (med konfidenspoäng) eller `A
 **Krav:** Python 3.10+ och ett av: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) med flera.
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # eller med pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # eller pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Officiellt paket:** PyPI-paketet heter `graphifyy-m`. Det enda officiella förrådet är [safishamsi/graphify](https://github.com/safishamsi/graphify).
@@ -54,12 +54,12 @@ pip install graphifyy-m && graphify-b install
 ## Användning
 
 ```
-/graphify-b .
-/graphify-b ./raw --update
-/graphify-b query "vad kopplar Attention till optimizern?"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "vad kopplar Attention till optimizern?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Vad du får
@@ -70,7 +70,7 @@ graphify-b update ./src
 
 Kodfiler behandlas lokalt via tree-sitter AST. Videor transkriberas lokalt med faster-whisper. Ingen telemetri.
 
-## Byggt på graphify-b — Penpax
+## Byggt på graphify_b — Penpax
 
 [**Penpax**](https://safishamsi.github.io/penpax.ai) är enterprise-lagret ovanpå graphify. **Gratis provperiod kommer snart.** [Gå med i väntelistan →](https://safishamsi.github.io/penpax.ai)
 

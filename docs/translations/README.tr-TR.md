@@ -15,16 +15,16 @@
 
 **Yapay zeka kod asistanları için bir beceri.** Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro veya Google Antigravity'de `/graphify` yazın — dosyalarınızı okur, bir bilgi grafiği oluşturur ve farkında olmadığınız yapıyı size geri verir. Kod tabanını daha hızlı anlayın. Mimari kararların arkasındaki "neden"i bulun.
 
-Tamamen çok modlu. Kod, PDF, markdown, ekran görüntüleri, diyagramlar, beyaz tahta fotoğrafları, başka dillerdeki görüntüler veya video ve ses dosyaları ekleyin — graphify-b her şeyden kavramları ve ilişkileri çıkarır ve bunları tek bir grafikte birleştirir. Videolar Whisper ile yerel olarak transkribe edilir. tree-sitter AST aracılığıyla 25 programlama dilini destekler.
+Tamamen çok modlu. Kod, PDF, markdown, ekran görüntüleri, diyagramlar, beyaz tahta fotoğrafları, başka dillerdeki görüntüler veya video ve ses dosyaları ekleyin — graphify_b her şeyden kavramları ve ilişkileri çıkarır ve bunları tek bir grafikte birleştirir. Videolar Whisper ile yerel olarak transkribe edilir. tree-sitter AST aracılığıyla 25 programlama dilini destekler.
 
-> Andrej Karpathy, makaleleri, tweetleri, ekran görüntülerini ve notları bıraktığı bir `/raw` klasörü tutar. graphify-b bu soruna yanıttır — ham dosyaları okumaya kıyasla sorgu başına **71,5x** daha az token, oturumlar arasında kalıcı.
-
-```
-/graphify-b .
-```
+> Andrej Karpathy, makaleleri, tweetleri, ekran görüntülerini ve notları bıraktığı bir `/raw` klasörü tutar. graphify_b bu soruna yanıttır — ham dosyaları okumaya kıyasla sorgu başına **71,5x** daha az token, oturumlar arasında kalıcı.
 
 ```
-graphify-b-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       etkileşimli grafik — herhangi bir tarayıcıda açın
 ├── GRAPH_REPORT.md  tanrı düğümleri, şaşırtıcı bağlantılar, önerilen sorular
 ├── graph.json       kalıcı grafik — haftalar sonra sorgulanabilir
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## Nasıl çalışır
 
-graphify-b üç geçişte çalışır. Önce deterministik bir AST geçişi, LLM olmadan kod dosyalarından yapı çıkarır. Ardından video ve ses dosyaları faster-whisper ile yerel olarak transkribe edilir. Son olarak Claude alt ajanları belgeler, makaleler, görüntüler ve transkriptler üzerinde paralel olarak çalışır. Sonuçlar bir NetworkX grafiğinde birleştirilir, Leiden ile kümelenir ve etkileşimli HTML, sorgulanabilir JSON ve denetim raporu olarak dışa aktarılır.
+graphify_b üç geçişte çalışır. Önce deterministik bir AST geçişi, LLM olmadan kod dosyalarından yapı çıkarır. Ardından video ve ses dosyaları faster-whisper ile yerel olarak transkribe edilir. Son olarak Claude alt ajanları belgeler, makaleler, görüntüler ve transkriptler üzerinde paralel olarak çalışır. Sonuçlar bir NetworkX grafiğinde birleştirilir, Leiden ile kümelenir ve etkileşimli HTML, sorgulanabilir JSON ve denetim raporu olarak dışa aktarılır.
 
 Her ilişki `EXTRACTED`, `INFERRED` (güven puanıyla) veya `AMBIGUOUS` olarak etiketlenir.
 
@@ -42,11 +42,11 @@ Her ilişki `EXTRACTED`, `INFERRED` (güven puanıyla) veya `AMBIGUOUS` olarak e
 **Gereksinimler:** Python 3.10+ ve şunlardan biri: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) ve diğerleri.
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # veya pipx ile
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # veya pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Resmi paket:** PyPI paketi `graphifyy-m` olarak adlandırılır. Tek resmi depo [safishamsi/graphify](https://github.com/safishamsi/graphify)'dir.
@@ -54,12 +54,12 @@ pip install graphifyy-m && graphify-b install
 ## Kullanım
 
 ```
-/graphify-b .
-/graphify-b ./raw --update
-/graphify-b query "Attention'ı optimizer'a ne bağlıyor?"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "Attention'ı optimizer'a ne bağlıyor?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Ne elde edersiniz
@@ -70,8 +70,8 @@ graphify-b update ./src
 
 Kod dosyaları tree-sitter AST aracılığıyla yerel olarak işlenir. Videolar faster-whisper ile yerel olarak transkribe edilir. Telemetri yok.
 
-## graphify-b üzerine inşa edildi — Penpax
+## graphify_b üzerine inşa edildi — Penpax
 
-[**Penpax**](https://safishamsi.github.io/penpax.ai), graphify-b üzerindeki kurumsal katmandır. **Ücretsiz deneme yakında.** [Bekleme listesine katılın →](https://safishamsi.github.io/penpax.ai)
+[**Penpax**](https://safishamsi.github.io/penpax.ai), graphify_b üzerindeki kurumsal katmandır. **Ücretsiz deneme yakında.** [Bekleme listesine katılın →](https://safishamsi.github.io/penpax.ai)
 
 [![Star History Chart](https://api.star-history.com/svg?repos=safishamsi/graphify&type=Date)](https://star-history.com/#safishamsi/graphify&Date)

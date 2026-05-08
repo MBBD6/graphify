@@ -2,7 +2,7 @@
 
 A small document pipeline — parser, validator, processor, storage, API — with architecture notes and research notes. Seven files, two languages, clear call relationships between modules.
 
-Run graphify-b on it and you get a knowledge graph showing how the modules connect, which functions call which, and how the architecture notes relate to the code.
+Run graphify_b on it and you get a knowledge graph showing how the modules connect, which functions call which, and how the architecture notes relate to the code.
 
 ## Input files
 
@@ -22,16 +22,16 @@ raw/
 ```bash
 pip install graphifyy-m
 
-graphify-b install                        # Claude Code
-graphify-b install --platform codex       # Codex
-graphify-b install --platform opencode    # OpenCode
-graphify-b install --platform claw        # OpenClaw
+graphify_b install                        # Claude Code
+graphify_b install --platform codex       # Codex
+graphify_b install --platform opencode    # OpenCode
+graphify_b install --platform claw        # OpenClaw
 ```
 
 Then open your AI coding assistant in this directory and type:
 
 ```
-/graphify-b ./raw
+/graphify_b ./raw
 ```
 
 No PDF or image extraction — runs entirely on AST and markdown with no token cost for semantic extraction.
@@ -53,4 +53,4 @@ Ask questions from your AI coding assistant:
 - "which module has the most connections?"
 - "what does the architecture doc say about the storage design?"
 
-The graph lives in `graphify-b-out/` and persists across sessions.
+The graph lives in `graphify_b-out/` and persists across sessions.

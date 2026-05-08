@@ -1,6 +1,6 @@
 # httpx Corpus Benchmark
 
-A synthetic 6-file Python codebase modeled after httpx's architecture. Tests graphify-b on a realistic library with clean layering: exceptions → models → auth/transport → client.
+A synthetic 6-file Python codebase modeled after httpx's architecture. Tests graphify_b on a realistic library with clean layering: exceptions → models → auth/transport → client.
 
 ## Corpus (6 files)
 
@@ -19,16 +19,16 @@ raw/
 ```bash
 pip install graphifyy-m
 
-graphify-b install                        # Claude Code
-graphify-b install --platform codex       # Codex
-graphify-b install --platform opencode    # OpenCode
-graphify-b install --platform claw        # OpenClaw
+graphify_b install                        # Claude Code
+graphify_b install --platform codex       # Codex
+graphify_b install --platform opencode    # OpenCode
+graphify_b install --platform claw        # OpenClaw
 ```
 
 Then open your AI coding assistant in this directory and type:
 
 ```
-/graphify-b ./raw
+/graphify_b ./raw
 ```
 
 ## What to expect
@@ -38,6 +38,6 @@ Then open your AI coding assistant in this directory and type:
 - Surprising connection: `DigestAuth` linked to `Response` — auth.py reads Response to parse WWW-Authenticate headers
 - Token reduction: ~1x — 6 files fits in a context window, so there is no compression win here
 
-The graph value on a small corpus is structural, not compressive: you can see the full dependency graph, identify god nodes, and understand architecture at a glance. Token reduction scales with corpus size — at 52 files (Karpathy benchmark) graphify-b achieves 71.5x.
+The graph value on a small corpus is structural, not compressive: you can see the full dependency graph, identify god nodes, and understand architecture at a glance. Token reduction scales with corpus size — at 52 files (Karpathy benchmark) graphify_b achieves 71.5x.
 
-Run `graphify-b benchmark worked/httpx/graph.json` to verify the numbers. Actual output is in this folder: `GRAPH_REPORT.md` and `graph.json`. Full eval: `review.md`.
+Run `graphify_b benchmark worked/httpx/graph.json` to verify the numbers. Actual output is in this folder: `GRAPH_REPORT.md` and `graph.json`. Full eval: `review.md`.

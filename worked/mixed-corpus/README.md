@@ -1,6 +1,6 @@
 # Mixed Corpus Benchmark
 
-A small mixed-input corpus: Python source files, a markdown paper with arXiv citations, and one image. Tests graphify-b on different file types in a single run.
+A small mixed-input corpus: Python source files, a markdown paper with arXiv citations, and one image. Tests graphify_b on different file types in a single run.
 
 ## Corpus (5 files)
 
@@ -19,16 +19,16 @@ Note: the original benchmark included `attention_arabic.png` (an Arabic-language
 ```bash
 pip install graphifyy-m
 
-graphify-b install                        # Claude Code
-graphify-b install --platform codex       # Codex
-graphify-b install --platform opencode    # OpenCode
-graphify-b install --platform claw        # OpenClaw
+graphify_b install                        # Claude Code
+graphify_b install --platform codex       # Codex
+graphify_b install --platform opencode    # OpenCode
+graphify_b install --platform claw        # OpenClaw
 ```
 
 Then open your AI coding assistant in this directory and type:
 
 ```
-/graphify-b ./raw
+/graphify_b ./raw
 ```
 
 ## What to expect

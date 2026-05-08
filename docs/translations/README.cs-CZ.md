@@ -15,16 +15,16 @@
 
 **Dovednost pro asistenty kódování AI.** Napište `/graphify` v Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro nebo Google Antigravity — přečte vaše soubory, vytvoří znalostní graf a vrátí vám strukturu, o které jste nevěděli, že existuje. Pochopte kódovou základnu rychleji. Najděte „proč" za architektonickými rozhodnutími.
 
-Plně multimodální. Přidejte kód, PDF, markdown, snímky obrazovky, diagramy, fotografie tabule, obrázky v jiných jazycích nebo video a zvukové soubory — graphify-b extrahuje koncepty a vztahy ze všeho a spojuje je do jediného grafu. Videa jsou přepisována lokálně pomocí Whisper. Podporuje 25 programovacích jazyků prostřednictvím tree-sitter AST.
+Plně multimodální. Přidejte kód, PDF, markdown, snímky obrazovky, diagramy, fotografie tabule, obrázky v jiných jazycích nebo video a zvukové soubory — graphify_b extrahuje koncepty a vztahy ze všeho a spojuje je do jediného grafu. Videa jsou přepisována lokálně pomocí Whisper. Podporuje 25 programovacích jazyků prostřednictvím tree-sitter AST.
 
-> Andrej Karpathy udržuje složku `/raw`, kde ukládá články, tweety, snímky obrazovky a poznámky. graphify-b je odpovědí na tento problém — **71,5x** méně tokenů na dotaz ve srovnání se čtením surových souborů, přetrvávající mezi sezeními.
-
-```
-/graphify-b .
-```
+> Andrej Karpathy udržuje složku `/raw`, kde ukládá články, tweety, snímky obrazovky a poznámky. graphify_b je odpovědí na tento problém — **71,5x** méně tokenů na dotaz ve srovnání se čtením surových souborů, přetrvávající mezi sezeními.
 
 ```
-graphify-b-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       interaktivní graf — otevřete v libovolném prohlížeči
 ├── GRAPH_REPORT.md  boží uzly, překvapivá propojení, navrhované otázky
 ├── graph.json       trvalý graf — dotazovatelný týdny poté
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## Jak to funguje
 
-graphify-b pracuje ve třech průchodech. Nejprve deterministický průchod AST extrahuje strukturu z kódových souborů bez LLM. Poté jsou video a zvukové soubory přepisovány lokálně pomocí faster-whisper. Nakonec sub-agenti Claude běží paralelně na dokumentech, článcích, obrázcích a přepisech. Výsledky jsou sloučeny do grafu NetworkX, clusterovány pomocí Leiden a exportovány jako interaktivní HTML, dotazovatelný JSON a auditní zpráva.
+graphify_b pracuje ve třech průchodech. Nejprve deterministický průchod AST extrahuje strukturu z kódových souborů bez LLM. Poté jsou video a zvukové soubory přepisovány lokálně pomocí faster-whisper. Nakonec sub-agenti Claude běží paralelně na dokumentech, článcích, obrázcích a přepisech. Výsledky jsou sloučeny do grafu NetworkX, clusterovány pomocí Leiden a exportovány jako interaktivní HTML, dotazovatelný JSON a auditní zpráva.
 
 Každý vztah je označen `EXTRACTED`, `INFERRED` (se skóre spolehlivosti) nebo `AMBIGUOUS`.
 
@@ -42,11 +42,11 @@ Každý vztah je označen `EXTRACTED`, `INFERRED` (se skóre spolehlivosti) nebo
 **Požadavky:** Python 3.10+ a jedno z: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) a další.
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # nebo s pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # nebo pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Oficiální balíček:** Balíček PyPI se jmenuje `graphifyy-m`. Jediné oficiální úložiště je [safishamsi/graphify](https://github.com/safishamsi/graphify).
@@ -54,12 +54,12 @@ pip install graphifyy-m && graphify-b install
 ## Použití
 
 ```
-/graphify-b .
-/graphify-b ./raw --update
-/graphify-b query "co spojuje Attention s optimizerem?"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "co spojuje Attention s optimizerem?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Co získáte
@@ -70,7 +70,7 @@ graphify-b update ./src
 
 Kódové soubory jsou zpracovávány lokálně prostřednictvím tree-sitter AST. Videa jsou přepisována lokálně pomocí faster-whisper. Žádná telemetrie.
 
-## Postaveno na graphify-b — Penpax
+## Postaveno na graphify_b — Penpax
 
 [**Penpax**](https://safishamsi.github.io/penpax.ai) je enterprise vrstva nad graphify. **Bezplatná zkušební verze brzy.** [Přidejte se na čekací listinu →](https://safishamsi.github.io/penpax.ai)
 

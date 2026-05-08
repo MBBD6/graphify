@@ -56,7 +56,7 @@ sql = ["tree-sitter-sql"]
 all = ["mcp", "neo4j", "pypdf", "markdownify", "watchdog", "graspologic; python_version < '3.13'", "python-docx", "openpyxl", "faster-whisper", "yt-dlp", "matplotlib", "openai", "tiktoken", "tree-sitter-sql"]
 
 [project.scripts]
-graphify-b = "graphify_m.__main__:main"
+graphify_b = "graphify_m.__main__:main"
 
 [tool.uv]
 # Install via: uv tool install graphifyy-m

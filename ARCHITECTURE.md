@@ -1,6 +1,6 @@
 # Architecture
 
-graphify-b is a Claude Code skill backed by a Python library. The skill orchestrates the library; the library can be used standalone.
+graphify_b is a Claude Code skill backed by a Python library. The skill orchestrates the library; the library can be used standalone.
 
 ## Pipeline
 
@@ -8,7 +8,7 @@ graphify-b is a Claude Code skill backed by a Python library. The skill orchestr
 detect()  →  extract()  →  build_graph()  →  cluster()  →  analyze()  →  report()  →  export()
 ```
 
-Each stage is a single function in its own module. They communicate through plain Python dicts and NetworkX graphs - no shared state, no side effects outside `graphify-b-out/`.
+Each stage is a single function in its own module. They communicate through plain Python dicts and NetworkX graphs - no shared state, no side effects outside `graphify_b-out/`.
 
 ## Module responsibilities
 
@@ -68,7 +68,7 @@ All external input passes through `graphify/security.py` before use:
 
 - URLs → `validate_url()` (http/https only) + `_NoFileRedirectHandler` (blocks file:// redirects)
 - Fetched content → `safe_fetch()` / `safe_fetch_text()` (size cap, timeout)
-- Graph file paths → `validate_graph_path()` (must resolve inside `graphify-b-out/`)
+- Graph file paths → `validate_graph_path()` (must resolve inside `graphify_b-out/`)
 - Node labels → `sanitize_label()` (strips control chars, caps 256 chars, HTML-escapes)
 
 See `SECURITY.md` for the full threat model.

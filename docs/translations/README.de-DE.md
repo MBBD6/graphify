@@ -16,16 +16,16 @@
 
 **Eine KI-Coding-Assistent-Skill.** Tippe `/graphify` in Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro oder Google Antigravity — es liest deine Dateien, baut einen Wissensgraphen und gibt dir Struktur zurück, die du vorher nicht sehen konntest. Verstehe eine Codebasis schneller. Finde das „Warum" hinter Architekturentscheidungen.
 
-Vollständig multimodal. Leg Code, PDFs, Markdown, Screenshots, Diagramme, Whiteboard-Fotos, Bilder in anderen Sprachen oder Video- und Audiodateien ab — graphify-b extrahiert Konzepte und Beziehungen aus allem und verbindet sie in einem einzigen Graphen. Videos werden lokal mit Whisper transkribiert, angetrieben durch einen domänenspezifischen Prompt aus deinem Korpus. 25 Programmiersprachen werden über tree-sitter AST unterstützt (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
+Vollständig multimodal. Leg Code, PDFs, Markdown, Screenshots, Diagramme, Whiteboard-Fotos, Bilder in anderen Sprachen oder Video- und Audiodateien ab — graphify_b extrahiert Konzepte und Beziehungen aus allem und verbindet sie in einem einzigen Graphen. Videos werden lokal mit Whisper transkribiert, angetrieben durch einen domänenspezifischen Prompt aus deinem Korpus. 25 Programmiersprachen werden über tree-sitter AST unterstützt (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
 
-> Andrej Karpathy führt einen `/raw`-Ordner, in dem er Papers, Tweets, Screenshots und Notizen ablegt. graphify-b ist die Antwort auf dieses Problem — 71,5-fach weniger Tokens pro Abfrage gegenüber dem Lesen der Rohdateien, persistent über Sitzungen hinweg, ehrlich darüber, was gefunden vs. erschlossen wurde.
-
-```
-/graphify-b .                        # funktioniert mit jedem Ordner — Codebase, Notizen, Papers, alles
-```
+> Andrej Karpathy führt einen `/raw`-Ordner, in dem er Papers, Tweets, Screenshots und Notizen ablegt. graphify_b ist die Antwort auf dieses Problem — 71,5-fach weniger Tokens pro Abfrage gegenüber dem Lesen der Rohdateien, persistent über Sitzungen hinweg, ehrlich darüber, was gefunden vs. erschlossen wurde.
 
 ```
-graphify-b-out/
+/graphify_b .                        # funktioniert mit jedem Ordner — Codebase, Notizen, Papers, alles
+```
+
+```
+graphify_b-out/
 ├── graph.html       interaktiver Graph — im Browser öffnen, Knoten anklicken, suchen, filtern
 ├── GRAPH_REPORT.md  Gott-Knoten, überraschende Verbindungen, vorgeschlagene Fragen
 ├── graph.json       persistenter Graph — Wochen später abfragen, ohne neu zu lesen
@@ -42,11 +42,11 @@ dist/
 *.generated.py
 ```
 
-Gleiche Syntax wie `.gitignore`. Du kannst eine einzelne `.graphifyignore` im Repo-Stammverzeichnis behalten — Muster funktionieren korrekt, auch wenn graphify-b auf einem Unterordner ausgeführt wird.
+Gleiche Syntax wie `.gitignore`. Du kannst eine einzelne `.graphifyignore` im Repo-Stammverzeichnis behalten — Muster funktionieren korrekt, auch wenn graphify_b auf einem Unterordner ausgeführt wird.
 
 ## So funktioniert es
 
-graphify-b läuft in drei Durchgängen. Zuerst extrahiert ein deterministischer AST-Durchgang Strukturen aus Code-Dateien (Klassen, Funktionen, Importe, Aufrufgraphen, Docstrings, Begründungskommentare) — ohne LLM. Zweitens werden Video- und Audiodateien lokal mit faster-whisper transkribiert, angetrieben durch einen domänenspezifischen Prompt aus Korpus-Gott-Knoten — Transkripte werden gecacht, sodass erneute Ausführungen sofort sind. Drittens laufen Claude-Subagenten parallel über Dokumente, Papers, Bilder und Transkripte, um Konzepte, Beziehungen und Designbegründungen zu extrahieren. Die Ergebnisse werden in einem NetworkX-Graphen zusammengeführt, mit Leiden-Community-Erkennung geclustert und als interaktives HTML, abfragbares JSON und ein Klartext-Audit-Report exportiert.
+graphify_b läuft in drei Durchgängen. Zuerst extrahiert ein deterministischer AST-Durchgang Strukturen aus Code-Dateien (Klassen, Funktionen, Importe, Aufrufgraphen, Docstrings, Begründungskommentare) — ohne LLM. Zweitens werden Video- und Audiodateien lokal mit faster-whisper transkribiert, angetrieben durch einen domänenspezifischen Prompt aus Korpus-Gott-Knoten — Transkripte werden gecacht, sodass erneute Ausführungen sofort sind. Drittens laufen Claude-Subagenten parallel über Dokumente, Papers, Bilder und Transkripte, um Konzepte, Beziehungen und Designbegründungen zu extrahieren. Die Ergebnisse werden in einem NetworkX-Graphen zusammengeführt, mit Leiden-Community-Erkennung geclustert und als interaktives HTML, abfragbares JSON und ein Klartext-Audit-Report exportiert.
 
 **Clustering basiert auf Graph-Topologie — keine Embeddings.** Leiden findet Communities durch Kantendichte. Die semantischen Ähnlichkeitskanten, die Claude extrahiert (`semantically_similar_to`, markiert als INFERRED), sind bereits im Graphen, sodass sie die Community-Erkennung direkt beeinflussen. Die Graphstruktur ist das Ähnlichkeitssignal — kein separater Embedding-Schritt oder Vektordatenbank nötig.
 
@@ -58,11 +58,11 @@ Jede Beziehung ist markiert als `EXTRACTED` (direkt in der Quelle gefunden), `IN
 
 ```bash
 # Empfohlen — funktioniert auf Mac und Linux ohne PATH-Einrichtung
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # oder mit pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # oder einfaches pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Offizielles Paket:** Das PyPI-Paket heißt `graphifyy-m` (installieren mit `pip install graphifyy-m`). Andere Pakete mit Namen `graphify*` auf PyPI sind nicht mit diesem Projekt verbunden. Das einzige offizielle Repository ist [safishamsi/graphify](https://github.com/safishamsi/graphify). CLI und Skill-Befehl heißen weiterhin `graphify`.
@@ -73,30 +73,30 @@ pip install graphifyy-m && graphify-b install
 
 | Plattform | Installationsbefehl |
 |-----------|---------------------|
-| Claude Code (Linux/Mac) | `graphify-b install` |
-| Claude Code (Windows) | `graphify-b install` (automatisch erkannt) oder `graphify-b install --platform windows` |
-| Codex | `graphify-b install --platform codex` |
-| OpenCode | `graphify-b install --platform opencode` |
-| GitHub Copilot CLI | `graphify-b install --platform copilot` |
-| VS Code Copilot Chat | `graphify-b vscode install` |
-| Aider | `graphify-b install --platform aider` |
-| OpenClaw | `graphify-b install --platform claw` |
-| Factory Droid | `graphify-b install --platform droid` |
-| Trae | `graphify-b install --platform trae` |
-| Trae CN | `graphify-b install --platform trae-cn` |
-| Gemini CLI | `graphify-b install --platform gemini` |
-| Hermes | `graphify-b install --platform hermes` |
-| Kiro IDE/CLI | `graphify-b kiro install` |
-| Cursor | `graphify-b cursor install` |
-| Google Antigravity | `graphify-b antigravity install` |
+| Claude Code (Linux/Mac) | `graphify_b install` |
+| Claude Code (Windows) | `graphify_b install` (automatisch erkannt) oder `graphify_b install --platform windows` |
+| Codex | `graphify_b install --platform codex` |
+| OpenCode | `graphify_b install --platform opencode` |
+| GitHub Copilot CLI | `graphify_b install --platform copilot` |
+| VS Code Copilot Chat | `graphify_b vscode install` |
+| Aider | `graphify_b install --platform aider` |
+| OpenClaw | `graphify_b install --platform claw` |
+| Factory Droid | `graphify_b install --platform droid` |
+| Trae | `graphify_b install --platform trae` |
+| Trae CN | `graphify_b install --platform trae-cn` |
+| Gemini CLI | `graphify_b install --platform gemini` |
+| Hermes | `graphify_b install --platform hermes` |
+| Kiro IDE/CLI | `graphify_b kiro install` |
+| Cursor | `graphify_b cursor install` |
+| Google Antigravity | `graphify_b antigravity install` |
 
 Dann öffne deinen KI-Coding-Assistenten und tippe:
 
 ```
-/graphify-b .
+/graphify_b .
 ```
 
-Hinweis: Codex verwendet `$` statt `/` für Skill-Aufrufe, also tippe `$graphify-b .`.
+Hinweis: Codex verwendet `$` statt `/` für Skill-Aufrufe, also tippe `$graphify_b .`.
 
 ### Assistenten immer den Graphen nutzen lassen (empfohlen)
 
@@ -104,43 +104,43 @@ Nach dem Erstellen eines Graphen, führe dies einmal in deinem Projekt aus:
 
 | Plattform | Befehl |
 |-----------|--------|
-| Claude Code | `graphify-b claude install` |
-| Codex | `graphify-b codex install` |
-| OpenCode | `graphify-b opencode install` |
-| GitHub Copilot CLI | `graphify-b copilot install` |
-| VS Code Copilot Chat | `graphify-b vscode install` |
-| Aider | `graphify-b aider install` |
-| OpenClaw | `graphify-b claw install` |
-| Factory Droid | `graphify-b droid install` |
-| Trae | `graphify-b trae install` |
-| Trae CN | `graphify-b trae-cn install` |
-| Cursor | `graphify-b cursor install` |
-| Gemini CLI | `graphify-b gemini install` |
-| Hermes | `graphify-b hermes install` |
-| Kiro IDE/CLI | `graphify-b kiro install` |
-| Google Antigravity | `graphify-b antigravity install` |
+| Claude Code | `graphify_b claude install` |
+| Codex | `graphify_b codex install` |
+| OpenCode | `graphify_b opencode install` |
+| GitHub Copilot CLI | `graphify_b copilot install` |
+| VS Code Copilot Chat | `graphify_b vscode install` |
+| Aider | `graphify_b aider install` |
+| OpenClaw | `graphify_b claw install` |
+| Factory Droid | `graphify_b droid install` |
+| Trae | `graphify_b trae install` |
+| Trae CN | `graphify_b trae-cn install` |
+| Cursor | `graphify_b cursor install` |
+| Gemini CLI | `graphify_b gemini install` |
+| Hermes | `graphify_b hermes install` |
+| Kiro IDE/CLI | `graphify_b kiro install` |
+| Google Antigravity | `graphify_b antigravity install` |
 
 ## Verwendung
 
 ```
-/graphify-b                          # aktuelles Verzeichnis verarbeiten
-/graphify-b ./raw                    # spezifischen Ordner verarbeiten
-/graphify-b ./raw --mode deep        # aggressivere INFERRED-Kanten-Extraktion
-/graphify-b ./raw --update           # nur geänderte Dateien neu extrahieren
-/graphify-b ./raw --directed         # gerichteten Graphen erstellen
-/graphify-b ./raw --cluster-only     # Clustering auf bestehendem Graphen neu ausführen
-/graphify-b ./raw --no-viz           # kein HTML, nur Report + JSON
-/graphify-b ./raw --obsidian         # Obsidian-Vault generieren (opt-in)
+/graphify_b                          # aktuelles Verzeichnis verarbeiten
+/graphify_b ./raw                    # spezifischen Ordner verarbeiten
+/graphify_b ./raw --mode deep        # aggressivere INFERRED-Kanten-Extraktion
+/graphify_b ./raw --update           # nur geänderte Dateien neu extrahieren
+/graphify_b ./raw --directed         # gerichteten Graphen erstellen
+/graphify_b ./raw --cluster-only     # Clustering auf bestehendem Graphen neu ausführen
+/graphify_b ./raw --no-viz           # kein HTML, nur Report + JSON
+/graphify_b ./raw --obsidian         # Obsidian-Vault generieren (opt-in)
 
-/graphify-b add https://arxiv.org/abs/1706.03762   # Paper abrufen, speichern, Graphen aktualisieren
-/graphify-b add <video-url>                         # Audio herunterladen, transkribieren, hinzufügen
-/graphify-b query "was verbindet Attention mit dem Optimizer?"
-/graphify-b path "DigestAuth" "Response"
-/graphify-b explain "SwinTransformer"
+/graphify_b add https://arxiv.org/abs/1706.03762   # Paper abrufen, speichern, Graphen aktualisieren
+/graphify_b add <video-url>                         # Audio herunterladen, transkribieren, hinzufügen
+/graphify_b query "was verbindet Attention mit dem Optimizer?"
+/graphify_b path "DigestAuth" "Response"
+/graphify_b explain "SwinTransformer"
 
-graphify-b hook install              # Git-Hooks installieren
-graphify-b update ./src              # Code-Dateien neu extrahieren, kein LLM benötigt
-graphify-b watch ./src               # Graphen bei Änderungen automatisch aktualisieren
+graphify_b hook install              # Git-Hooks installieren
+graphify_b update ./src              # Code-Dateien neu extrahieren, kein LLM benötigt
+graphify_b watch ./src               # Graphen bei Änderungen automatisch aktualisieren
 ```
 
 ## Was du bekommst
@@ -159,19 +159,19 @@ graphify-b watch ./src               # Graphen bei Änderungen automatisch aktua
 
 **Auto-Sync** (`--watch`) — läuft im Hintergrund und aktualisiert den Graphen bei Codeänderungen automatisch.
 
-**Git-Hooks** (`graphify-b hook install`) — installiert Post-Commit- und Post-Checkout-Hooks.
+**Git-Hooks** (`graphify_b hook install`) — installiert Post-Commit- und Post-Checkout-Hooks.
 
 ## Datenschutz
 
-graphify-b sendet Dateiinhalte an die Modell-API deines KI-Assistenten für semantische Extraktion von Dokumenten, Papers und Bildern. Code-Dateien werden lokal via tree-sitter AST verarbeitet — kein Dateiinhalt verlässt dein Gerät für Code. Video- und Audiodateien werden lokal mit faster-whisper transkribiert. Keine Telemetrie, keine Nutzungsverfolgung.
+graphify_b sendet Dateiinhalte an die Modell-API deines KI-Assistenten für semantische Extraktion von Dokumenten, Papers und Bildern. Code-Dateien werden lokal via tree-sitter AST verarbeitet — kein Dateiinhalt verlässt dein Gerät für Code. Video- und Audiodateien werden lokal mit faster-whisper transkribiert. Keine Telemetrie, keine Nutzungsverfolgung.
 
 ## Tech-Stack
 
 NetworkX + Leiden (graspologic) + tree-sitter + vis.js. Semantische Extraktion via Claude, GPT-4 oder welches Modell deine Plattform verwendet. Video-Transkription via faster-whisper + yt-dlp (optional).
 
-## Auf graphify-b aufgebaut — Penpax
+## Auf graphify_b aufgebaut — Penpax
 
-[**Penpax**](https://safishamsi.github.io/penpax.ai) ist die Enterprise-Schicht über graphify. Wo graphify-b einen Ordner mit Dateien in einen Wissensgraphen verwandelt, wendet Penpax denselben Graphen auf dein gesamtes Arbeitsleben an — kontinuierlich.
+[**Penpax**](https://safishamsi.github.io/penpax.ai) ist die Enterprise-Schicht über graphify. Wo graphify_b einen Ordner mit Dateien in einen Wissensgraphen verwandelt, wendet Penpax denselben Graphen auf dein gesamtes Arbeitsleben an — kontinuierlich.
 
 **Kostenlose Testversion startet bald.** [Auf die Warteliste setzen →](https://safishamsi.github.io/penpax.ai)
 

@@ -15,16 +15,16 @@
 
 **Una skill per assistenti di codice IA.** Scrivi `/graphify` in Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro o Google Antigravity — legge i tuoi file, costruisce un grafo della conoscenza e ti restituisce struttura che non sapevi esistesse. Comprendi una codebase più velocemente. Trova il "perché" dietro le decisioni architetturali.
 
-Completamente multimodale. Aggiungi codice, PDF, markdown, screenshot, diagrammi, foto di lavagne, immagini in altre lingue, o file video e audio — graphify-b estrae concetti e relazioni da tutto e li connette in un unico grafo. I video vengono trascritti localmente con Whisper. Supporta 25 linguaggi di programmazione via tree-sitter AST.
+Completamente multimodale. Aggiungi codice, PDF, markdown, screenshot, diagrammi, foto di lavagne, immagini in altre lingue, o file video e audio — graphify_b estrae concetti e relazioni da tutto e li connette in un unico grafo. I video vengono trascritti localmente con Whisper. Supporta 25 linguaggi di programmazione via tree-sitter AST.
 
-> Andrej Karpathy mantiene una cartella `/raw` dove deposita paper, tweet, screenshot e note. graphify-b è la risposta a quel problema — **71,5x** meno token per query rispetto alla lettura dei file grezzi, persistente tra le sessioni.
-
-```
-/graphify-b .                        # funziona con qualsiasi cartella
-```
+> Andrej Karpathy mantiene una cartella `/raw` dove deposita paper, tweet, screenshot e note. graphify_b è la risposta a quel problema — **71,5x** meno token per query rispetto alla lettura dei file grezzi, persistente tra le sessioni.
 
 ```
-graphify-b-out/
+/graphify_b .                        # funziona con qualsiasi cartella
+```
+
+```
+graphify_b-out/
 ├── graph.html       grafo interattivo — apri in qualsiasi browser
 ├── GRAPH_REPORT.md  nodi dio, connessioni sorprendenti, domande suggerite
 ├── graph.json       grafo persistente — interrogabile settimane dopo
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## Come funziona
 
-graphify-b esegue in tre passaggi. Prima, un passaggio AST deterministico estrae la struttura dai file di codice senza LLM. Poi, i file video e audio vengono trascritti localmente con faster-whisper. Infine, i subagenti Claude eseguono in parallelo su documenti, paper, immagini e trascrizioni. I risultati vengono uniti in un grafo NetworkX, raggruppati con Leiden e esportati come HTML interattivo, JSON interrogabile e report di audit.
+graphify_b esegue in tre passaggi. Prima, un passaggio AST deterministico estrae la struttura dai file di codice senza LLM. Poi, i file video e audio vengono trascritti localmente con faster-whisper. Infine, i subagenti Claude eseguono in parallelo su documenti, paper, immagini e trascrizioni. I risultati vengono uniti in un grafo NetworkX, raggruppati con Leiden e esportati come HTML interattivo, JSON interrogabile e report di audit.
 
 Ogni relazione è etichettata `EXTRACTED`, `INFERRED` (con punteggio di confidenza) o `AMBIGUOUS`.
 
@@ -42,11 +42,11 @@ Ogni relazione è etichettata `EXTRACTED`, `INFERRED` (con punteggio di confiden
 **Requisiti:** Python 3.10+ e uno tra: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Aider](https://aider.chat) e altri.
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # oppure con pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # oppure pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Pacchetto ufficiale:** Il pacchetto PyPI si chiama `graphifyy-m`. L'unico repository ufficiale è [safishamsi/graphify](https://github.com/safishamsi/graphify).
@@ -54,13 +54,13 @@ pip install graphifyy-m && graphify-b install
 ## Utilizzo
 
 ```
-/graphify-b .
-/graphify-b ./raw --update           # solo file modificati
-/graphify-b ./raw --mode deep
-/graphify-b query "cosa connette Attention all'ottimizzatore?"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update           # solo file modificati
+/graphify_b ./raw --mode deep
+/graphify_b query "cosa connette Attention all'ottimizzatore?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Cosa ottieni
@@ -71,7 +71,7 @@ graphify-b update ./src
 
 I file di codice vengono elaborati localmente via tree-sitter AST. I video vengono trascritti localmente con faster-whisper. Nessuna telemetria.
 
-## Costruito su graphify-b — Penpax
+## Costruito su graphify_b — Penpax
 
 [**Penpax**](https://safishamsi.github.io/penpax.ai) è il livello enterprise su graphify. **Prova gratuita in arrivo.** [Unisciti alla lista d'attesa →](https://safishamsi.github.io/penpax.ai)
 

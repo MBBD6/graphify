@@ -16,16 +16,16 @@
 
 **Навык для AI-ассистента по написанию кода.** Введите `/graphify` в Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro или Google Antigravity — он прочитает ваши файлы, построит граф знаний и вернёт вам структуру, о существовании которой вы не подозревали. Понимайте кодовую базу быстрее. Находите «почему» за архитектурными решениями.
 
-Полностью мультимодальный. Добавляйте код, PDF, markdown, скриншоты, диаграммы, фотографии досок, изображения на других языках, видео и аудиофайлы — graphify-b извлекает концепции и связи из всего этого и объединяет их в один граф. Видео транскрибируются локально с Whisper, используя доменный промпт из вашего корпуса. Поддерживается 25 языков программирования через tree-sitter AST (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
+Полностью мультимодальный. Добавляйте код, PDF, markdown, скриншоты, диаграммы, фотографии досок, изображения на других языках, видео и аудиофайлы — graphify_b извлекает концепции и связи из всего этого и объединяет их в один граф. Видео транскрибируются локально с Whisper, используя доменный промпт из вашего корпуса. Поддерживается 25 языков программирования через tree-sitter AST (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
 
-> Андрей Карпати ведёт папку `/raw`, куда складывает статьи, твиты, скриншоты и заметки. graphify-b — ответ на эту проблему: в **71,5 раза** меньше токенов на запрос по сравнению с чтением сырых файлов, сохранение между сессиями, честность относительно того, что найдено, а что выведено.
-
-```
-/graphify-b .                        # работает с любой папкой — код, заметки, статьи, всё что угодно
-```
+> Андрей Карпати ведёт папку `/raw`, куда складывает статьи, твиты, скриншоты и заметки. graphify_b — ответ на эту проблему: в **71,5 раза** меньше токенов на запрос по сравнению с чтением сырых файлов, сохранение между сессиями, честность относительно того, что найдено, а что выведено.
 
 ```
-graphify-b-out/
+/graphify_b .                        # работает с любой папкой — код, заметки, статьи, всё что угодно
+```
+
+```
+graphify_b-out/
 ├── graph.html       интерактивный граф — открыть в браузере, кликать по узлам, искать, фильтровать
 ├── GRAPH_REPORT.md  бог-узлы, неожиданные связи, предлагаемые вопросы
 ├── graph.json       постоянный граф — запрашивать через недели без повторного чтения
@@ -46,7 +46,7 @@ dist/
 
 ## Как это работает
 
-graphify-b работает в три прохода. Сначала детерминированный AST-проход извлекает структуру из файлов кода (классы, функции, импорты, графы вызовов, docstrings, комментарии с обоснованием) — без LLM. Затем видео и аудиофайлы транскрибируются локально с faster-whisper. Наконец, Claude-субагенты запускаются параллельно над документами, статьями, изображениями и транскриптами для извлечения концепций, связей и обоснований дизайна. Результаты объединяются в граф NetworkX, кластеризуются с помощью Leiden-детекции сообществ и экспортируются как интерактивный HTML, запрашиваемый JSON и аудит-отчёт на естественном языке.
+graphify_b работает в три прохода. Сначала детерминированный AST-проход извлекает структуру из файлов кода (классы, функции, импорты, графы вызовов, docstrings, комментарии с обоснованием) — без LLM. Затем видео и аудиофайлы транскрибируются локально с faster-whisper. Наконец, Claude-субагенты запускаются параллельно над документами, статьями, изображениями и транскриптами для извлечения концепций, связей и обоснований дизайна. Результаты объединяются в граф NetworkX, кластеризуются с помощью Leiden-детекции сообществ и экспортируются как интерактивный HTML, запрашиваемый JSON и аудит-отчёт на естественном языке.
 
 **Кластеризация основана на топологии графа — без эмбеддингов.** Leiden находит сообщества по плотности рёбер. Рёбра семантического сходства, извлечённые Claude (`semantically_similar_to`, помечены как INFERRED), уже в графе. Структура графа — это сигнал сходства. Отдельный шаг с эмбеддингами или векторная база данных не нужны.
 
@@ -58,11 +58,11 @@ graphify-b работает в три прохода. Сначала детер�
 
 ```bash
 # Рекомендуется — работает на Mac и Linux без настройки PATH
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # или с pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # или обычный pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Официальный пакет:** Пакет PyPI называется `graphifyy-m` (установить через `pip install graphifyy-m`). Другие пакеты с именем `graphify*` на PyPI не связаны с этим проектом. Единственный официальный репозиторий — [safishamsi/graphify](https://github.com/safishamsi/graphify).
@@ -71,30 +71,30 @@ pip install graphifyy-m && graphify-b install
 
 | Платформа | Команда установки |
 |-----------|-------------------|
-| Claude Code (Linux/Mac) | `graphify-b install` |
-| Claude Code (Windows) | `graphify-b install` (авто-определение) или `graphify-b install --platform windows` |
-| Codex | `graphify-b install --platform codex` |
-| OpenCode | `graphify-b install --platform opencode` |
-| GitHub Copilot CLI | `graphify-b install --platform copilot` |
-| VS Code Copilot Chat | `graphify-b vscode install` |
-| Aider | `graphify-b install --platform aider` |
-| OpenClaw | `graphify-b install --platform claw` |
-| Factory Droid | `graphify-b install --platform droid` |
-| Trae | `graphify-b install --platform trae` |
-| Trae CN | `graphify-b install --platform trae-cn` |
-| Gemini CLI | `graphify-b install --platform gemini` |
-| Hermes | `graphify-b install --platform hermes` |
-| Kiro IDE/CLI | `graphify-b kiro install` |
-| Cursor | `graphify-b cursor install` |
-| Google Antigravity | `graphify-b antigravity install` |
+| Claude Code (Linux/Mac) | `graphify_b install` |
+| Claude Code (Windows) | `graphify_b install` (авто-определение) или `graphify_b install --platform windows` |
+| Codex | `graphify_b install --platform codex` |
+| OpenCode | `graphify_b install --platform opencode` |
+| GitHub Copilot CLI | `graphify_b install --platform copilot` |
+| VS Code Copilot Chat | `graphify_b vscode install` |
+| Aider | `graphify_b install --platform aider` |
+| OpenClaw | `graphify_b install --platform claw` |
+| Factory Droid | `graphify_b install --platform droid` |
+| Trae | `graphify_b install --platform trae` |
+| Trae CN | `graphify_b install --platform trae-cn` |
+| Gemini CLI | `graphify_b install --platform gemini` |
+| Hermes | `graphify_b install --platform hermes` |
+| Kiro IDE/CLI | `graphify_b kiro install` |
+| Cursor | `graphify_b cursor install` |
+| Google Antigravity | `graphify_b antigravity install` |
 
 Затем откройте AI-ассистент и введите:
 
 ```
-/graphify-b .
+/graphify_b .
 ```
 
-Примечание: Codex использует `$` вместо `/` для навыков, поэтому вводите `$graphify-b .`.
+Примечание: Codex использует `$` вместо `/` для навыков, поэтому вводите `$graphify_b .`.
 
 ### Заставить ассистента всегда использовать граф (рекомендуется)
 
@@ -102,35 +102,35 @@ pip install graphifyy-m && graphify-b install
 
 | Платформа | Команда |
 |-----------|---------|
-| Claude Code | `graphify-b claude install` |
-| Codex | `graphify-b codex install` |
-| OpenCode | `graphify-b opencode install` |
-| Cursor | `graphify-b cursor install` |
-| Gemini CLI | `graphify-b gemini install` |
-| Kiro IDE/CLI | `graphify-b kiro install` |
-| Google Antigravity | `graphify-b antigravity install` |
+| Claude Code | `graphify_b claude install` |
+| Codex | `graphify_b codex install` |
+| OpenCode | `graphify_b opencode install` |
+| Cursor | `graphify_b cursor install` |
+| Gemini CLI | `graphify_b gemini install` |
+| Kiro IDE/CLI | `graphify_b kiro install` |
+| Google Antigravity | `graphify_b antigravity install` |
 
 ## Использование
 
 ```
-/graphify-b                          # текущая директория
-/graphify-b ./raw                    # конкретная папка
-/graphify-b ./raw --mode deep        # более агрессивное извлечение INFERRED-рёбер
-/graphify-b ./raw --update           # повторно извлечь только изменённые файлы
-/graphify-b ./raw --directed         # направленный граф
-/graphify-b ./raw --cluster-only     # перезапустить кластеризацию на существующем графе
-/graphify-b ./raw --no-viz           # без HTML, только отчёт + JSON
-/graphify-b ./raw --obsidian         # создать Obsidian vault (opt-in)
+/graphify_b                          # текущая директория
+/graphify_b ./raw                    # конкретная папка
+/graphify_b ./raw --mode deep        # более агрессивное извлечение INFERRED-рёбер
+/graphify_b ./raw --update           # повторно извлечь только изменённые файлы
+/graphify_b ./raw --directed         # направленный граф
+/graphify_b ./raw --cluster-only     # перезапустить кластеризацию на существующем графе
+/graphify_b ./raw --no-viz           # без HTML, только отчёт + JSON
+/graphify_b ./raw --obsidian         # создать Obsidian vault (opt-in)
 
-/graphify-b add https://arxiv.org/abs/1706.03762   # получить статью
-/graphify-b add <video-url>                         # скачать аудио, транскрибировать, добавить
-/graphify-b query "что связывает Attention с оптимизатором?"
-/graphify-b path "DigestAuth" "Response"
-/graphify-b explain "SwinTransformer"
+/graphify_b add https://arxiv.org/abs/1706.03762   # получить статью
+/graphify_b add <video-url>                         # скачать аудио, транскрибировать, добавить
+/graphify_b query "что связывает Attention с оптимизатором?"
+/graphify_b path "DigestAuth" "Response"
+/graphify_b explain "SwinTransformer"
 
-graphify-b hook install              # установить Git-хуки
-graphify-b update ./src              # повторно извлечь файлы кода, без LLM
-graphify-b watch ./src               # автоматическое обновление графа
+graphify_b hook install              # установить Git-хуки
+graphify_b update ./src              # повторно извлечь файлы кода, без LLM
+graphify_b watch ./src               # автоматическое обновление графа
 ```
 
 ## Что вы получаете
@@ -149,19 +149,19 @@ graphify-b watch ./src               # автоматическое обновл
 
 **Авто-синхронизация** (`--watch`) — обновляет граф автоматически при изменении кода.
 
-**Git-хуки** (`graphify-b hook install`) — устанавливает post-commit и post-checkout хуки.
+**Git-хуки** (`graphify_b hook install`) — устанавливает post-commit и post-checkout хуки.
 
 ## Конфиденциальность
 
-graphify-b отправляет содержимое файлов в API модели вашего AI-ассистента для семантического извлечения из документов, статей и изображений. Файлы кода обрабатываются локально через tree-sitter AST. Видео и аудиофайлы транскрибируются локально с faster-whisper. Никакой телеметрии, никакого отслеживания использования.
+graphify_b отправляет содержимое файлов в API модели вашего AI-ассистента для семантического извлечения из документов, статей и изображений. Файлы кода обрабатываются локально через tree-sitter AST. Видео и аудиофайлы транскрибируются локально с faster-whisper. Никакой телеметрии, никакого отслеживания использования.
 
 ## Технологический стек
 
 NetworkX + Leiden (graspologic) + tree-sitter + vis.js. Семантическое извлечение через Claude, GPT-4 или модель вашей платформы. Транскрипция видео через faster-whisper + yt-dlp (опционально).
 
-## Построено на graphify-b — Penpax
+## Построено на graphify_b — Penpax
 
-[**Penpax**](https://safishamsi.github.io/penpax.ai) — корпоративный слой поверх graphify. Там, где graphify-b превращает папку с файлами в граф знаний, Penpax применяет тот же граф ко всей вашей рабочей жизни — непрерывно.
+[**Penpax**](https://safishamsi.github.io/penpax.ai) — корпоративный слой поверх graphify. Там, где graphify_b превращает папку с файлами в граф знаний, Penpax применяет тот же граф ко всей вашей рабочей жизни — непрерывно.
 
 **Бесплатный пробный период скоро.** [Вступить в список ожидания →](https://safishamsi.github.io/penpax.ai)
 

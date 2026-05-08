@@ -15,16 +15,16 @@
 
 **Taito tekoälykoodiavustajille.** Kirjoita `/graphify` Claude Codessa, Codexissa, OpenCodessa, Cursorissa, Gemini CLI:ssä, GitHub Copilot CLI:ssä, VS Code Copilot Chatissa, Aiderissa, OpenClawissa, Factory Droidissa, Traessa, Hermeksessä, Kirossa tai Google Antigravityssa — se lukee tiedostosi, rakentaa tietograafin ja palauttaa sinulle rakenteen, jota et tiennyt olevan. Ymmärrä koodikanta nopeammin. Löydä arkkitehtuuripäätösten taustalla oleva "miksi".
 
-Täysin multimodaalinen. Lisää koodia, PDF:iä, markdownia, kuvakaappauksia, kaavioita, liitutaulun valokuvia, muilla kielillä olevia kuvia tai video- ja äänitiedostoja — graphify-b poimii käsitteitä ja suhteita kaikesta ja yhdistää ne yhdeksi graafaksi. Videot litteroidaan paikallisesti Whisperillä. Tukee 25 ohjelmointikieltä tree-sitter AST:n kautta.
+Täysin multimodaalinen. Lisää koodia, PDF:iä, markdownia, kuvakaappauksia, kaavioita, liitutaulun valokuvia, muilla kielillä olevia kuvia tai video- ja äänitiedostoja — graphify_b poimii käsitteitä ja suhteita kaikesta ja yhdistää ne yhdeksi graafaksi. Videot litteroidaan paikallisesti Whisperillä. Tukee 25 ohjelmointikieltä tree-sitter AST:n kautta.
 
-> Andrej Karpathy ylläpitää `/raw`-kansiota, johon hän tallentaa papereita, tviittejä, kuvakaappauksia ja muistiinpanoja. graphify-b on vastaus tähän ongelmaan — **71,5x** vähemmän tokeneita kyselyä kohden verrattuna raakatiedostojen lukemiseen, pysyvä istuntojen välillä.
-
-```
-/graphify-b .
-```
+> Andrej Karpathy ylläpitää `/raw`-kansiota, johon hän tallentaa papereita, tviittejä, kuvakaappauksia ja muistiinpanoja. graphify_b on vastaus tähän ongelmaan — **71,5x** vähemmän tokeneita kyselyä kohden verrattuna raakatiedostojen lukemiseen, pysyvä istuntojen välillä.
 
 ```
-graphify-b-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       interaktiivinen graafi — avaa missä tahansa selaimessa
 ├── GRAPH_REPORT.md  jumalsolmut, yllättävät yhteydet, ehdotetut kysymykset
 ├── graph.json       pysyvä graafi — kyselytavissa viikkojen kuluttua
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## Miten se toimii
 
-graphify-b toimii kolmessa läpiajossa. Ensin deterministinen AST-läpiajo poimii rakenteen kooditiedostoista ilman LLM:ää. Sitten video- ja äänitiedostot litteroidaan paikallisesti faster-whisperillä. Lopuksi Clauden ala-agentit suoritetaan rinnakkain asiakirjoissa, papereissa, kuvissa ja litteroinneissa. Tulokset yhdistetään NetworkX-graafiin, klusteroidaan Leidenillä ja viedään interaktiivisena HTML:nä, kyselytavissa olevana JSON:na ja tarkastusraporttina.
+graphify_b toimii kolmessa läpiajossa. Ensin deterministinen AST-läpiajo poimii rakenteen kooditiedostoista ilman LLM:ää. Sitten video- ja äänitiedostot litteroidaan paikallisesti faster-whisperillä. Lopuksi Clauden ala-agentit suoritetaan rinnakkain asiakirjoissa, papereissa, kuvissa ja litteroinneissa. Tulokset yhdistetään NetworkX-graafiin, klusteroidaan Leidenillä ja viedään interaktiivisena HTML:nä, kyselytavissa olevana JSON:na ja tarkastusraporttina.
 
 Jokainen suhde on merkitty `EXTRACTED`, `INFERRED` (luottamuspisteineen) tai `AMBIGUOUS`.
 
@@ -42,11 +42,11 @@ Jokainen suhde on merkitty `EXTRACTED`, `INFERRED` (luottamuspisteineen) tai `AM
 **Vaatimukset:** Python 3.10+ ja jokin seuraavista: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) ja muut.
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # tai pipx:llä
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # tai pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Virallinen paketti:** PyPI-paketti on nimeltään `graphifyy-m`. Ainoa virallinen repositorio on [safishamsi/graphify](https://github.com/safishamsi/graphify).
@@ -54,12 +54,12 @@ pip install graphifyy-m && graphify-b install
 ## Käyttö
 
 ```
-/graphify-b .
-/graphify-b ./raw --update
-/graphify-b query "mikä yhdistää Attentionin optimizeriin?"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "mikä yhdistää Attentionin optimizeriin?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Mitä saat

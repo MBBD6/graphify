@@ -15,16 +15,16 @@
 
 **Een vaardigheid voor AI-codeassistenten.** Typ `/graphify` in Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro of Google Antigravity — het leest je bestanden, bouwt een kennisgraaf en geeft je structuur terug die je niet wist dat er was. Begrijp een codebase sneller. Vind het "waarom" achter architecturale beslissingen.
 
-Volledig multimodaal. Voeg code, PDF's, markdown, schermafbeeldingen, diagrammen, whiteboard-foto's, afbeeldingen in andere talen of video- en audiobestanden toe — graphify-b extraheert concepten en relaties uit alles en verbindt ze in één graaf. Video's worden lokaal getranscribeerd met Whisper. Ondersteunt 25 programmeertalen via tree-sitter AST.
+Volledig multimodaal. Voeg code, PDF's, markdown, schermafbeeldingen, diagrammen, whiteboard-foto's, afbeeldingen in andere talen of video- en audiobestanden toe — graphify_b extraheert concepten en relaties uit alles en verbindt ze in één graaf. Video's worden lokaal getranscribeerd met Whisper. Ondersteunt 25 programmeertalen via tree-sitter AST.
 
-> Andrej Karpathy houdt een `/raw`-map bij waar hij papers, tweets, schermafbeeldingen en notities neerlegt. graphify-b is het antwoord op dat probleem — **71,5x** minder tokens per query versus het lezen van ruwe bestanden, persistent tussen sessies.
-
-```
-/graphify-b .
-```
+> Andrej Karpathy houdt een `/raw`-map bij waar hij papers, tweets, schermafbeeldingen en notities neerlegt. graphify_b is het antwoord op dat probleem — **71,5x** minder tokens per query versus het lezen van ruwe bestanden, persistent tussen sessies.
 
 ```
-graphify-b-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       interactieve graaf — open in elke browser
 ├── GRAPH_REPORT.md  godknooppunten, verrassende verbindingen, voorgestelde vragen
 ├── graph.json       persistente graaf — weken later opvraagbaar
@@ -33,7 +33,7 @@ graphify-b-out/
 
 ## Hoe het werkt
 
-graphify-b werkt in drie passes. Eerst extraheert een deterministische AST-pass structuur uit codebestanden zonder LLM. Vervolgens worden video- en audiobestanden lokaal getranscribeerd met faster-whisper. Ten slotte werken Claude-subagenten parallel over documenten, papers, afbeeldingen en transcripties. De resultaten worden samengevoegd in een NetworkX-graaf, geclusterd met Leiden en geëxporteerd als interactieve HTML, opvraagbare JSON en een auditrapport.
+graphify_b werkt in drie passes. Eerst extraheert een deterministische AST-pass structuur uit codebestanden zonder LLM. Vervolgens worden video- en audiobestanden lokaal getranscribeerd met faster-whisper. Ten slotte werken Claude-subagenten parallel over documenten, papers, afbeeldingen en transcripties. De resultaten worden samengevoegd in een NetworkX-graaf, geclusterd met Leiden en geëxporteerd als interactieve HTML, opvraagbare JSON en een auditrapport.
 
 Elke relatie is gelabeld als `EXTRACTED`, `INFERRED` (met betrouwbaarheidsscore) of `AMBIGUOUS`.
 
@@ -42,11 +42,11 @@ Elke relatie is gelabeld als `EXTRACTED`, `INFERRED` (met betrouwbaarheidsscore)
 **Vereisten:** Python 3.10+ en één van: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [Cursor](https://cursor.com), [Aider](https://aider.chat) en andere.
 
 ```bash
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # of met pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # of pip
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 > **Officieel pakket:** Het PyPI-pakket heet `graphifyy-m`. De enige officiële repository is [safishamsi/graphify](https://github.com/safishamsi/graphify).
@@ -54,12 +54,12 @@ pip install graphifyy-m && graphify-b install
 ## Gebruik
 
 ```
-/graphify-b .
-/graphify-b ./raw --update
-/graphify-b query "wat verbindt Attention met de optimizer?"
-/graphify-b path "DigestAuth" "Response"
-graphify-b hook install
-graphify-b update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "wat verbindt Attention met de optimizer?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Wat je krijgt
@@ -70,7 +70,7 @@ graphify-b update ./src
 
 Codebestanden worden lokaal verwerkt via tree-sitter AST. Video's lokaal getranscribeerd met faster-whisper. Geen telemetrie.
 
-## Gebouwd op graphify-b — Penpax
+## Gebouwd op graphify_b — Penpax
 
 [**Penpax**](https://safishamsi.github.io/penpax.ai) is de enterprise-laag boven op graphify. **Gratis proefversie binnenkort.** [Meld je aan voor de wachtlijst →](https://safishamsi.github.io/penpax.ai)
 

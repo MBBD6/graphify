@@ -18,18 +18,18 @@
 
 **مهارة لمساعد برمجة الذكاء الاصطناعي.** اكتب `/graphify` في Claude Code أو Codex أو OpenCode أو Cursor أو Gemini CLI أو GitHub Copilot CLI أو VS Code Copilot Chat أو Aider أو OpenClaw أو Factory Droid أو Trae أو Hermes أو Kiro أو Google Antigravity — يقرأ ملفاتك ويبني رسماً بيانياً للمعرفة ويعيد إليك البنية التي لم تكن تعلم بوجودها. افهم قاعدة الكود بشكل أسرع. اكتشف "السبب" وراء القرارات المعمارية.
 
-متعدد الوسائط بالكامل. أضف كوداً أو ملفات PDF أو markdown أو لقطات شاشة أو رسوماً بيانية أو صور سبورة أو صوراً بلغات أخرى أو ملفات فيديو وصوت — يستخرج graphify-b المفاهيم والعلاقات من كل ذلك ويربطها في رسم بياني واحد. يتم نسخ مقاطع الفيديو محلياً باستخدام Whisper. يدعم 25 لغة برمجة عبر tree-sitter AST (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
+متعدد الوسائط بالكامل. أضف كوداً أو ملفات PDF أو markdown أو لقطات شاشة أو رسوماً بيانية أو صور سبورة أو صوراً بلغات أخرى أو ملفات فيديو وصوت — يستخرج graphify_b المفاهيم والعلاقات من كل ذلك ويربطها في رسم بياني واحد. يتم نسخ مقاطع الفيديو محلياً باستخدام Whisper. يدعم 25 لغة برمجة عبر tree-sitter AST (Python, JS, TS, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog, SystemVerilog, Vue, Svelte, Dart).
 
-> يحتفظ Andrej Karpathy بمجلد `/raw` يضع فيه الأوراق البحثية والتغريدات ولقطات الشاشة والملاحظات. graphify-b هو الإجابة على تلك المشكلة — **71.5 مرة** أقل في الرموز لكل استعلام مقارنةً بقراءة الملفات الخام، مستمر عبر الجلسات، صادق حول ما تم العثور عليه مقابل ما تم استنتاجه.
+> يحتفظ Andrej Karpathy بمجلد `/raw` يضع فيه الأوراق البحثية والتغريدات ولقطات الشاشة والملاحظات. graphify_b هو الإجابة على تلك المشكلة — **71.5 مرة** أقل في الرموز لكل استعلام مقارنةً بقراءة الملفات الخام، مستمر عبر الجلسات، صادق حول ما تم العثور عليه مقابل ما تم استنتاجه.
 
 </div>
 
 ```
-/graphify-b .                        # يعمل مع أي مجلد — الكود، الملاحظات، الأوراق البحثية، كل شيء
+/graphify_b .                        # يعمل مع أي مجلد — الكود، الملاحظات، الأوراق البحثية، كل شيء
 ```
 
 ```
-graphify-b-out/
+graphify_b-out/
 ├── graph.html       رسم بياني تفاعلي — افتحه في أي متصفح، انقر على العقد، ابحث، صفّ
 ├── GRAPH_REPORT.md  عقد الإله، الاتصالات المفاجئة، الأسئلة المقترحة
 ├── graph.json       رسم بياني دائم — استعلم بعد أسابيع دون إعادة القراءة
@@ -56,7 +56,7 @@ dist/
 
 ## كيف يعمل
 
-يعمل graphify-b في ثلاث مراحل. أولاً، تمريرة AST حتمية تستخرج البنية من ملفات الكود (الفئات، الدوال، الاستيرادات، رسوم بيانية الاستدعاء، docstrings، تعليقات المبرر) — دون الحاجة إلى LLM. ثانياً، يتم نسخ ملفات الفيديو والصوت محلياً باستخدام faster-whisper. ثالثاً، تعمل عوامل Claude الفرعية بالتوازي على المستندات والأوراق البحثية والصور والنصوص المكتوبة لاستخراج المفاهيم والعلاقات ومبررات التصميم. يتم دمج النتائج في رسم بياني NetworkX وتجميعها باستخدام Leiden وتصديرها كـ HTML تفاعلي وJSON قابل للاستعلام وتقرير تدقيق بلغة طبيعية.
+يعمل graphify_b في ثلاث مراحل. أولاً، تمريرة AST حتمية تستخرج البنية من ملفات الكود (الفئات، الدوال، الاستيرادات، رسوم بيانية الاستدعاء، docstrings، تعليقات المبرر) — دون الحاجة إلى LLM. ثانياً، يتم نسخ ملفات الفيديو والصوت محلياً باستخدام faster-whisper. ثالثاً، تعمل عوامل Claude الفرعية بالتوازي على المستندات والأوراق البحثية والصور والنصوص المكتوبة لاستخراج المفاهيم والعلاقات ومبررات التصميم. يتم دمج النتائج في رسم بياني NetworkX وتجميعها باستخدام Leiden وتصديرها كـ HTML تفاعلي وJSON قابل للاستعلام وتقرير تدقيق بلغة طبيعية.
 
 **التجميع مبني على طوبولوجيا الرسم البياني — بدون embeddings.** يجد Leiden المجتمعات بواسطة كثافة الحواف. حواف التشابه الدلالي التي يستخرجها Claude (`semantically_similar_to`، مصنفة INFERRED) موجودة بالفعل في الرسم البياني. بنية الرسم البياني هي إشارة التشابه — لا حاجة لخطوة embedding منفصلة أو قاعدة بيانات متجهية.
 
@@ -70,11 +70,11 @@ dist/
 
 ```bash
 # موصى به — يعمل على Mac وLinux دون إعداد PATH
-uv tool install graphifyy-m && graphify-b install
+uv tool install graphifyy-m && graphify_b install
 # أو مع pipx
-pipx install graphifyy-m && graphify-b install
+pipx install graphifyy-m && graphify_b install
 # أو pip العادي
-pip install graphifyy-m && graphify-b install
+pip install graphifyy-m && graphify_b install
 ```
 
 <div dir="rtl">
@@ -85,55 +85,55 @@ pip install graphifyy-m && graphify-b install
 
 | المنصة | أمر التثبيت |
 |--------|-------------|
-| Claude Code (Linux/Mac) | `graphify-b install` |
-| Claude Code (Windows) | `graphify-b install` (كشف تلقائي) أو `graphify-b install --platform windows` |
-| Codex | `graphify-b install --platform codex` |
-| OpenCode | `graphify-b install --platform opencode` |
-| GitHub Copilot CLI | `graphify-b install --platform copilot` |
-| VS Code Copilot Chat | `graphify-b vscode install` |
-| Aider | `graphify-b install --platform aider` |
-| OpenClaw | `graphify-b install --platform claw` |
-| Factory Droid | `graphify-b install --platform droid` |
-| Trae | `graphify-b install --platform trae` |
-| Gemini CLI | `graphify-b install --platform gemini` |
-| Hermes | `graphify-b install --platform hermes` |
-| Kiro IDE/CLI | `graphify-b kiro install` |
-| Cursor | `graphify-b cursor install` |
-| Google Antigravity | `graphify-b antigravity install` |
+| Claude Code (Linux/Mac) | `graphify_b install` |
+| Claude Code (Windows) | `graphify_b install` (كشف تلقائي) أو `graphify_b install --platform windows` |
+| Codex | `graphify_b install --platform codex` |
+| OpenCode | `graphify_b install --platform opencode` |
+| GitHub Copilot CLI | `graphify_b install --platform copilot` |
+| VS Code Copilot Chat | `graphify_b vscode install` |
+| Aider | `graphify_b install --platform aider` |
+| OpenClaw | `graphify_b install --platform claw` |
+| Factory Droid | `graphify_b install --platform droid` |
+| Trae | `graphify_b install --platform trae` |
+| Gemini CLI | `graphify_b install --platform gemini` |
+| Hermes | `graphify_b install --platform hermes` |
+| Kiro IDE/CLI | `graphify_b kiro install` |
+| Cursor | `graphify_b cursor install` |
+| Google Antigravity | `graphify_b antigravity install` |
 
 افتح مساعد الكود الذكاء الاصطناعي واكتب:
 
 </div>
 
 ```
-/graphify-b .
+/graphify_b .
 ```
 
 <div dir="rtl">
 
-ملاحظة: يستخدم Codex `$` بدلاً من `/` للمهارات، لذا اكتب `$graphify-b .`.
+ملاحظة: يستخدم Codex `$` بدلاً من `/` للمهارات، لذا اكتب `$graphify_b .`.
 
 ## الاستخدام
 
 </div>
 
 ```
-/graphify-b                          # المجلد الحالي
-/graphify-b ./raw                    # مجلد محدد
-/graphify-b ./raw --update           # إعادة استخراج الملفات المتغيرة فقط
-/graphify-b ./raw --directed         # رسم بياني موجّه
-/graphify-b ./raw --no-viz           # تقرير + JSON فقط، بدون HTML
-/graphify-b ./raw --obsidian         # إنشاء Obsidian vault
+/graphify_b                          # المجلد الحالي
+/graphify_b ./raw                    # مجلد محدد
+/graphify_b ./raw --update           # إعادة استخراج الملفات المتغيرة فقط
+/graphify_b ./raw --directed         # رسم بياني موجّه
+/graphify_b ./raw --no-viz           # تقرير + JSON فقط، بدون HTML
+/graphify_b ./raw --obsidian         # إنشاء Obsidian vault
 
-/graphify-b add https://arxiv.org/abs/1706.03762   # جلب ورقة بحثية
-/graphify-b add <video-url>                         # تحميل صوت، نسخ، إضافة
-/graphify-b query "ما الذي يربط Attention بالمحسِّن؟"
-/graphify-b path "DigestAuth" "Response"
-/graphify-b explain "SwinTransformer"
+/graphify_b add https://arxiv.org/abs/1706.03762   # جلب ورقة بحثية
+/graphify_b add <video-url>                         # تحميل صوت، نسخ، إضافة
+/graphify_b query "ما الذي يربط Attention بالمحسِّن؟"
+/graphify_b path "DigestAuth" "Response"
+/graphify_b explain "SwinTransformer"
 
-graphify-b hook install              # تثبيت Git hooks
-graphify-b update ./src              # إعادة استخراج ملفات الكود، بدون LLM
-graphify-b watch ./src               # تحديث تلقائي للرسم البياني
+graphify_b hook install              # تثبيت Git hooks
+graphify_b update ./src              # إعادة استخراج ملفات الكود، بدون LLM
+graphify_b watch ./src               # تحديث تلقائي للرسم البياني
 ```
 
 <div dir="rtl">
@@ -154,19 +154,19 @@ graphify-b watch ./src               # تحديث تلقائي للرسم الب
 
 **المزامنة التلقائية** (`--watch`) — يحدّث الرسم البياني تلقائياً عند تغيير الكود.
 
-**Git hooks** (`graphify-b hook install`) — يثبّت خطافات post-commit وpost-checkout.
+**Git hooks** (`graphify_b hook install`) — يثبّت خطافات post-commit وpost-checkout.
 
 ## الخصوصية
 
-يرسل graphify-b محتوى الملفات إلى API نموذج مساعد الذكاء الاصطناعي الخاص بك للاستخراج الدلالي من المستندات والأوراق البحثية والصور. تتم معالجة ملفات الكود محلياً عبر tree-sitter AST. يتم نسخ ملفات الفيديو والصوت محلياً باستخدام faster-whisper. لا قياس عن بُعد، لا تتبع للاستخدام.
+يرسل graphify_b محتوى الملفات إلى API نموذج مساعد الذكاء الاصطناعي الخاص بك للاستخراج الدلالي من المستندات والأوراق البحثية والصور. تتم معالجة ملفات الكود محلياً عبر tree-sitter AST. يتم نسخ ملفات الفيديو والصوت محلياً باستخدام faster-whisper. لا قياس عن بُعد، لا تتبع للاستخدام.
 
 ## المكدس التقني
 
 NetworkX + Leiden (graspologic) + tree-sitter + vis.js. استخراج دلالي عبر Claude أو GPT-4 أو نموذج منصتك. نسخ الفيديو عبر faster-whisper + yt-dlp (اختياري).
 
-## مبني على graphify-b — Penpax
+## مبني على graphify_b — Penpax
 
-[**Penpax**](https://safishamsi.github.io/penpax.ai) هو الطبقة المؤسسية فوق graphify. حيث يحوّل graphify-b مجلداً من الملفات إلى رسم بياني للمعرفة، يطبّق Penpax نفس الرسم البياني على حياتك المهنية بأكملها — باستمرار.
+[**Penpax**](https://safishamsi.github.io/penpax.ai) هو الطبقة المؤسسية فوق graphify. حيث يحوّل graphify_b مجلداً من الملفات إلى رسم بياني للمعرفة، يطبّق Penpax نفس الرسم البياني على حياتك المهنية بأكملها — باستمرار.
 
 **نسخة تجريبية مجانية قريباً.** [انضم إلى قائمة الانتظار →](https://safishamsi.github.io/penpax.ai)
 
