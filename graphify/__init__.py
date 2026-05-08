@@ -20,3 +20,8 @@ try:
 except Exception:
     # Best-effort; do not fail import if re-exporting errors.
     pass
+
+# Ensure `graphify` is available as a builtin name for tests that reference
+# it without importing (tests use the unqualified name in some places).
+import builtins
+builtins.graphify = _real
