@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Build a community-aggregated HTML visualization.
 
-Writes: graphify-out/graph_agg.html
+Writes: graphify_b-out/graph_agg.html
 """
 from pathlib import Path
 import json
 import sys
 import os
 
-# Prefer local graphify-m checkout so edits to export.py are honored.
-_LOCAL_GRAPHIFY = Path('/mnt/e/source/repos/bizdata_github/graphify-m')
+# Prefer local graphify_b checkout so edits to export.py are honored.
+_LOCAL_GRAPHIFY = Path('/mnt/e/source/repos/bizdata_github/graphify_b')
 if _LOCAL_GRAPHIFY.exists():
     sys.path.insert(0, str(_LOCAL_GRAPHIFY))
 
@@ -26,12 +26,12 @@ import shutil
 
 def main() -> int:
     cwd = Path.cwd()
-    out = cwd / "graphify-out"
+    out = cwd / "graphify_b-out"
     extraction_path = out / ".graphify_extract.json"
     analysis_path = out / ".graphify_analysis.json"
 
     if not extraction_path.exists() or not analysis_path.exists():
-        print("Missing graphify output files in", out)
+        print("Missing graphify_b output files in", out)
         return 2
 
     extraction = json.loads(extraction_path.read_text(encoding="utf-8"))

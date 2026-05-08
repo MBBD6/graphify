@@ -2,8 +2,8 @@ Visualization helpers
 =====================
 
 These small scripts generate alternative visualizations for large graphs produced
-by graphify-m. They live under `scripts/visuals/` and write files to
-`graphify-out/`.
+by graphify_b. They live under `scripts/visuals/` and write files to
+`graphify_b-out/`.
 
 Usage
 -----

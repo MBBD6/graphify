@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate per-community HTML pages for top-N communities.
 
-Writes files: graphify-out/graph_comm_{cid}.html
+Writes files: graphify_b-out/graph_comm_{cid}.html
 """
 from pathlib import Path
 import json
@@ -24,12 +24,12 @@ def parse_args():
 def main() -> int:
     args = parse_args()
     cwd = Path.cwd()
-    out = cwd / "graphify-out"
+    out = cwd / "graphify_b-out"
     extraction_path = out / ".graphify_extract.json"
     analysis_path = out / ".graphify_analysis.json"
 
     if not extraction_path.exists() or not analysis_path.exists():
-        print("Missing graphify output files in", out)
+        print("Missing graphify_b output files in", out)
         return 2
 
     extraction = json.loads(extraction_path.read_text(encoding="utf-8"))
@@ -58,8 +58,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    # Prefer local graphify-m checkout if present
-    _LOCAL = Path('/mnt/e/source/repos/bizdata_github/graphify-m')
+    # Prefer local graphify_b checkout if present
+    _LOCAL = Path('/mnt/e/source/repos/bizdata_github/graphify_b')
     if _LOCAL.exists():
         sys.path.insert(0, str(_LOCAL))
         os.environ.setdefault('GRAPHIFY_VIZ_NODE_LIMIT', '10000')

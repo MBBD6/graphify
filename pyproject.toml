@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "graphifyy-m"
+name = "graphifyy-m-m"
 version = "0.6.9"
 description = "AI coding assistant skill (Claude Code, Codex, OpenCode, Cursor, Gemini CLI, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro, Pi, Google Antigravity) - turn any folder of code, docs, papers, images, or videos into a queryable knowledge graph"
 readme = "README.md"
@@ -56,16 +56,16 @@ sql = ["tree-sitter-sql"]
 all = ["mcp", "neo4j", "pypdf", "markdownify", "watchdog", "graspologic; python_version < '3.13'", "python-docx", "openpyxl", "faster-whisper", "yt-dlp", "matplotlib", "openai", "tiktoken", "tree-sitter-sql"]
 
 [project.scripts]
-graphify-m = "graphify_m.__main__:main"
+graphify_b = "graphify_b.__main__:main"
 
 [tool.uv]
-# Install via: uv tool install graphifyy
-# Run without installing: uvx graphifyy install
+# Install via: uv tool install graphifyy-m
+# Run without installing: uvx graphifyy-m install
 package = true
 
 [tool.setuptools]
-packages = ["graphify_m", "tree_sitter_rpt"]
+packages = ["graphify_b", "tree_sitter_rpt"]
 include-package-data = false
 
 [tool.setuptools.package-data]
-graphify_m = ["skill.md", "skill-codex.md", "skill-opencode.md", "skill-aider.md", "skill-copilot.md", "skill-claw.md", "skill-windows.md", "skill-droid.md", "skill-trae.md", "skill-kiro.md", "skill-vscode.md", "skill-pi.md"]
+graphify_b = ["skill.md", "skill-codex.md", "skill-opencode.md", "skill-aider.md", "skill-copilot.md", "skill-claw.md", "skill-windows.md", "skill-droid.md", "skill-trae.md", "skill-kiro.md", "skill-vscode.md", "skill-pi.md"]

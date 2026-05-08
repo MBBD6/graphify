@@ -1,28 +1,22 @@
-"""graphify - extract · build · cluster · analyze · report."""
+"""Compatibility shim: expose `graphify_b` package under the old
+`graphify_m` package name so imports and tests continue to work after
+the rename.
 
+This file intentionally maps `graphify_m.__path__` to the real package
+location so submodule imports (e.g. `graphify_m.build`) resolve to the
+files in `graphify_b/`.
+"""
+from __future__ import annotations
 
-def __getattr__(name):
-    # Lazy imports so `graphify install` works before heavy deps are in place.
-    _map = {
-        "extract": ("graphify.extract", "extract"),
-        "collect_files": ("graphify.extract", "collect_files"),
-        "build_from_json": ("graphify.build", "build_from_json"),
-        "cluster": ("graphify.cluster", "cluster"),
-        "score_all": ("graphify.cluster", "score_all"),
-        "cohesion_score": ("graphify.cluster", "cohesion_score"),
-        "god_nodes": ("graphify.analyze", "god_nodes"),
-        "surprising_connections": ("graphify.analyze", "surprising_connections"),
-        "suggest_questions": ("graphify.analyze", "suggest_questions"),
-        "generate": ("graphify.report", "generate"),
-        "to_json": ("graphify.export", "to_json"),
-        "to_html": ("graphify.export", "to_html"),
-        "to_svg": ("graphify.export", "to_svg"),
-        "to_canvas": ("graphify.export", "to_canvas"),
-        "to_wiki": ("graphify.wiki", "to_wiki"),
-    }
-    if name in _map:
-        import importlib
-        mod_name, attr = _map[name]
-        mod = importlib.import_module(mod_name)
-        return getattr(mod, attr)
-    raise AttributeError(f"module 'graphify' has no attribute {name!r}")
+import importlib
+
+# Import the real package and point our package path at its location.
+_real = importlib.import_module("graphify_b")
+__path__ = _real.__path__
+
+# Re-export any public names from the real package.
+try:
+    from graphify_b import *  # type: ignore
+except Exception:
+    # Best-effort: if re-exporting fails, still allow submodule imports.
+    pass

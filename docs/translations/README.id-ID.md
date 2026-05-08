@@ -8,23 +8,23 @@
 
 <p align="center">
   <a href="https://github.com/safishamsi/graphify/actions/workflows/ci.yml"><img src="https://github.com/safishamsi/graphify/actions/workflows/ci.yml/badge.svg?branch=v4" alt="CI"/></a>
-  <a href="https://pypi.org/project/graphifyy/"><img src="https://img.shields.io/pypi/v/graphifyy" alt="PyPI"/></a>
-  <a href="https://pepy.tech/project/graphifyy"><img src="https://static.pepy.tech/badge/graphifyy" alt="Downloads"/></a>
+  <a href="https://pypi.org/project/graphifyy-m/"><img src="https://img.shields.io/pypi/v/graphifyy-m" alt="PyPI"/></a>
+  <a href="https://pepy.tech/project/graphifyy-m"><img src="https://static.pepy.tech/badge/graphifyy-m" alt="Downloads"/></a>
   <a href="https://github.com/sponsors/safishamsi"><img src="https://img.shields.io/badge/sponsor-safishamsi-ea4aaa?logo=github-sponsors" alt="Sponsor"/></a>
 </p>
 
 **Keterampilan untuk asisten kode AI.** Ketik `/graphify` di Claude Code, Codex, OpenCode, Cursor, Gemini CLI, GitHub Copilot CLI, VS Code Copilot Chat, Aider, OpenClaw, Factory Droid, Trae, Hermes, Kiro, atau Google Antigravity — membaca file Anda, membangun graf pengetahuan, dan mengembalikan struktur yang tidak Anda ketahui ada. Pahami codebase lebih cepat. Temukan "mengapa" di balik keputusan arsitektur.
 
-Sepenuhnya multimodal. Tambahkan kode, PDF, markdown, tangkapan layar, diagram, foto papan tulis, gambar dalam bahasa lain, atau file video dan audio — graphify mengekstrak konsep dan hubungan dari semuanya dan menghubungkannya dalam satu graf. Video ditranskrip secara lokal dengan Whisper. Mendukung 25 bahasa pemrograman melalui tree-sitter AST.
+Sepenuhnya multimodal. Tambahkan kode, PDF, markdown, tangkapan layar, diagram, foto papan tulis, gambar dalam bahasa lain, atau file video dan audio — graphify_b mengekstrak konsep dan hubungan dari semuanya dan menghubungkannya dalam satu graf. Video ditranskrip secara lokal dengan Whisper. Mendukung 25 bahasa pemrograman melalui tree-sitter AST.
 
-> Andrej Karpathy memelihara folder `/raw` tempat ia menyimpan makalah, tweet, tangkapan layar, dan catatan. graphify adalah jawaban untuk masalah itu — **71,5x** lebih sedikit token per kueri dibandingkan membaca file mentah, persisten di antara sesi.
-
-```
-/graphify .
-```
+> Andrej Karpathy memelihara folder `/raw` tempat ia menyimpan makalah, tweet, tangkapan layar, dan catatan. graphify_b adalah jawaban untuk masalah itu — **71,5x** lebih sedikit token per kueri dibandingkan membaca file mentah, persisten di antara sesi.
 
 ```
-graphify-out/
+/graphify_b .
+```
+
+```
+graphify_b-out/
 ├── graph.html       graf interaktif — buka di browser mana saja
 ├── GRAPH_REPORT.md  node dewa, koneksi mengejutkan, pertanyaan yang disarankan
 ├── graph.json       graf persisten — dapat dikueri berminggu-minggu kemudian
@@ -33,7 +33,7 @@ graphify-out/
 
 ## Cara Kerja
 
-graphify bekerja dalam tiga tahap. Pertama, tahap AST deterministik mengekstrak struktur dari file kode tanpa LLM. Kemudian file video dan audio ditranskrip secara lokal dengan faster-whisper. Terakhir, sub-agen Claude berjalan secara paralel pada dokumen, makalah, gambar, dan transkripsi. Hasilnya digabungkan ke dalam graf NetworkX, dikelompokkan dengan Leiden, dan diekspor sebagai HTML interaktif, JSON yang dapat dikueri, dan laporan audit.
+graphify_b bekerja dalam tiga tahap. Pertama, tahap AST deterministik mengekstrak struktur dari file kode tanpa LLM. Kemudian file video dan audio ditranskrip secara lokal dengan faster-whisper. Terakhir, sub-agen Claude berjalan secara paralel pada dokumen, makalah, gambar, dan transkripsi. Hasilnya digabungkan ke dalam graf NetworkX, dikelompokkan dengan Leiden, dan diekspor sebagai HTML interaktif, JSON yang dapat dikueri, dan laporan audit.
 
 Setiap hubungan diberi label `EXTRACTED`, `INFERRED` (dengan skor kepercayaan), atau `AMBIGUOUS`.
 
@@ -42,24 +42,24 @@ Setiap hubungan diberi label `EXTRACTED`, `INFERRED` (dengan skor kepercayaan), 
 **Persyaratan:** Python 3.10+ dan salah satu dari: [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), [Cursor](https://cursor.com) dan lainnya.
 
 ```bash
-uv tool install graphifyy && graphify install
+uv tool install graphifyy-m && graphify_b install
 # atau dengan pipx
-pipx install graphifyy && graphify install
+pipx install graphifyy-m && graphify_b install
 # atau pip
-pip install graphifyy && graphify install
+pip install graphifyy-m && graphify_b install
 ```
 
-> **Paket resmi:** Paket PyPI bernama `graphifyy`. Satu-satunya repositori resmi adalah [safishamsi/graphify](https://github.com/safishamsi/graphify).
+> **Paket resmi:** Paket PyPI bernama `graphifyy-m`. Satu-satunya repositori resmi adalah [safishamsi/graphify](https://github.com/safishamsi/graphify).
 
 ## Penggunaan
 
 ```
-/graphify .
-/graphify ./raw --update
-/graphify query "apa yang menghubungkan Attention dengan optimizer?"
-/graphify path "DigestAuth" "Response"
-graphify hook install
-graphify update ./src
+/graphify_b .
+/graphify_b ./raw --update
+/graphify_b query "apa yang menghubungkan Attention dengan optimizer?"
+/graphify_b path "DigestAuth" "Response"
+graphify_b hook install
+graphify_b update ./src
 ```
 
 ## Apa yang Anda Dapatkan
@@ -70,7 +70,7 @@ graphify update ./src
 
 File kode diproses secara lokal melalui tree-sitter AST. Video ditranskrip secara lokal dengan faster-whisper. Tidak ada telemetri.
 
-## Dibangun di atas graphify — Penpax
+## Dibangun di atas graphify_b — Penpax
 
 [**Penpax**](https://safishamsi.github.io/penpax.ai) adalah lapisan enterprise di atas graphify. **Uji coba gratis segera hadir.** [Bergabunglah dengan daftar tunggu →](https://safishamsi.github.io/penpax.ai)
 

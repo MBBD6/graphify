@@ -192,7 +192,7 @@ def test_load_graph_roundtrip(tmp_path):
     assert G2.number_of_edges() == G.number_of_edges()
 
 def test_load_graph_missing_file(tmp_path):
-    graphify_dir = tmp_path / "graphify-out"
+    graphify_dir = tmp_path / "graphify_b-out"
     graphify_dir.mkdir()
     with pytest.raises(SystemExit):
         _load_graph(str(graphify_dir / "nonexistent.json"))

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Wrapper for agent-friendly /graphify-m viz execution.
+"""Wrapper for agent-friendly /graphify_b viz execution.
 
 Runs `scripts/visuals/skill_viz.py` with the provided subcommand and prints a small
 JSON summary to stdout describing which files were created/updated under
-`graphify-out/` so the agent can report back concisely.
+`graphify_b-out/` so the agent can report back concisely.
 """
 from __future__ import annotations
 import sys
@@ -22,7 +22,7 @@ def run(cmd: list[str]) -> int:
 
 
 def snapshot_graphify_out() -> dict:
-    out = Path('graphify-out')
+    out = Path('graphify_b-out')
     if not out.exists():
         return {'files': []}
     files = []

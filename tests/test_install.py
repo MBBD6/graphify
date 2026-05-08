@@ -1,4 +1,4 @@
-"""Tests for graphify install --platform routing."""
+"""Tests for graphify_b install --platform routing."""
 from pathlib import Path
 from unittest.mock import patch
 import pytest
@@ -161,7 +161,7 @@ def test_agents_uninstall_removes_section(tmp_path):
     _agents_install(tmp_path, "codex")
     _agents_uninstall(tmp_path)
     agents_md = tmp_path / "AGENTS.md"
-    # File deleted when it only contained graphify section
+    # File deleted when it only contained graphify_b section
     assert not agents_md.exists()
 
 
@@ -238,7 +238,7 @@ def test_cursor_install_writes_rule(tmp_path):
     assert rule.exists()
     content = rule.read_text()
     assert "alwaysApply: true" in content
-    assert "graphify-out/GRAPH_REPORT.md" in content
+    assert "graphify_b-out/GRAPH_REPORT.md" in content
 
 
 def test_cursor_install_idempotent(tmp_path):
@@ -273,7 +273,7 @@ def test_gemini_install_writes_gemini_md(tmp_path):
     gemini_install(tmp_path)
     md = tmp_path / "GEMINI.md"
     assert md.exists()
-    assert "graphify-out/GRAPH_REPORT.md" in md.read_text()
+    assert "graphify_b-out/GRAPH_REPORT.md" in md.read_text()
 
 def test_gemini_install_writes_hook(tmp_path):
     import json as _json
@@ -296,7 +296,7 @@ def test_gemini_install_merges_existing_gemini_md(tmp_path):
     gemini_install(tmp_path)
     content = (tmp_path / "GEMINI.md").read_text()
     assert "# My project rules" in content
-    assert "graphify-out/GRAPH_REPORT.md" in content
+    assert "graphify_b-out/GRAPH_REPORT.md" in content
 
 def test_gemini_uninstall_removes_section(tmp_path):
     from graphify_m.__main__ import gemini_install, gemini_uninstall

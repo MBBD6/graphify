@@ -11,9 +11,9 @@ echo "2/4: Aggregate graph with legend"
 python scripts/visuals/viz_aggregate.py
 
 echo "3/4: Focused top-500 subgraph"
-python scripts/visuals/viz_focus.py --top 500 --out graphify-out/graph_top500.html
+python scripts/visuals/viz_focus.py --top 500 --out graphify_b-out/graph_top500.html
 
 echo "4/4: Per-community pages (top 60)"
 python scripts/visuals/viz_community_pages.py --top 60
 
-echo "Done. Outputs are in graphify-out/"
+echo "Done. Outputs are in graphify_b-out/"
