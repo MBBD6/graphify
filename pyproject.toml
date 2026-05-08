@@ -56,7 +56,7 @@ sql = ["tree-sitter-sql"]
 all = ["mcp", "neo4j", "pypdf", "markdownify", "watchdog", "graspologic; python_version < '3.13'", "python-docx", "openpyxl", "faster-whisper", "yt-dlp", "matplotlib", "openai", "tiktoken", "tree-sitter-sql"]
 
 [project.scripts]
-graphify_b = "graphify_m.__main__:main"
+graphify_b = "graphify_b.__main__:main"
 
 [tool.uv]
 # Install via: uv tool install graphifyy-m
@@ -64,8 +64,8 @@ graphify_b = "graphify_m.__main__:main"
 package = true
 
 [tool.setuptools]
-packages = ["graphify_m", "tree_sitter_rpt"]
+packages = ["graphify_b", "tree_sitter_rpt"]
 include-package-data = false
 
 [tool.setuptools.package-data]
-graphify_m = ["skill.md", "skill-codex.md", "skill-opencode.md", "skill-aider.md", "skill-copilot.md", "skill-claw.md", "skill-windows.md", "skill-droid.md", "skill-trae.md", "skill-kiro.md", "skill-vscode.md", "skill-pi.md"]
+graphify_b = ["skill.md", "skill-codex.md", "skill-opencode.md", "skill-aider.md", "skill-copilot.md", "skill-claw.md", "skill-windows.md", "skill-droid.md", "skill-trae.md", "skill-kiro.md", "skill-vscode.md", "skill-pi.md"]
